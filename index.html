@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Veerpoint · Full-cycle sales, run by senior operators. Six months.</title>
+<meta name="description" content="An external full-cycle sales team for funded startups going to market for the first time, and sales orgs expanding into new markets without hiring." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Scroll-following terracotta ball -->
+<span class="scroll-trail-dot" aria-hidden="true"></span>
+<span class="scroll-trail-dot" aria-hidden="true"></span>
+<span class="scroll-trail-dot" aria-hidden="true"></span>
+<button class="scroll-dot" type="button" aria-label="Open fit quiz" data-quiz></button>
+
+<!-- TOP META STRIP -->
+<div class="top-strip">
+  <span>Veerpoint · Sales-as-a-Service</span>
+  <span>Barcelona · Working across EU &amp; US</span>
+  <span class="live">6-month engagements · custom scope</span>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="wordmark">Veerpoint<span class="stop">.</span></a>
+    <div class="nav-links">
+      <a href="how-it-works.html">How it works</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="about.html">About</a>
+      <a href="pricing.html#faq">FAQ</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-primary btn-sm" href="#book">Scope a cycle <span class="arrow">→</span></a>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>
+        We don't advise<br />on sales. <span class="underline-accent">We close it<span class="stop">.</span></span>
+      </h1>
+      <p class="hero-sub">
+        Senior operators run your full sales cycle. For first GTMs and new-market plays, without adding headcount.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#book">Scope a 6-month engagement <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="how-it-works.html">How a cycle runs</a>
+        <button type="button" class="quiz-launcher" data-quiz>60-second fit quiz <span class="arrow">→</span></button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-n">15+<span class="stop">.</span></div>
+          <div class="hero-stat-l">Years closing · combined</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">3<span class="stop">.</span></div>
+          <div class="hero-stat-l">Stages · 6-month cycle</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-n">2<span class="stop">.</span></div>
+          <div class="hero-stat-l">ICPs we serve</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero side card · live ops terminal -->
+    <aside class="hero-card" id="heroFloor" data-glow aria-label="Live operations feed">
+      <header class="hero-card-head">
+        <span class="title">THE FLOOR · LIVE</span>
+        <span class="clock" id="floorClock">--:--</span>
+      </header>
+      <div class="hero-card-feed">
+        <div class="hero-card-feed-list" id="floorFeed"></div>
+      </div>
+      <div class="hero-card-stats">
+        <div class="hero-card-stat">
+          <div class="l">Pipeline · 7d</div>
+          <div class="n" id="floorPipe">€4.2M</div>
+        </div>
+        <div class="hero-card-stat">
+          <div class="l">Demos · live</div>
+          <div class="n" id="floorDemos">38</div>
+        </div>
+        <div class="hero-card-stat">
+          <div class="l">Closes · 30d</div>
+          <div class="n" id="floorClose">12<span class="stop">.</span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+
+<section class="trust">
+  <div class="trust-inner">
+    <div class="trust-label">15 years of closing, built at, sold at, or founded ·</div>
+    <div class="trust-logos">
+      <div class="trust-track" aria-label="Companies the founders built, closed at, or sold">
+        <span>Revolut</span>
+        <span class="sep"></span>
+        <span>Google Cloud</span>
+        <span class="sep"></span>
+        <span>Revolut Business</span>
+        <span class="sep"></span>
+        <span>Gaming SaaS</span>
+        <span class="sep"></span>
+        <span>Hospitality SaaS · founded &amp; sold</span>
+        <span class="sep"></span>
+        <!-- duplicate for seamless loop · aria-hidden so screen readers don't repeat -->
+        <span aria-hidden="true">Revolut</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span aria-hidden="true">Google Cloud</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span aria-hidden="true">Revolut Business</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span aria-hidden="true">Gaming SaaS</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span aria-hidden="true">Hospitality SaaS · founded &amp; sold</span>
+        <span class="sep" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="gap" id="why-this">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 32px"><span class="dot"></span><span>Why this exists</span></div>
+    <blockquote class="gap-quote">
+      &ldquo;<span class="em">Strong products don't always land.</span> Not because they're wrong, because making them clear, compelling and sellable is harder than it looks. <span class="em">We step into that gap.</span>&rdquo;
+    </blockquote>
+    <div class="gap-attr">Anton, Pablo &amp; Dylan · Founders</div>
+  </div>
+</section>
+
+
+<section class="section" id="who">
+  <div class="wrap">
+    <div class="section-hd">
+      <div>
+        <div class="eyebrow"><span class="dot"></span><span>Who we work with</span></div>
+        <h2 style="margin-top:24px">Two shapes of company. One offer<span class="stop">.</span></h2>
+      </div>
+    </div>
+    <div class="icp-2">
+      <article class="icp-card" data-glow>
+        <div class="tag">Profile A · First go-to-market</div>
+        <h3 class="who">Funded, scaled or exited. Product live. No sales function yet<span class="stop">.</span></h3>
+        <p class="desc">You've raised, you've shipped. Founders still run every call. You need a motion that runs without you.</p>
+        <ul class="icp-signals">
+          <li><span class="k">Stage</span><span>Pre-seed → Series A · or post-exit re-launch</span></li>
+          <li><span class="k">Motion</span><span>B2B · SMB, mid-market, or enterprise</span></li>
+          <li><span class="k">Today</span><span>Founder-led sales · ad-hoc pipeline</span></li>
+          <li><span class="k">In 6 mo</span><span>A motion you can forecast and scale</span></li>
+        </ul>
+      </article>
+
+      <article class="icp-card alt" data-glow>
+        <div class="tag">Profile B · Expansion play</div>
+        <h3 class="who">Existing sales team. New market or segment. No headcount budget<span class="stop">.</span></h3>
+        <p class="desc">Your motion works at home. You need it working in a new market, without two quarters of hiring.</p>
+        <ul class="icp-signals">
+          <li><span class="k">Stage</span><span>Series A+ · revenue-scaling</span></li>
+          <li><span class="k">Motion</span><span>Proven elsewhere · porting to new ground</span></li>
+          <li><span class="k">Today</span><span>Pipeline capped by hiring &amp; ramp</span></li>
+          <li><span class="k">In 6 mo</span><span>Channel proven · ready to staff or scale</span></li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="icp-note">
+      <span class="badge">Not a fit</span>
+      <span>Consumer brands, agencies, pre-product, or 30-day sprints. We don't take work we can't deliver.</span>
+    </div>
+  </div>
+</section>
+
+
+<section class="section tight" style="background: var(--vp-paper)">
+  <div class="wrap">
+    <div class="section-hd">
+      <div>
+        <div class="eyebrow"><span class="dot"></span><span>Why teams pick us</span></div>
+        <h2 style="margin-top:24px">Three reasons over hiring or an agency<span class="stop">.</span></h2>
+      </div>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">⟶</div>
+        <h3>Speed to revenue<span class="stop">.</span></h3>
+        <p>By Day 14 we're in your CRM running outbound. Your first AE would still be reading the offer letter.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">≡</div>
+        <h3>Senior talent · no overhead<span class="stop">.</span></h3>
+        <p>The people who scope the work do the calls. Closers from Revolut and Google Cloud, not interns running someone else's playbook.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">↔</div>
+        <h3>Aligned incentives<span class="stop">.</span></h3>
+        <p>Retainer plus commission. We win when you close, not before.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section" id="offer-summary">
+  <div class="wrap">
+    <div class="section-hd">
+      <div>
+        <div class="eyebrow"><span class="dot"></span><span>The offer</span></div>
+        <h2 style="margin-top:24px">One engagement. Three stages. Six months<span class="stop">.</span></h2>
+      </div>
+    </div>
+
+    <div class="offer-card">
+      <div>
+        <div class="eyebrow"><span class="dot"></span><span>The cycle</span></div>
+        <h3>First list to first closed deal to repeatable motion<span class="stop">.</span></h3>
+        <p>Same operators end to end. Weekly pipeline review, monthly QBR, shared dashboard. 30-day notice between stages.</p>
+        <div class="row">
+          <a class="btn btn-accent" href="how-it-works.html">See how a cycle runs <span class="arrow">→</span></a>
+          <a class="btn btn-ghost" style="border-color:rgba(255,255,255,0.25); color:var(--vp-warm-white)" href="pricing.html">Pricing</a>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="stack-row">
+          <span class="n">01</span>
+          <span class="name">Setup &amp; Pipeline<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
+          <span class="when">M01 — M02</span>
+        </div>
+        <div class="stack-row">
+          <span class="n">02</span>
+          <span class="name">Qualification &amp; Negotiation<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
+          <span class="when">M03 — M04</span>
+        </div>
+        <div class="stack-row">
+          <span class="n">03</span>
+          <span class="name">Closing &amp; Handoff<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
+          <span class="when">M05 — M06</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="manifesto" id="process">
+  <div class="wrap manifesto-inner">
+    <div class="eyebrow"><span class="dot"></span><span>· Veerpoint · the bet we're making</span></div>
+    <h2>
+      A lot of great products never get a fair shot in front of the right customers. <span class="underline-accent">We step into that gap<span class="stop">.</span></span>
+    </h2>
+    <p class="manifesto-sub">
+      Position. Price. Validate, through real calls with real buyers. Not surveys. Not slides. The motion that comes out is yours to keep.
+    </p>
+    <div class="row">
+      <a class="btn btn-accent" href="#book">Scope a 6-month engagement <span class="arrow">→</span></a>
+      <button type="button" class="quiz-launcher" style="border-color: var(--vp-warm-white); color: var(--vp-warm-white)" data-quiz>Take the fit quiz <span class="arrow">→</span></button>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="closing" id="book">
+  <div class="wrap closing-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span><span>Start here</span></div>
+      <h2>Two weeks from now,<br />you've either started a hiring search, or we've started a cycle<span class="stop">.</span></h2>
+      <p class="closing-sub">
+        30 minutes. No deck. Three questions, written read in 48 hours.
+      </p>
+      <ul class="closing-list">
+        <li><span class="n">01</span><span>You answer three questions. We listen, no pitch.</span><span class="arrow">→</span></li>
+        <li><span class="n">02</span><span>Written diagnostic in 48 hours. Yes / no / not yet.</span><span class="arrow">→</span></li>
+        <li><span class="n">03</span><span>If yes, Proposal in week 1, kickoff in week 2.</span><span class="arrow">→</span></li>
+      </ul>
+
+      <div class="quiz-dock-wrap">
+        <span class="quiz-dock-label">Or skip the form</span>
+        <div id="quizDock" class="quiz-dock">
+          <button type="button" class="quiz-dock-fallback" data-quiz aria-label="Take the 60-second fit quiz">Take the fit quiz →</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="form-card">
+      <div class="form-hd">Discovery form · 90 seconds</div>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" type="text" placeholder="Jordan Stevens" />
+      </div>
+      <div class="field">
+        <label for="f-email">Work email</label>
+        <input id="f-email" type="email" placeholder="jordan@yourcompany.com" />
+      </div>
+      <div class="field">
+        <label for="f-company">Company · stage</label>
+        <input id="f-company" type="text" placeholder="Lumen · Series A · B2B SaaS" />
+      </div>
+      <div class="field">
+        <label for="f-icp">Which profile fits you</label>
+        <select id="f-icp">
+          <option>A · First go-to-market (no sales function yet)</option>
+          <option>B · Expansion into new market / segment</option>
+          <option>Both / not sure yet</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-stage">Where revenue is stuck today</label>
+        <select id="f-stage">
+          <option>Founder-led, no AE in seat</option>
+          <option>1 AE ramping, pipeline thin</option>
+          <option>Sales team in place, capped by hiring</option>
+          <option>Entering a new market this quarter</option>
+          <option>Other / not sure</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-note">One sentence on what you'd want from 6 months with us</label>
+        <textarea id="f-note" placeholder="We've raised our seed, product is live with 8 paying customers, and we need a working outbound motion before Series A..."></textarea>
+      </div>
+      <a class="btn btn-accent" href="mailto:hello@veerpoint.io?subject=Discovery%20call%20%C2%B7%20Veerpoint">Send &amp; book Discovery <span class="arrow">→</span></a>
+      <div class="form-foot">Or email hello@veerpoint.io · We reply same day</div>
+    </aside>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="wordmark">Veerpoint<span class="stop">.</span></div>
+        <p>Full-cycle sales, run by senior operators. For funded teams building a motion from scratch, and sales orgs entering new markets without adding headcount.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Veerpoint</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@veerpoint.io">hello@veerpoint.io</a></li>
+          <li><a href="#book">Book a call</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Imprint</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Veerpoint · All rights reserved</span>
+      <span>Barcelona · ES</span>
+      <span>v1.0</span>
+    </div>
+  </div>
+</footer>
+
+<!-- FIT QUIZ MODAL -->
+<div class="quiz-overlay" id="quiz" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+  <div class="quiz-modal">
+    <div class="quiz-head">
+      <span id="quiz-title">Veerpoint · Fit quiz · 5 questions</span>
+      <button class="quiz-close" type="button" aria-label="Close quiz" data-quiz-close>✕</button>
+    </div>
+    <div class="quiz-body">
+      <div class="quiz-progress" style="--p: 20%"></div>
+      <div id="quiz-stage"></div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js" defer></script>
+
+</body>
+</html>
