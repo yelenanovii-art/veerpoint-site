@@ -479,21 +479,52 @@ h1 {
 }
 .footnote strong { color: var(--vp-terracotta); }
 
-/* MOCKUP BANNER */
-.mockup-banner {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
+/* FOOTER */
+footer {
   background: var(--vp-ink);
   color: var(--vp-warm-white);
-  padding: 8px 14px;
+  padding: 80px 32px 40px;
+  margin-top: 32px;
+}
+.foot-wrap { max-width: 1200px; margin: 0 auto; }
+.foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 56px;
+  padding-bottom: 56px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+.foot-brand .wordmark { color: var(--vp-warm-white); font-size: 28px; }
+.foot-brand p {
+  color: var(--vp-muted-soft);
+  margin: 18px 0 0;
+  max-width: 320px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.foot-col h4 {
   font-family: var(--vp-font-mono);
   font-size: 10px;
-  letter-spacing: 0.12em;
-  opacity: 0.85;
-  z-index: 100;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--vp-muted-soft);
+  font-weight: 500;
+  margin: 0 0 18px;
 }
-.mockup-banner .stop { color: var(--vp-terracotta); }
+.foot-col ul { list-style: none; padding: 0; margin: 0; }
+.foot-col li { padding: 6px 0; font-size: 14px; }
+.foot-col li a { color: var(--vp-warm-white); text-decoration: none; }
+.foot-col li a:hover { color: var(--vp-terracotta); }
+.foot-bottom {
+  margin-top: 36px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vp-muted-soft);
+}
 
 @media (max-width: 960px) {
   h1 { font-size: 38px; }
@@ -502,6 +533,8 @@ h1 {
   .compare { grid-template-columns: 1fr; }
   .roi, .gate { flex-direction: column; align-items: flex-start; grid-template-columns: 1fr; }
   .gate-right input { min-width: 0; width: 100%; }
+  .foot-grid { grid-template-columns: 1fr; gap: 32px; }
+  .foot-bottom { flex-direction: column; gap: 12px; }
 }
 </style>
 </head>
@@ -525,7 +558,7 @@ h1 {
       </div>
     </div>
     <a href="about.html">About</a>
-    <a href="index.html#faq-link">FAQ</a>
+    <a href="pricing.html#faq">FAQ</a>
   </div>
   <a href="index.html#book" class="btn btn-primary">Scope a cycle →</a>
 </nav>
@@ -631,9 +664,12 @@ h1 {
         <h3>Get the breakdown as a PDF<span class="stop">.</span></h3>
         <p>Your numbers, the math we used, a sample Veerpoint scope. Sent in 60 seconds. Unsubscribe in one click.</p>
       </div>
-      <div class="gate-right">
-        <input type="email" placeholder="jordan@yourcompany.com" />
-        <button class="btn btn-accent">Send me the PDF →</button>
+      <div class="gate-right" id="gate-form">
+        <input type="email" id="gate-email" placeholder="jordan@yourcompany.com" autocomplete="email" />
+        <button class="btn btn-accent" id="gate-btn" type="button">Send me the PDF →</button>
+      </div>
+      <div class="gate-done" id="gate-done" style="display:none; color:var(--vp-warm-white); font-family:var(--vp-font-mono); font-size:13px; letter-spacing:0.06em;">
+        ✓ <span id="gate-done-email"></span> · check your inbox in a minute.
       </div>
     </div>
 
@@ -644,7 +680,47 @@ h1 {
   </div>
 </section>
 
-<div class="mockup-banner">VEERPOINT · CALCULATOR MOCKUP · v1<span class="stop">.</span></div>
+<footer>
+  <div class="foot-wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="wordmark">Veerpoint<span class="stop">.</span></div>
+        <p>Full-cycle sales, run by senior operators. For funded teams building a motion from scratch, and sales orgs entering new markets without adding headcount.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Veerpoint</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="calculator.html">Anti-Hiring Calculator</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@veerpoint.io">hello@veerpoint.io</a></li>
+          <li><a href="index.html#book">Book a call</a></li>
+          <li><a href="#">LinkedIn</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Imprint</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Veerpoint · All rights reserved</span>
+      <span>Barcelona · ES</span>
+      <span>v1.0</span>
+    </div>
+  </div>
+</footer>
 
 <script>
 // ============ MATH ============
@@ -765,6 +841,30 @@ document.querySelectorAll('#arr, #deal, #market, #team').forEach(el => {
 });
 
 calculate();
+
+// ============ EMAIL GATE ============
+const gateBtn = document.getElementById('gate-btn');
+const gateEmail = document.getElementById('gate-email');
+const gateForm = document.getElementById('gate-form');
+const gateDone = document.getElementById('gate-done');
+const gateDoneEmail = document.getElementById('gate-done-email');
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function submitGate() {
+  const val = (gateEmail.value || '').trim();
+  if (!EMAIL_RE.test(val)) {
+    gateEmail.style.borderColor = 'var(--vp-terracotta)';
+    gateEmail.focus();
+    return;
+  }
+  gateDoneEmail.textContent = val;
+  gateForm.style.display = 'none';
+  gateDone.style.display = 'block';
+}
+
+gateBtn.addEventListener('click', submitGate);
+gateEmail.addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+gateEmail.addEventListener('input', () => { gateEmail.style.borderColor = ''; });
 </script>
 
 </body>
