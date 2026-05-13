@@ -25,8 +25,8 @@
     --vp-pad: 48px;
   }
 
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
+  * { box-sizing: border-box; min-width: 0; }
+  html, body { margin: 0; padding: 0; overflow-x: hidden; }
   body {
     background: var(--vp-warm-white);
     color: var(--vp-ink);
@@ -2757,10 +2757,13 @@
       min-width: 0;
     }
     .nav-dd-menu a {
-      padding: 8px 0;
+      padding: 12px 0;
       font-size: 14px;
       color: var(--vp-ink-70);
       white-space: normal;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
     }
     .nav-dd-menu a .sub { display: none; }
     .nav-dd-menu a:hover, .nav-dd-menu a:focus { background: transparent; color: var(--vp-terracotta); }
