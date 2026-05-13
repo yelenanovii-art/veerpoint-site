@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Veerpoint · Anti-Hiring Calculator</title>
+<meta name="description" content="Plug in four numbers. See the real cost of hiring a VP Sales vs. running a Veerpoint cycle." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --vp-warm-white: #FAFAF9;
+  --vp-paper: #F4F2EE;
+  --vp-paper-2: #EDEAE4;
+  --vp-ink: #1C1C1E;
+  --vp-ink-90: #2A2A2C;
+  --vp-ink-70: #48484A;
+  --vp-muted: #6E6E73;
+  --vp-muted-soft: #9C9C9F;
+  --vp-border: #E5E5E5;
+  --vp-border-strong: #D0D0CC;
+  --vp-terracotta: #A04022;
+  --vp-terracotta-hover: #8A361C;
+  --vp-font-display: 'Inter Tight', system-ui, sans-serif;
+  --vp-font-body: 'Inter', system-ui, sans-serif;
+  --vp-font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--vp-warm-white); color: var(--vp-ink); font-family: var(--vp-font-body); font-size: 15px; line-height: 1.5; }
+
+.stop { color: var(--vp-terracotta); }
+
+/* TOP STRIP */
+.top-strip {
+  background: var(--vp-ink);
+  color: var(--vp-muted-soft);
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.top-strip .live::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vp-terracotta);
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+
+/* NAV */
+.nav {
+  border-bottom: 1px solid var(--vp-border);
+  padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--vp-warm-white);
+}
+.wordmark {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.04em;
+  color: var(--vp-ink);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  font-size: 14px;
+  color: var(--vp-ink-70);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--vp-terracotta); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-family: var(--vp-font-body);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.btn-primary { background: var(--vp-ink); color: var(--vp-warm-white); }
+.btn-primary:hover { background: var(--vp-terracotta); }
+.btn-accent { background: var(--vp-terracotta); color: var(--vp-warm-white); border-color: var(--vp-terracotta); }
+.btn-accent:hover { background: var(--vp-terracotta-hover); }
+.btn-ghost { background: transparent; color: var(--vp-ink); border-color: var(--vp-border-strong); }
+.btn-ghost:hover { border-color: var(--vp-ink); }
+
+/* PAGE HERO */
+.page-hero {
+  padding: 60px 32px 36px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.crumbs {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  color: var(--vp-muted);
+  letter-spacing: 0.08em;
+  margin-bottom: 28px;
+}
+.crumbs a { color: var(--vp-muted); text-decoration: none; }
+.crumbs a:hover { color: var(--vp-terracotta); }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+.eyebrow .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--vp-terracotta);
+  display: inline-block;
+}
+h1 {
+  font-family: var(--vp-font-display);
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  max-width: 900px;
+  margin-bottom: 18px;
+}
+.lede {
+  font-size: 18px;
+  color: var(--vp-ink-70);
+  max-width: 720px;
+  line-height: 1.45;
+}
+
+/* CALCULATOR */
+.calc {
+  max-width: 1200px;
+  margin: 16px auto 0;
+  padding: 0 32px 48px;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* INPUTS */
+.inputs {
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-border-strong);
+  padding: 28px;
+  position: sticky;
+  top: 24px;
+}
+.inputs-hd {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.inputs-title {
+  font-family: var(--vp-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.field {
+  margin-bottom: 18px;
+}
+.field label {
+  display: block;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--vp-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.field input, .field select {
+  width: 100%;
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border-strong);
+  padding: 12px 14px;
+  font-family: var(--vp-font-body);
+  font-size: 15px;
+  color: var(--vp-ink);
+  font-weight: 500;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--vp-ink);
+}
+.field-help {
+  font-size: 11px;
+  color: var(--vp-muted);
+  margin-top: 6px;
+  font-style: italic;
+}
+.input-prefix {
+  position: relative;
+}
+.input-prefix .prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--vp-muted);
+  font-weight: 500;
+  pointer-events: none;
+}
+.input-prefix input { padding-left: 28px; }
+
+/* OUTPUT */
+.output {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.cost-card {
+  border: 1px solid var(--vp-border-strong);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+}
+.cost-card.hire {
+  background: var(--vp-ink);
+  color: var(--vp-warm-white);
+  border-color: var(--vp-ink);
+}
+.cost-card.veer {
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  border-color: var(--vp-terracotta);
+}
+.cost-tag {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: var(--vp-warm-white);
+  opacity: 0.7;
+}
+.cost-name {
+  font-family: var(--vp-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+.cost-name .stop { color: var(--vp-warm-white); opacity: 0.5; }
+.cost-card.hire .cost-name .stop { color: var(--vp-terracotta); opacity: 1; }
+.cost-total {
+  font-family: var(--vp-font-display);
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.cost-total .stop { color: var(--vp-terracotta); }
+.cost-card.veer .cost-total .stop { color: var(--vp-ink); }
+.cost-period {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  margin-bottom: 22px;
+}
+.cost-breakdown {
+  border-top: 1px solid rgba(255,255,255,0.18);
+  padding-top: 16px;
+  margin-top: auto;
+}
+.cost-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
+}
+.cost-line:last-child { border-bottom: none; }
+.cost-line .lbl { opacity: 0.8; }
+.cost-line .val {
+  font-family: var(--vp-font-mono);
+  font-weight: 500;
+}
+
+/* ROI DELTA */
+.roi {
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-border-strong);
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+}
+.roi-left .label {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.roi-left h3 {
+  font-family: var(--vp-font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.roi-left p {
+  color: var(--vp-ink-70);
+  font-size: 13px;
+}
+.roi-big {
+  font-family: var(--vp-font-display);
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--vp-ink);
+}
+.roi-big .stop { color: var(--vp-terracotta); }
+.roi-big-sub {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--vp-muted);
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* EMAIL GATE */
+.gate {
+  background: var(--vp-ink);
+  color: var(--vp-warm-white);
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.gate-left .label {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.gate-left h3 {
+  font-family: var(--vp-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.gate-left p {
+  color: var(--vp-muted-soft);
+  font-size: 13px;
+}
+.gate-right {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.gate-right input {
+  background: var(--vp-ink-90);
+  border: 1px solid var(--vp-ink-70);
+  color: var(--vp-warm-white);
+  padding: 13px 16px;
+  font-family: var(--vp-font-body);
+  font-size: 14px;
+  min-width: 280px;
+}
+.gate-right input::placeholder { color: var(--vp-muted-soft); }
+.gate-right input:focus { outline: none; border-color: var(--vp-terracotta); }
+
+/* FOOTNOTE */
+.footnote {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--vp-muted);
+  padding-top: 14px;
+  border-top: 1px solid var(--vp-border);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.footnote strong { color: var(--vp-terracotta); }
+
+/* MOCKUP BANNER */
+.mockup-banner {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  background: var(--vp-ink);
+  color: var(--vp-warm-white);
+  padding: 8px 14px;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  opacity: 0.85;
+  z-index: 100;
+}
+.mockup-banner .stop { color: var(--vp-terracotta); }
+
+@media (max-width: 960px) {
+  h1 { font-size: 38px; }
+  .calc { grid-template-columns: 1fr; }
+  .inputs { position: static; }
+  .compare { grid-template-columns: 1fr; }
+  .roi, .gate { flex-direction: column; align-items: flex-start; grid-template-columns: 1fr; }
+  .gate-right input { min-width: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-strip">
+  <span>Veerpoint · Sales-as-a-Service</span>
+  <span>Barcelona · Working across EU &amp; US</span>
+  <span class="live">Free tool · no signup to use</span>
+</div>
+
+<nav class="nav">
+  <a href="index.html" class="wordmark">Veerpoint<span class="stop">.</span></a>
+  <div class="nav-links">
+    <a href="how-it-works.html">How it works</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="calculator.html" class="active">Calculator</a>
+    <a href="about.html">About</a>
+    <a href="index.html#faq-link">FAQ</a>
+  </div>
+  <a href="index.html#book" class="btn btn-primary">Scope a cycle →</a>
+</nav>
+
+<section class="page-hero">
+  <div class="crumbs"><a href="index.html">Home</a> · <a href="pricing.html">Pricing</a> · Anti-Hiring Calculator</div>
+  <div class="eyebrow"><span class="dot"></span>ANTI-HIRING CALCULATOR · FREE</div>
+  <h1>Hiring a VP Sales costs<br>3x more than you think<span class="stop">.</span></h1>
+  <p class="lede">Plug in four numbers. We'll show you the loaded cost of hiring against the cost of running a Veerpoint cycle over the same nine-month window. No tricks. Math is in the footnote.</p>
+</section>
+
+<section class="calc">
+  <!-- INPUTS -->
+  <aside class="inputs">
+    <div class="inputs-hd">YOUR NUMBERS</div>
+    <div class="inputs-title">Four inputs<span class="stop">.</span></div>
+
+    <div class="field">
+      <label for="arr">Target ARR · next 12 months</label>
+      <div class="input-prefix">
+        <span class="prefix">€</span>
+        <input id="arr" type="number" value="1500000" step="100000" />
+      </div>
+      <div class="field-help">Realistic, not the pitch-deck number.</div>
+    </div>
+
+    <div class="field">
+      <label for="deal">Average deal size · annual contract value</label>
+      <div class="input-prefix">
+        <span class="prefix">€</span>
+        <input id="deal" type="number" value="35000" step="5000" />
+      </div>
+      <div class="field-help">First-year ACV, signed. SMB ~€5k, mid-market ~€25k, enterprise ~€75k+.</div>
+    </div>
+
+    <div class="field">
+      <label for="market">Primary market</label>
+      <select id="market">
+        <option value="EU">European Union</option>
+        <option value="UK">United Kingdom</option>
+        <option value="US">United States</option>
+        <option value="DACH">DACH (Germany, Austria, Switzerland)</option>
+        <option value="NORDIC">Nordics</option>
+      </select>
+      <div class="field-help">Used to load salary, on-cost, and ramp benchmarks.</div>
+    </div>
+
+    <div class="field">
+      <label for="team">Your sales team today</label>
+      <select id="team">
+        <option value="none">Founder-led · no AE in seat</option>
+        <option value="oneAE">One AE ramping · pipeline thin</option>
+        <option value="leader">Existing team · need expansion lead</option>
+        <option value="full">Full team · entering new market</option>
+      </select>
+      <div class="field-help">Determines which role(s) you'd realistically hire.</div>
+    </div>
+  </aside>
+
+  <!-- OUTPUT -->
+  <div class="output">
+    <div class="compare">
+      <!-- HIRE -->
+      <div class="cost-card hire">
+        <div class="cost-tag">OPTION A · HIRE A SALES LEADER</div>
+        <div class="cost-name">VP Sales + 1 AE<span class="stop">.</span></div>
+        <div class="cost-total" id="hireTotal">€425,000<span class="stop">.</span></div>
+        <div class="cost-period">9-MONTH ALL-IN · M0 → M9</div>
+        <div class="cost-breakdown" id="hireBreakdown">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- VEERPOINT -->
+      <div class="cost-card veer">
+        <div class="cost-tag">OPTION B · RUN A VEERPOINT CYCLE</div>
+        <div class="cost-name">3 senior closers, 6 months<span class="stop">.</span></div>
+        <div class="cost-total" id="veerTotal">€138,000<span class="stop">.</span></div>
+        <div class="cost-period">6-MONTH ENGAGEMENT · KICKOFF DAY 14</div>
+        <div class="cost-breakdown" id="veerBreakdown">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ROI -->
+    <div class="roi">
+      <div class="roi-left">
+        <div class="label">ROI DELTA</div>
+        <h3>Hiring costs you <span id="roiNarrative">3.1x</span> more<span class="stop">.</span></h3>
+        <p id="roiSavings">You save €287,000 in cash. Plus 90 days of ramp. Plus the risk of a wrong hire.</p>
+      </div>
+      <div>
+        <div class="roi-big" id="roiMultiple">3.1x<span class="stop">.</span></div>
+        <div class="roi-big-sub">MORE EXPENSIVE</div>
+      </div>
+    </div>
+
+    <!-- EMAIL GATE -->
+    <div class="gate">
+      <div class="gate-left">
+        <div class="label">YOUR FULL REPORT</div>
+        <h3>Get the breakdown as a PDF<span class="stop">.</span></h3>
+        <p>Your numbers, the math we used, a sample Veerpoint scope. Sent in 60 seconds. Unsubscribe in one click.</p>
+      </div>
+      <div class="gate-right">
+        <input type="email" placeholder="jordan@yourcompany.com" />
+        <button class="btn btn-accent">Send me the PDF →</button>
+      </div>
+    </div>
+
+    <!-- FOOTNOTE -->
+    <div class="footnote">
+      <strong>METHODOLOGY ·</strong> Loaded VP Sales salary uses 2026 EU/UK/US comp benchmarks plus 35% on-cost (employer taxes, benefits, equity). AE compensation set at 60% of VP base. Ramp opportunity-cost models 4 months of missed pipeline at conversion rates published by RepVue and Pavilion. Founder management time priced at €150/hr. Risk premium applies the empirical 30% mis-hire rate to a €50k replacement cost. Veerpoint cycle uses indicative retainer of €12k/month plus a 10% commission on modeled closed revenue (target ARR × 0.25 capture rate in months 4-6).
+    </div>
+  </div>
+</section>
+
+<div class="mockup-banner">VEERPOINT · CALCULATOR MOCKUP · v1<span class="stop">.</span></div>
+
+<script>
+// ============ MATH ============
+const MARKET_MULTIPLIER = {
+  EU: 1.0,
+  UK: 1.18,
+  US: 1.42,
+  DACH: 1.15,
+  NORDIC: 1.22,
+};
+const BASE_VP_SALARY = 130000;      // EU baseline VP Sales loaded base
+const BASE_AE_SALARY = 78000;       // ~60% of VP base
+const ON_COST_MULTIPLIER = 1.35;    // taxes, benefits, equity loading
+const RAMP_MONTHS = 4;              // expected pipeline gap
+const TOOLS_PER_MONTH = 500;
+const FOUNDER_HOURS_PER_WEEK = 5;
+const FOUNDER_HOUR_VALUE = 150;
+const MIS_HIRE_RATE = 0.30;
+const MIS_HIRE_COST = 50000;
+const ENGAGEMENT_WINDOW_MONTHS = 9;
+
+const VP_RETAINER_PER_MONTH = 12000;
+const VP_COMMISSION_RATE = 0.10;
+const VP_CAPTURE_RATE = 0.25;       // % of target ARR captured during engagement
+const VP_CYCLE_MONTHS = 6;
+
+const TEAM_CONFIGS = {
+  none:   { roles: 'VP Sales + 1 AE',          headcount: 1.5 },
+  oneAE:  { roles: 'VP Sales (AE in place)',   headcount: 1.0 },
+  leader: { roles: 'Senior expansion AE',      headcount: 1.0 },
+  full:   { roles: 'Country Lead + 1 AE',      headcount: 1.5 },
+};
+
+function fmtEur(n) {
+  if (n >= 1000000) return '€' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '€' + Math.round(n/1000) + 'k';
+  return '€' + Math.round(n);
+}
+
+function fmtEurFull(n) {
+  return '€' + Math.round(n).toLocaleString('en-US');
+}
+
+function calculate() {
+  const arr = +document.getElementById('arr').value || 0;
+  const deal = +document.getElementById('deal').value || 0;
+  const market = document.getElementById('market').value;
+  const team = document.getElementById('team').value;
+
+  const mkt = MARKET_MULTIPLIER[market];
+  const cfg = TEAM_CONFIGS[team];
+
+  // ----- HIRING COST -----
+  const monthsOf9 = ENGAGEMENT_WINDOW_MONTHS / 12;
+
+  const vpLoadedAnnual = BASE_VP_SALARY * mkt * ON_COST_MULTIPLIER;
+  const aeLoadedAnnual = BASE_AE_SALARY * mkt * ON_COST_MULTIPLIER;
+  // If headcount is 1.5, that's VP + 1 AE; if 1.0, just one role (VP or senior AE)
+  const aeCount = cfg.headcount === 1.5 ? 1 : 0;
+  const vpCount = cfg.headcount === 1.5 ? 1 : 1;
+  const salaries9mo = (vpLoadedAnnual * vpCount + aeLoadedAnnual * aeCount) * monthsOf9;
+
+  // Ramp opportunity cost: 4 months of missed pipeline = 4 × (ARR / 12) × 0.30 capture
+  const rampCost = RAMP_MONTHS * (arr / 12) * 0.30;
+
+  // Tools
+  const toolsCost = TOOLS_PER_MONTH * ENGAGEMENT_WINDOW_MONTHS * cfg.headcount;
+
+  // Founder management time
+  const founderMgmt = FOUNDER_HOURS_PER_WEEK * 4 * ENGAGEMENT_WINDOW_MONTHS * FOUNDER_HOUR_VALUE;
+
+  // Mis-hire risk
+  const misHireExp = MIS_HIRE_RATE * MIS_HIRE_COST;
+
+  const hireTotal = salaries9mo + rampCost + toolsCost + founderMgmt + misHireExp;
+
+  // ----- VEERPOINT COST -----
+  const retainer = VP_RETAINER_PER_MONTH * VP_CYCLE_MONTHS * mkt;
+  const capturedRevenue = arr * VP_CAPTURE_RATE;
+  const commission = capturedRevenue * VP_COMMISSION_RATE;
+  const veerTotal = retainer + commission;
+
+  // ----- ROI -----
+  const multiple = hireTotal / veerTotal;
+  const savings = hireTotal - veerTotal;
+
+  // ----- RENDER -----
+  document.getElementById('hireTotal').innerHTML = fmtEur(hireTotal) + '<span class="stop">.</span>';
+  document.getElementById('veerTotal').innerHTML = fmtEur(veerTotal) + '<span class="stop">.</span>';
+  document.getElementById('roiMultiple').innerHTML = multiple.toFixed(1) + 'x<span class="stop">.</span>';
+  document.getElementById('roiNarrative').textContent = multiple.toFixed(1) + 'x';
+  document.getElementById('roiSavings').textContent =
+    'You save ' + fmtEur(savings) + ' in cash. Plus 90 days of ramp. Plus the risk of a wrong hire.';
+
+  document.getElementById('hireBreakdown').innerHTML =
+    line(cfg.roles + ' · loaded salary · 9 mo', salaries9mo) +
+    line('Ramp opportunity cost · 4 months', rampCost) +
+    line('Tools, CRM, sales engagement', toolsCost) +
+    line('Founder management hours', founderMgmt) +
+    line('Mis-hire risk premium', misHireExp);
+
+  document.getElementById('veerBreakdown').innerHTML =
+    line('Retainer · 6 months', retainer) +
+    line('Commission · 10% of modeled closes', commission) +
+    line('Ramp', 0, 'NONE · DAY 14') +
+    line('Founder management', 0, 'WEEKLY REVIEW ONLY') +
+    line('Mis-hire risk', 0, 'OFF-RAMP EVERY 30 DAYS');
+}
+
+function line(lbl, val, override) {
+  const right = override ? `<span class="val">${override}</span>` : `<span class="val">${fmtEur(val)}</span>`;
+  return `<div class="cost-line"><span class="lbl">${lbl}</span>${right}</div>`;
+}
+
+document.querySelectorAll('#arr, #deal, #market, #team').forEach(el => {
+  el.addEventListener('input', calculate);
+  el.addEventListener('change', calculate);
+});
+
+calculate();
+</script>
+
+</body>
+</html>
