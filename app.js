@@ -217,6 +217,22 @@
   }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(el => io.observe(el));
 
+  /* ───────── Mobile/tablet · pulse .stop dots on scroll-in ─────────
+     The desktop ball is hidden under 1080px (see style.css). To keep
+     the terracotta motion alive on phones, each .stop briefly pulses
+     once when it enters the viewport. CSS animation is gated to
+     <=1080px so this is a no-op on desktop. */
+  const pulseIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      el.classList.add('vp-pulse');
+      setTimeout(() => el.classList.remove('vp-pulse'), 800);
+      pulseIo.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.stop').forEach(el => pulseIo.observe(el));
+
   /* ───────── Hero · live ops floor terminal ───────── */
   (function initFloor() {
     const card  = document.getElementById('heroFloor');

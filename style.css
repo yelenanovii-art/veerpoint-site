@@ -2694,6 +2694,21 @@
     .map-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     .scroll-dot, .scroll-trail, .scroll-trail-dot { display: none; }
     .foot-grid { grid-template-columns: 1fr 1fr; }
+
+    /* mobile/tablet · .stop pulses once when scrolled into view */
+    @keyframes vp-stop-pulse {
+      0%   { transform: scale(1);    text-shadow: 0 0 0 transparent; }
+      35%  { transform: scale(1.35); text-shadow: 0 0 14px rgba(160, 64, 34, 0.55); }
+      100% { transform: scale(1);    text-shadow: 0 0 0 transparent; }
+    }
+    .stop.vp-pulse {
+      display: inline-block;
+      transform-origin: center;
+      animation: vp-stop-pulse 0.7s ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stop.vp-pulse { animation: none; }
+    }
   }
 
   @media (max-width: 760px) {

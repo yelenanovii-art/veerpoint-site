@@ -633,6 +633,21 @@ footer {
   .gate-right { flex-direction: column; align-items: stretch; }
   .gate-right .btn { justify-content: center; }
   footer { padding: 56px 20px 28px; }
+
+  /* mobile · .stop dots pulse once on scroll-in */
+  @keyframes vp-stop-pulse {
+    0%   { transform: scale(1);    text-shadow: 0 0 0 transparent; }
+    35%  { transform: scale(1.35); text-shadow: 0 0 14px rgba(160, 64, 34, 0.55); }
+    100% { transform: scale(1);    text-shadow: 0 0 0 transparent; }
+  }
+  .stop.vp-pulse {
+    display: inline-block;
+    transform-origin: center;
+    animation: vp-stop-pulse 0.7s ease-out;
+  }
+}
+@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
+  .stop.vp-pulse { animation: none; }
 }
 </style>
 </head>
@@ -967,6 +982,19 @@ function submitGate() {
 gateBtn.addEventListener('click', submitGate);
 gateEmail.addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
 gateEmail.addEventListener('input', () => { gateEmail.style.borderColor = ''; });
+
+// ============ MOBILE PULSE ============
+// Briefly pulse each .stop dot when it scrolls into view. CSS animation is
+// gated to <=760px, so this is a no-op on desktop.
+const pulseIo = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('vp-pulse');
+    setTimeout(() => e.target.classList.remove('vp-pulse'), 800);
+    pulseIo.unobserve(e.target);
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll('.stop').forEach(el => pulseIo.observe(el));
 </script>
 
 </body>
