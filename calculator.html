@@ -82,6 +82,60 @@ html, body { background: var(--vp-warm-white); color: var(--vp-ink); font-family
   transition: color 0.15s;
 }
 .nav-links a:hover, .nav-links a.active { color: var(--vp-terracotta); }
+
+/* nav dropdown */
+.nav-dd { position: relative; padding: 24px 0; margin: -24px 0; }
+.nav-dd-trigger { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.nav-dd-trigger .caret {
+  font-size: 9px;
+  opacity: 0.55;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+  display: inline-block;
+}
+.nav-dd:hover .nav-dd-trigger .caret,
+.nav-dd:focus-within .nav-dd-trigger .caret { transform: rotate(180deg); opacity: 1; }
+.nav-dd-menu {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  min-width: 260px;
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border-strong);
+  padding: 6px 0;
+  box-shadow: 0 12px 28px rgba(28, 28, 30, 0.08);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 60;
+}
+.nav-dd:hover .nav-dd-menu,
+.nav-dd:focus-within .nav-dd-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.nav-dd-menu a {
+  display: block;
+  padding: 11px 18px;
+  font-size: 13px;
+  color: var(--vp-ink-70);
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.nav-dd-menu a:hover, .nav-dd-menu a.active {
+  background: var(--vp-paper);
+  color: var(--vp-ink);
+}
+.nav-dd-menu a.active { color: var(--vp-terracotta); }
+.nav-dd-menu a .sub {
+  display: block;
+  font-size: 11px;
+  color: var(--vp-muted);
+  margin-top: 2px;
+}
+.nav-dd-menu a:hover .sub, .nav-dd-menu a.active .sub { color: var(--vp-ink-70); }
 .btn {
   display: inline-flex;
   align-items: center;
@@ -463,8 +517,13 @@ h1 {
   <a href="index.html" class="wordmark">Veerpoint<span class="stop">.</span></a>
   <div class="nav-links">
     <a href="how-it-works.html">How it works</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="calculator.html" class="active">Calculator</a>
+    <div class="nav-dd">
+      <a href="pricing.html" class="nav-dd-trigger active">Pricing <span class="caret">▾</span></a>
+      <div class="nav-dd-menu">
+        <a href="pricing.html">Plans &amp; pricing<span class="sub">Retainer + commission, fixed in writing</span></a>
+        <a href="calculator.html" class="active">Anti-Hiring Calculator<span class="sub">Hire vs. Veerpoint · live math</span></a>
+      </div>
+    </div>
     <a href="about.html">About</a>
     <a href="index.html#faq-link">FAQ</a>
   </div>
@@ -596,8 +655,8 @@ const MARKET_MULTIPLIER = {
   DACH: 1.15,
   NORDIC: 1.22,
 };
-const BASE_VP_SALARY = 130000;      // EU baseline VP Sales loaded base
-const BASE_AE_SALARY = 78000;       // ~60% of VP base
+const BASE_VP_SALARY = 110000;      // EU baseline VP Sales base · pre on-cost
+const BASE_AE_SALARY = 78000;       // ~70% of VP base
 const ON_COST_MULTIPLIER = 1.35;    // taxes, benefits, equity loading
 const RAMP_MONTHS = 4;              // expected pipeline gap
 const TOOLS_PER_MONTH = 500;
