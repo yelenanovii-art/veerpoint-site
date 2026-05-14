@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Dashboard</div>
+      <div class="search">
+        <input type="text" placeholder="Search leads, posts, pages…">
+      </div>
+      <div class="topbar-right">
+        <span class="kbd">⌘K</span>
+        <button class="btn btn-ghost btn-sm">Last 30 days ▾</button>
+        <button class="btn btn-accent btn-sm">+ New action</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">YOUR CYCLE · LAST 30 DAYS</div>
+          <h1>Good Wednesday morning, Elena<span class="stop">.</span></h1>
+          <div class="desc">Pipeline is up €480k over prior 30 days. Two hot leads from Calculator overnight — Pavel (€120k) is your highest-intent.</div>
+        </div>
+        <div class="page-hd-actions">
+          <button class="btn btn-ghost">Export PDF</button>
+          <button class="btn btn-primary">Share snapshot →</button>
+        </div>
+      </div>
+
+      <!-- KPI GRID -->
+      <div class="kpi-grid" id="kpis"></div>
+
+      <!-- PIPELINE CHART + ACTIVITY -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Pipeline over time<span class="stop">.</span></h3>
+            <div class="hint">Sum of inferred ACV per day · last 30 days</div>
+          </div>
+          <div class="card-body" id="pipeChart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <h3>Activity feed</h3>
+            <a href="#" style="font-size:12px; color:var(--vp-terracotta)">See all →</a>
+          </div>
+          <div class="card-body">
+            <ul class="feed" id="feed"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOP SOURCES + RECENT LEADS -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Lead sources<span class="stop">.</span></h3>
+            <div class="hint">Where the 247 leads came from</div>
+          </div>
+          <div class="card-body" id="sourceChart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <h3>Hot leads · need attention<span class="stop">.</span></h3>
+            <a href="leads.html" style="font-size:12px; color:var(--vp-terracotta)">All leads →</a>
+          </div>
+          <div class="card-body flush">
+            <table class="table">
+              <thead>
+                <tr><th>Lead</th><th>Source</th><th>ACV</th><th>Status</th></tr>
+              </thead>
+              <tbody id="hotLeads"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTEGRATIONS STATUS -->
+      <div class="card" style="margin-bottom: 24px">
+        <div class="card-hd">
+          <h3>Integrations · status<span class="stop">.</span></h3>
+          <a href="integrations.html" style="font-size:12px; color:var(--vp-terracotta)">Manage →</a>
+        </div>
+        <div class="card-body" id="connStatus"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('dashboard.html');
+
+  // KPIs — show 4 primary
+  const primary = ['leads', 'pipeline', 'closed', 'convRate'];
+  document.getElementById('kpis').innerHTML = primary.map(k => renderKpi(VP.kpis[k])).join('');
+
+  // Pipeline chart
+  const days = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (29 - i));
+    return d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+  });
+  const pipeData = [380, 410, 420, 480, 520, 580, 620, 640, 720, 780, 840, 920, 980, 1040, 1100, 1180, 1260, 1340, 1420, 1480, 1560, 1640, 1720, 1820, 1900, 1980, 2020, 2060, 2100, 2100];
+  document.getElementById('pipeChart').innerHTML = lineChart(pipeData, 720, 240, days);
+
+  // Activity feed
+  document.getElementById('feed').innerHTML = VP.activity.map(a => `
+    <li>
+      <div class="feed-icon">${a.icon}</div>
+      <div class="feed-text">${a.t}</div>
+      <div class="feed-time">${a.time}</div>
+    </li>
+  `).join('');
+
+  // Source bar chart
+  const sources = [
+    { label: 'Anti-Hiring Calculator', value: 96, display: '96 leads · 39%' },
+    { label: '60-second fit quiz',     value: 72, display: '72 leads · 29%' },
+    { label: 'Book a call',            value: 41, display: '41 leads · 17%' },
+    { label: 'Newsletter',             value: 22, display: '22 leads · 9%' },
+    { label: 'Direct / referral',      value: 16, display: '16 leads · 6%' },
+  ];
+  document.getElementById('sourceChart').innerHTML = barChart(sources);
+
+  // Hot leads
+  document.getElementById('hotLeads').innerHTML = VP.leads.filter(l => l.stage === 'hot').slice(0, 5).map(l => `
+    <tr onclick="location.href='leads.html?id=${l.id}'">
+      <td>
+        <div style="font-weight:500">${l.name}</div>
+        <div class="muted" style="font-size:12px">${l.company} · ${l.market}</div>
+      </td>
+      <td><span style="font-size:12px">${l.source}</span></td>
+      <td class="mono">${l.value}</td>
+      <td><span class="pill ${l.stage}"><span class="dot"></span>${l.stage}</span></td>
+    </tr>
+  `).join('');
+
+  // Integration status
+  document.getElementById('connStatus').innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px">
+      ${VP.integrations.slice(0, 8).map(c => `
+        <div style="display:flex; align-items:center; gap:10px; padding: 8px 10px; border:1px solid var(--vp-border); border-radius:6px">
+          <div style="width:28px; height:28px; border-radius:6px; background:var(--vp-paper); display:flex; align-items:center; justify-content:center; font-family:var(--vp-font-display); font-weight:700; font-size:12px">${c.logo}</div>
+          <div style="flex:1; min-width:0">
+            <div style="font-size:13px; font-weight:500">${c.name}</div>
+            <div style="font-family:var(--vp-font-mono); font-size:9px; color:var(--vp-muted); letter-spacing:0.1em">${c.connected ? '● CONNECTED' : '○ NOT LINKED'}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+</script>
+</body>
+</html>

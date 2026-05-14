@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  body { padding-top: 0; background: var(--vp-paper); }
+  .demo-ribbon { position: relative; }
+  .login-wrap {
+    min-height: calc(100vh - 28px);
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    align-items: stretch;
+  }
+  @media (max-width: 880px) {
+    .login-wrap { grid-template-columns: 1fr; }
+    .login-side { display: none; }
+  }
+  .login-side {
+    background: var(--vp-ink);
+    color: var(--vp-warm-white);
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .login-side .wm {
+    font-family: var(--vp-font-display);
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+  }
+  .login-side h1 {
+    font-family: var(--vp-font-display);
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    max-width: 14ch;
+  }
+  .login-side p {
+    color: var(--vp-muted-soft);
+    line-height: 1.55;
+    max-width: 38ch;
+  }
+  .login-side .quotes {
+    font-family: var(--vp-font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--vp-muted-soft);
+    text-transform: uppercase;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+  }
+  .login-side .quotes div span {
+    display: block;
+    color: var(--vp-warm-white);
+    font-family: var(--vp-font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 4px;
+  }
+  .login-form-wrap {
+    background: var(--vp-warm-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 32px;
+  }
+  .login-form {
+    width: 100%;
+    max-width: 380px;
+  }
+  .login-form .eyebrow {
+    font-family: var(--vp-font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--vp-terracotta);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .login-form h2 {
+    font-family: var(--vp-font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+  }
+  .login-form .sub {
+    color: var(--vp-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+  .google-btn {
+    width: 100%;
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border-strong);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vp-ink);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .google-btn:hover { border-color: var(--vp-ink); }
+  .google-btn svg { width: 18px; height: 18px; }
+  .google-btn.loading { pointer-events: none; opacity: 0.7; }
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    color: var(--vp-muted);
+    font-family: var(--vp-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--vp-border);
+  }
+  .magic-form input {
+    width: 100%;
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border-strong);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .magic-form input:focus { outline: none; border-color: var(--vp-ink); }
+  .magic-form button {
+    width: 100%;
+    background: var(--vp-ink);
+    color: var(--vp-warm-white);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+  .magic-form button:hover { background: var(--vp-terracotta); }
+  .fine {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 12px;
+    color: var(--vp-muted);
+  }
+  .fine a { color: var(--vp-terracotta); }
+</style>
+</head>
+<body>
+
+<div class="demo-ribbon"><span class="dot"></span>VEERPOINT · ADMIN · DEMO PROTOTYPE · ALL DATA IS MOCKED</div>
+
+<div class="login-wrap">
+  <div class="login-side">
+    <div>
+      <div class="wm">Veerpoint<span class="stop">.</span></div>
+    </div>
+    <div>
+      <h1>The operator dashboard<span class="stop">.</span></h1>
+      <p>Every lead, every page, every email — in one place. Built for the team running the cycle.</p>
+    </div>
+    <div class="quotes">
+      <div>LEADS · 30D <span>247</span></div>
+      <div>MQLS · 30D <span>84</span></div>
+      <div>PIPELINE <span>€2.1M</span></div>
+      <div>CLOSED · 30D <span>€186k</span></div>
+    </div>
+  </div>
+
+  <div class="login-form-wrap">
+    <div class="login-form">
+      <div class="eyebrow">VEERPOINT · ADMIN</div>
+      <h2>Welcome back<span class="stop">.</span></h2>
+      <p class="sub">Sign in with your @veerpoint.io account to continue.</p>
+
+      <button class="google-btn" id="googleBtn">
+        <svg viewBox="0 0 18 18">
+          <path fill="#4285F4" d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.711H.957v2.332A9 9 0 009 18z"/>
+          <path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A9 9 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/>
+          <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A9 9 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="divider">or</div>
+
+      <form class="magic-form" onsubmit="signIn(event)">
+        <input type="email" placeholder="elena@veerpoint.io" required id="emailInput" autocomplete="email">
+        <button type="submit">Send magic link →</button>
+      </form>
+
+      <p class="fine">By signing in you agree to the team policy. <a href="#">Need access?</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  document.getElementById('googleBtn').addEventListener('click', function() {
+    this.classList.add('loading');
+    this.innerHTML = 'Signing in…';
+    setTimeout(() => {
+      sessionStorage.setItem('vp-admin-auth', '1');
+      location.href = 'dashboard.html';
+    }, 700);
+  });
+
+  function signIn(e) {
+    e.preventDefault();
+    sessionStorage.setItem('vp-admin-auth', '1');
+    location.href = 'dashboard.html';
+  }
+</script>
+</body>
+</html>
