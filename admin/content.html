@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .tab-bar {
+    display: flex;
+    gap: 2px;
+    border-bottom: 1px solid var(--vp-border);
+    margin-bottom: 20px;
+  }
+  .tab {
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vp-muted);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--vp-ink); }
+  .tab.active { color: var(--vp-ink); border-bottom-color: var(--vp-terracotta); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 1000px) { .blog-grid { grid-template-columns: 1fr; } }
+  .blog-list { display: flex; flex-direction: column; gap: 6px; }
+  .blog-item {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .blog-item:hover { border-color: var(--vp-border-strong); }
+  .blog-item.active { border-color: var(--vp-ink); }
+  .blog-item-t { font-weight: 600; font-size: 14px; line-height: 1.3; }
+  .blog-item-m { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--vp-muted); }
+  .blog-status { display: inline-flex; align-items: center; gap: 5px; font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.12em; padding: 2px 8px; border-radius: 99px; }
+  .blog-status.draft { background: var(--vp-paper); color: var(--vp-muted); }
+  .blog-status.published { background: rgba(45, 125, 70, 0.14); color: var(--vp-green); }
+  .blog-status.review { background: rgba(192, 138, 60, 0.16); color: var(--vp-amber); }
+  .blog-status.idea { background: rgba(160, 64, 34, 0.10); color: var(--vp-terracotta); }
+
+  .editor {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 8px;
+  }
+  .editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--vp-border);
+    flex-wrap: wrap;
+  }
+  .editor-toolbar button {
+    width: 32px; height: 32px;
+    border-radius: 4px;
+    color: var(--vp-ink-70);
+    font-family: var(--vp-font-display);
+    font-size: 13px;
+  }
+  .editor-toolbar button:hover { background: var(--vp-paper); color: var(--vp-ink); }
+  .editor-toolbar .sep { width: 1px; height: 18px; background: var(--vp-border); margin: 0 4px; }
+  .editor-body { padding: 24px; }
+  .editor-title {
+    font-family: var(--vp-font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    width: 100%;
+    border: none;
+    outline: none;
+    margin-bottom: 14px;
+    background: transparent;
+  }
+  .editor-content {
+    width: 100%;
+    border: none;
+    outline: none;
+    min-height: 320px;
+    font-size: 15px;
+    line-height: 1.6;
+    resize: vertical;
+    background: transparent;
+    font-family: var(--vp-font-body);
+  }
+  .editor-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    border-top: 1px solid var(--vp-border);
+    font-size: 12px;
+    color: var(--vp-muted);
+  }
+  .img-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .img-tile {
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--vp-paper) 0%, var(--vp-paper-2) 100%);
+    border-radius: 8px;
+    border: 1px solid var(--vp-border);
+    display: flex;
+    align-items: end;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .img-tile.upload {
+    background: var(--vp-warm-white);
+    border: 1px dashed var(--vp-border-strong);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--vp-muted);
+  }
+  .img-tile.upload:hover { border-color: var(--vp-ink); color: var(--vp-ink); }
+  .img-tile-name { font-size: 11px; font-family: var(--vp-font-mono); color: var(--vp-muted); }
+  .img-color-1 { background: linear-gradient(135deg, #A04022 0%, #482018 100%); }
+  .img-color-2 { background: linear-gradient(135deg, #1C1C1E 0%, #48484A 100%); }
+  .img-color-3 { background: linear-gradient(135deg, #F4F2EE 0%, #D0D0CC 100%); }
+  .img-color-4 { background: linear-gradient(135deg, #345F8A 0%, #1C2C44 100%); }
+  .img-color-5 { background: linear-gradient(135deg, #C08A3C 0%, #6A4A1F 100%); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Content & blog</div>
+      <div class="search"><input type="text" placeholder="Search drafts, images, events…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Preview site ↗</button>
+        <button class="btn btn-accent btn-sm">+ New post</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">CONTENT MANAGEMENT</div>
+          <h1>Edit the site without touching code<span class="stop">.</span></h1>
+          <div class="desc">Draft, schedule, and publish blog posts. Manage the image library. Add upcoming events. Every change deploys to the live site within 30 seconds.</div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab active" data-tab="blog">Blog posts <span style="opacity:0.5; margin-left:4px">5</span></div>
+        <div class="tab" data-tab="images">Image library <span style="opacity:0.5; margin-left:4px">24</span></div>
+        <div class="tab" data-tab="events">Events <span style="opacity:0.5; margin-left:4px">4</span></div>
+        <div class="tab" data-tab="pages">Site pages <span style="opacity:0.5; margin-left:4px">6</span></div>
+      </div>
+
+      <!-- BLOG TAB -->
+      <div class="tab-panel active" data-panel="blog">
+        <div class="blog-grid">
+          <div class="blog-list" id="blogList"></div>
+          <div class="editor" id="editor"></div>
+        </div>
+      </div>
+
+      <!-- IMAGES TAB -->
+      <div class="tab-panel" data-panel="images">
+        <div class="card">
+          <div class="card-body">
+            <div class="img-grid">
+              <div class="img-tile upload">
+                <div style="font-size:24px; line-height:1">+</div>
+                <div style="font-size:12px; margin-top:6px">Drop or click to upload</div>
+              </div>
+              <div class="img-tile img-color-1"><span class="img-tile-name" style="color:white">hero-floor.png · 240kb</span></div>
+              <div class="img-tile img-color-3"><span class="img-tile-name">calculator-mock.png · 184kb</span></div>
+              <div class="img-tile img-color-2"><span class="img-tile-name" style="color:white">team-anton.jpg · 380kb</span></div>
+              <div class="img-tile img-color-2"><span class="img-tile-name" style="color:white">team-pablo.jpg · 412kb</span></div>
+              <div class="img-tile img-color-2"><span class="img-tile-name" style="color:white">team-dylan.jpg · 396kb</span></div>
+              <div class="img-tile img-color-4"><span class="img-tile-name" style="color:white">og-share.png · 124kb</span></div>
+              <div class="img-tile img-color-1"><span class="img-tile-name" style="color:white">cycle-diagram.svg · 18kb</span></div>
+              <div class="img-tile img-color-5"><span class="img-tile-name" style="color:white">case-revolut.png · 220kb</span></div>
+              <div class="img-tile img-color-3"><span class="img-tile-name">case-google.png · 196kb</span></div>
+              <div class="img-tile img-color-1"><span class="img-tile-name" style="color:white">eu-map.svg · 24kb</span></div>
+              <div class="img-tile img-color-2"><span class="img-tile-name" style="color:white">manifesto-quote.jpg · 280kb</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENTS TAB -->
+      <div class="tab-panel" data-panel="events">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Upcoming events<span class="stop">.</span></h3>
+            <button class="btn btn-accent btn-sm">+ Add event</button>
+          </div>
+          <div class="card-body flush">
+            <table class="table">
+              <thead>
+                <tr><th>Event</th><th>Date</th><th>Location</th><th>Status</th><th>Attendees</th></tr>
+              </thead>
+              <tbody id="eventRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGES TAB -->
+      <div class="tab-panel" data-panel="pages">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Site pages<span class="stop">.</span></h3>
+            <div class="hint">Edit copy, headlines, and CTAs without redeploying</div>
+          </div>
+          <div class="card-body flush">
+            <table class="table">
+              <thead><tr><th>Page</th><th>Path</th><th>Last edited</th><th>Editor</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home</strong><div class="muted" style="font-size:12px">"We don't advise on sales. We close it."</div></td>
+                  <td class="mono">/</td>
+                  <td class="muted" style="font-size:12px">2 days ago</td>
+                  <td>Elena</td>
+                  <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><strong>How it works</strong><div class="muted" style="font-size:12px">Three stages · six months</div></td>
+                  <td class="mono">/how-it-works</td>
+                  <td class="muted" style="font-size:12px">5 days ago</td>
+                  <td>Anton</td>
+                  <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Pricing</strong><div class="muted" style="font-size:12px">Hybrid. Custom. Aligned.</div></td>
+                  <td class="mono">/pricing</td>
+                  <td class="muted" style="font-size:12px">3 days ago</td>
+                  <td>Pablo</td>
+                  <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Anti-Hiring Calculator</strong><div class="muted" style="font-size:12px">Four inputs. Real cost shown.</div></td>
+                  <td class="mono">/calculator</td>
+                  <td class="muted" style="font-size:12px">Today</td>
+                  <td>Elena</td>
+                  <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                </tr>
+                <tr>
+                  <td><strong>About</strong><div class="muted" style="font-size:12px">Why we built Veerpoint</div></td>
+                  <td class="mono">/about</td>
+                  <td class="muted" style="font-size:12px">1 week ago</td>
+                  <td>Anton</td>
+                  <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('content.html');
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      document.querySelector(`[data-panel="${t.dataset.tab}"]`).classList.add('active');
+    });
+  });
+
+  // Blog list
+  function statusClass(s) { return s === 'Draft' ? 'draft' : s === 'Published' ? 'published' : s === 'In review' ? 'review' : 'idea'; }
+  function renderBlogList(activeId) {
+    document.getElementById('blogList').innerHTML = VP.blogPosts.map(b => `
+      <div class="blog-item ${activeId === b.id ? 'active' : ''}" data-id="${b.id}">
+        <div class="blog-item-t">${b.title}</div>
+        <div class="blog-item-m">
+          <span class="blog-status ${statusClass(b.status)}">${b.status.toUpperCase()}</span>
+          <span>${b.author.split(' ')[0]}</span>
+          <span>·</span>
+          <span>${b.words} words</span>
+        </div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.blog-item').forEach(it => {
+      it.addEventListener('click', () => loadPost(it.dataset.id));
+    });
+  }
+  function loadPost(id) {
+    const p = VP.blogPosts.find(x => x.id === id);
+    if (!p) return;
+    renderBlogList(id);
+    document.getElementById('editor').innerHTML = `
+      <div class="editor-toolbar">
+        <button title="Bold"><strong>B</strong></button>
+        <button title="Italic"><em>I</em></button>
+        <button title="Underline"><u>U</u></button>
+        <div class="sep"></div>
+        <button title="Heading">H₁</button>
+        <button title="Subheading">H₂</button>
+        <button title="Quote">❝</button>
+        <div class="sep"></div>
+        <button title="Link">↗</button>
+        <button title="Image">▣</button>
+        <button title="List">≡</button>
+        <button title="Code">⌨</button>
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+          <span class="blog-status ${statusClass(p.status)}">${p.status.toUpperCase()}</span>
+        </div>
+      </div>
+      <div class="editor-body">
+        <input class="editor-title" value="${p.title.replace(/"/g, '&quot;')}">
+        <textarea class="editor-content" placeholder="Start writing…">${p.status === 'Idea' ? '' : `The €425k figure isn't a sticker price. It's the loaded cost of hiring a VP Sales plus an AE in the EU — salary on-costs included — plus the four-month ramp where pipeline is silent. Plus your time managing them. Plus the 30% chance you have to do it again.
+
+Here's the math:
+
+EU baseline VP Sales loaded base: €110k. Plus 35% on-cost (taxes, benefits, equity): €148.5k loaded annual. Over a 9-month window (M0 to M9, before deals start closing), that's €111k just for the VP. Add an AE at 60% of VP base (€78k loaded, €105k annual): €79k for 9 months.
+
+So salaries alone: €190k.
+
+But that's not the real cost. The ramp is where it bleeds…`}</textarea>
+      </div>
+      <div class="editor-foot">
+        <span>Auto-saved · 2 minutes ago</span>
+        <div style="display:flex; gap:8px">
+          <button class="btn btn-ghost btn-sm">Preview</button>
+          <button class="btn btn-ghost btn-sm">Schedule</button>
+          <button class="btn btn-primary btn-sm">${p.status === 'Published' ? 'Unpublish' : 'Publish'}</button>
+        </div>
+      </div>
+    `;
+  }
+  renderBlogList(VP.blogPosts[0].id);
+  loadPost(VP.blogPosts[0].id);
+
+  // Events
+  function evStatusColor(s) { return s === 'Hosting' ? 'hot' : s === 'Confirmed' ? 'synced' : s === 'Planning' ? 'warm' : 'new'; }
+  document.getElementById('eventRows').innerHTML = VP.events.map(e => `
+    <tr>
+      <td><strong>${e.name}</strong></td>
+      <td class="mono">${e.date}</td>
+      <td><span style="font-size:13px">${e.city}</span></td>
+      <td><span class="pill ${evStatusColor(e.status)}"><span class="dot"></span>${e.status}</span></td>
+      <td class="mono">${e.attendees}</td>
+    </tr>
+  `).join('');
+</script>
+</body>
+</html>

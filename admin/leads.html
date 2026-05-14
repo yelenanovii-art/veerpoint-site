@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Leads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .lead-detail {
+    position: sticky;
+    top: 88px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  .lead-detail-head {
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid var(--vp-border);
+  }
+  .lead-detail-name {
+    font-family: var(--vp-font-display);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .lead-detail-meta {
+    font-size: 13px;
+    color: var(--vp-muted);
+    margin-top: 4px;
+  }
+  .lead-detail-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .lead-detail-section {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--vp-border);
+  }
+  .lead-detail-section h4 {
+    font-family: var(--vp-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--vp-muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .kv { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+  .kv .k { color: var(--vp-muted); }
+  .kv .v { font-weight: 500; }
+  .timeline { list-style: none; padding: 0; margin: 0; }
+  .timeline li {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 10px;
+    padding: 10px 0;
+    align-items: start;
+    border-bottom: 1px dashed var(--vp-border);
+  }
+  .timeline li:last-child { border-bottom: none; }
+  .timeline .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--vp-terracotta);
+    margin-top: 4px;
+  }
+  .timeline .when {
+    font-family: var(--vp-font-mono);
+    font-size: 10px;
+    color: var(--vp-muted);
+    white-space: nowrap;
+  }
+  .timeline .what { font-size: 13px; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Leads</div>
+      <div class="search">
+        <input type="text" placeholder="Search by name, company, email…" id="searchInput">
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Export CSV</button>
+        <button class="btn btn-accent btn-sm">+ Add lead</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">ALL LEADS · LAST 30 DAYS</div>
+          <h1>Leads<span class="stop">.</span></h1>
+          <div class="desc">Captured from the Calculator, the fit quiz, Discovery bookings, and the newsletter. Auto-synced to HubSpot when a stage threshold is met.</div>
+        </div>
+        <div class="page-hd-actions">
+          <button class="btn btn-ghost">Bulk sync to HubSpot</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-pill active" data-filter="all">All <span class="count" id="cAll">12</span></button>
+        <button class="filter-pill" data-filter="hot">Hot <span class="count" id="cHot">4</span></button>
+        <button class="filter-pill" data-filter="warm">Warm <span class="count" id="cWarm">5</span></button>
+        <button class="filter-pill" data-filter="new">New <span class="count" id="cNew">1</span></button>
+        <button class="filter-pill" data-filter="cold">Cold <span class="count" id="cCold">2</span></button>
+        <div style="width:1px; height:20px; background:var(--vp-border); margin:0 6px"></div>
+        <button class="filter-pill">Source: Any ▾</button>
+        <button class="filter-pill">Market: Any ▾</button>
+        <button class="filter-pill">Synced: Any ▾</button>
+      </div>
+
+      <div class="detail-shell">
+        <div class="card">
+          <div class="card-body flush">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Lead</th>
+                  <th>Source</th>
+                  <th>Stage</th>
+                  <th>ACV</th>
+                  <th>Synced</th>
+                  <th>Last</th>
+                </tr>
+              </thead>
+              <tbody id="leadRows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card lead-detail" id="leadDetail">
+          <!-- populated when row is clicked -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('leads.html');
+
+  const tbody = document.getElementById('leadRows');
+  const detail = document.getElementById('leadDetail');
+
+  function renderRows(filter = 'all') {
+    const filtered = filter === 'all' ? VP.leads : VP.leads.filter(l => l.stage === filter);
+    tbody.innerHTML = filtered.map(l => `
+      <tr data-id="${l.id}">
+        <td>
+          <div style="font-weight:500">${l.name}</div>
+          <div class="muted" style="font-size:12px">${l.company} · <span class="mono">${l.email}</span></div>
+        </td>
+        <td><span style="font-size:13px">${l.source}</span><div class="muted" style="font-size:11px; font-family:var(--vp-font-mono)">${l.market}</div></td>
+        <td><span class="pill ${l.stage}"><span class="dot"></span>${l.stage}</span></td>
+        <td class="mono">${l.value}</td>
+        <td>${l.synced ? '<span class="pill synced"><span class="dot"></span>HubSpot</span>' : '<span style="color:var(--vp-muted); font-family:var(--vp-font-mono); font-size:11px">— pending</span>'}</td>
+        <td class="muted" style="font-family:var(--vp-font-mono); font-size:11px">${l.ts}</td>
+      </tr>
+    `).join('');
+
+    // Hook rows
+    tbody.querySelectorAll('tr').forEach(tr => {
+      tr.addEventListener('click', () => {
+        tbody.querySelectorAll('tr.active').forEach(r => r.classList.remove('active'));
+        tr.classList.add('active');
+        showDetail(tr.dataset.id);
+      });
+    });
+
+    // Open first by default
+    const first = tbody.querySelector('tr');
+    if (first) { first.classList.add('active'); showDetail(first.dataset.id); }
+  }
+
+  function showDetail(id) {
+    const l = VP.leads.find(x => x.id === id);
+    if (!l) return;
+    detail.innerHTML = `
+      <div class="lead-detail-head">
+        <div class="lead-detail-name">${l.name}<span class="stop">.</span></div>
+        <div class="lead-detail-meta">${l.company} · <span class="mono">${l.email}</span></div>
+        <div class="lead-detail-actions">
+          ${l.synced
+            ? `<button class="btn btn-ghost btn-sm">View in HubSpot ↗</button>`
+            : `<button class="btn btn-accent btn-sm" onclick="syncLead('${l.id}')">⌬ Sync to HubSpot</button>`}
+          <button class="btn btn-ghost btn-sm">✉ Send email</button>
+          <button class="btn btn-ghost btn-sm">⌕ Enrich (LinkedIn)</button>
+        </div>
+      </div>
+
+      <div class="lead-detail-section">
+        <h4>Details</h4>
+        <div class="kv"><span class="k">Lead ID</span><span class="v mono">${l.id}</span></div>
+        <div class="kv"><span class="k">Source</span><span class="v">${l.source}</span></div>
+        <div class="kv"><span class="k">Stage</span><span class="v"><span class="pill ${l.stage}"><span class="dot"></span>${l.stage}</span></span></div>
+        <div class="kv"><span class="k">Inferred ACV</span><span class="v mono">${l.value}</span></div>
+        <div class="kv"><span class="k">Market</span><span class="v">${l.market}</span></div>
+        <div class="kv"><span class="k">Motion</span><span class="v">${l.motion}</span></div>
+        <div class="kv"><span class="k">ICP</span><span class="v">${l.icp}</span></div>
+        <div class="kv"><span class="k">First touch</span><span class="v">${l.ts}</span></div>
+      </div>
+
+      <div class="lead-detail-section">
+        <h4>Activity timeline</h4>
+        <ul class="timeline">
+          <li>
+            <span class="dot"></span>
+            <div class="what">Captured via <strong>${l.source}</strong>. Inputs saved.</div>
+            <span class="when">${l.ts}</span>
+          </li>
+          <li>
+            <span class="dot" style="background:var(--vp-amber)"></span>
+            <div class="what">Resend email sent · <em>template: discovery-warm</em></div>
+            <span class="when">${l.ts}</span>
+          </li>
+          ${l.synced ? `
+          <li>
+            <span class="dot" style="background:var(--vp-blue)"></span>
+            <div class="what">Synced to HubSpot · contact + deal created</div>
+            <span class="when">${l.ts}</span>
+          </li>` : ''}
+          ${l.stage === 'hot' ? `
+          <li>
+            <span class="dot"></span>
+            <div class="what">Slack alert posted to <strong>#sales-veerpoint</strong></div>
+            <span class="when">${l.ts}</span>
+          </li>` : ''}
+          <li>
+            <span class="dot" style="background:var(--vp-muted-soft)"></span>
+            <div class="what">Site visit · viewed <span class="mono">/calculator</span> and <span class="mono">/pricing</span></div>
+            <span class="when">${l.ts}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lead-detail-section">
+        <h4>Notes</h4>
+        <textarea placeholder="Add a note for the team…" style="width:100%; min-height:80px; border:1px solid var(--vp-border-strong); border-radius:6px; padding:10px; font-family:var(--vp-font-body); font-size:13px"></textarea>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px">Save note</button>
+      </div>
+    `;
+  }
+
+  function syncLead(id) {
+    toast('Syncing ' + id + ' to HubSpot…');
+    setTimeout(() => {
+      const l = VP.leads.find(x => x.id === id);
+      if (l) l.synced = true;
+      const filter = document.querySelector('.filter-pill.active').dataset.filter;
+      renderRows(filter);
+      const stillActive = document.querySelector(`tr[data-id="${id}"]`);
+      if (stillActive) stillActive.classList.add('active');
+      showDetail(id);
+      toast('✓ ' + id + ' synced to HubSpot', 'success');
+    }, 900);
+  }
+
+  // Filter pills
+  document.querySelectorAll('.filter-pill[data-filter]').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill[data-filter]').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      renderRows(p.dataset.filter);
+    });
+  });
+
+  // Counts
+  document.getElementById('cAll').textContent = VP.leads.length;
+  document.getElementById('cHot').textContent = VP.leads.filter(l => l.stage === 'hot').length;
+  document.getElementById('cWarm').textContent = VP.leads.filter(l => l.stage === 'warm').length;
+  document.getElementById('cNew').textContent = VP.leads.filter(l => l.stage === 'new').length;
+  document.getElementById('cCold').textContent = VP.leads.filter(l => l.stage === 'cold').length;
+
+  renderRows();
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    document.querySelectorAll('#leadRows tr').forEach(tr => {
+      tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>

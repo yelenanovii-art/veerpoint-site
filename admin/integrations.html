@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Integrations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Integrations</div>
+      <div class="search"><input type="text" placeholder="Search integrations…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Request integration</button>
+        <button class="btn btn-accent btn-sm">+ Custom webhook</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">CONNECTORS · 9 AVAILABLE</div>
+          <h1>Connect Veerpoint to your stack<span class="stop">.</span></h1>
+          <div class="desc">Each integration is one-click OAuth or an API key paste. Once linked, data syncs both ways in real time — no Zapier, no glue code.</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-pill active">All <span class="count">9</span></button>
+        <button class="filter-pill">CRM <span class="count">1</span></button>
+        <button class="filter-pill">Analytics <span class="count">1</span></button>
+        <button class="filter-pill">Email <span class="count">1</span></button>
+        <button class="filter-pill">Notifications <span class="count">2</span></button>
+        <button class="filter-pill">Automation <span class="count">1</span></button>
+        <button class="filter-pill">CMS <span class="count">1</span></button>
+        <button class="filter-pill">Payments <span class="count">1</span></button>
+        <button class="filter-pill">Outreach <span class="count">1</span></button>
+      </div>
+
+      <div class="conn-grid" id="connGrid"></div>
+
+      <div class="card" style="margin-top: 32px">
+        <div class="card-hd">
+          <h3>Custom webhooks<span class="stop">.</span></h3>
+          <div class="hint">Post any Veerpoint event to your own endpoint</div>
+        </div>
+        <div class="card-body">
+          <p style="color:var(--vp-muted); font-size:13px; margin-bottom:14px">For tools we don't yet integrate with natively. Subscribe to events like <span class="mono" style="background:var(--vp-paper); padding:1px 6px; border-radius:3px">lead.created</span> · <span class="mono" style="background:var(--vp-paper); padding:1px 6px; border-radius:3px">quiz.completed</span> · <span class="mono" style="background:var(--vp-paper); padding:1px 6px; border-radius:3px">blog.published</span> and we'll POST JSON to your URL.</p>
+          <button class="btn btn-ghost">+ Add webhook endpoint</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px">
+        <div class="card-hd"><h3>API access</h3><div class="hint">For your own scripts & dashboards</div></div>
+        <div class="card-body" style="display:flex; align-items:center; gap:14px; justify-content:space-between">
+          <div>
+            <div style="font-size:13px; font-weight:500">Personal access token</div>
+            <div style="font-family:var(--vp-font-mono); font-size:12px; color:var(--vp-muted); margin-top:4px">vp_live_••••••••••••••••••••••••3a8c · created 12 May 2026</div>
+          </div>
+          <div style="display:flex; gap:8px">
+            <button class="btn btn-ghost btn-sm">Rotate</button>
+            <button class="btn btn-ghost btn-sm">Revoke</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('integrations.html');
+
+  // Pretend HubSpot and Plausible are connected
+  VP.integrations[0].connected = true;
+  VP.integrations[1].connected = true;
+  VP.integrations[2].connected = true;
+  VP.integrations[3].connected = true;
+
+  function renderGrid() {
+    document.getElementById('connGrid').innerHTML = VP.integrations.map(c => `
+      <div class="conn ${c.connected ? 'connected' : ''}">
+        <div class="conn-top">
+          <div class="conn-logo" style="background:${c.connected ? c.color : 'var(--vp-paper)'}; color:${c.connected ? 'white' : 'var(--vp-ink)'}">${c.logo}</div>
+          <div>
+            <div class="conn-name">${c.name}</div>
+            <div class="conn-tag">${c.tag}</div>
+          </div>
+        </div>
+        <div class="conn-desc">${c.desc}</div>
+        <div class="conn-foot">
+          <span class="conn-status"><span class="dot"></span>${c.connected ? 'Connected · syncing' : 'Not connected'}</span>
+          ${c.connected
+            ? `<button class="btn btn-ghost btn-sm" onclick="toggleConn('${c.id}')">Manage</button>`
+            : `<button class="btn btn-primary btn-sm" onclick="toggleConn('${c.id}')">Connect</button>`}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleConn(id) {
+    const c = VP.integrations.find(x => x.id === id);
+    if (!c) return;
+    if (c.connected) {
+      // Manage modal placeholder
+      toast(c.name + ' · manage panel would open here', 'info');
+    } else {
+      toast('Connecting to ' + c.name + '…');
+      setTimeout(() => {
+        c.connected = true;
+        renderGrid();
+        toast('✓ ' + c.name + ' connected', 'success');
+      }, 800);
+    }
+  }
+
+  renderGrid();
+</script>
+</body>
+</html>

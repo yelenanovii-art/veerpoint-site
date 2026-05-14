@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Automations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .rule {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .rule.off { opacity: 0.6; }
+  .rule-toggle {
+    position: relative;
+    width: 38px; height: 22px;
+    background: var(--vp-border-strong);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: background 0.18s;
+    flex: none;
+  }
+  .rule-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 18px; height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.18s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .rule-toggle.on { background: var(--vp-green); }
+  .rule-toggle.on::after { transform: translateX(16px); }
+
+  .rule-flow { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+  .rule-block {
+    background: var(--vp-paper);
+    border: 1px solid var(--vp-border);
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+  .rule-block .lbl {
+    font-family: var(--vp-font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--vp-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .rule-block .body { font-size: 13px; font-weight: 500; }
+  .rule-arrow {
+    color: var(--vp-terracotta);
+    font-family: var(--vp-font-mono);
+    font-size: 16px;
+  }
+  .rule-name { font-family: var(--vp-font-display); font-size: 15px; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 8px; }
+  .rule-meta { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--vp-muted); display: flex; gap: 14px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Automations</div>
+      <div class="search"><input type="text" placeholder="Search rules…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Templates</button>
+        <button class="btn btn-accent btn-sm">+ New automation</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">RULES · 7 ACTIVE · 327 RUNS · 30D</div>
+          <h1>Run the team on autopilot<span class="stop">.</span></h1>
+          <div class="desc">When a lead does X, do Y. Powered by your connected integrations — Resend, HubSpot, Slack, Calendly. Build new rules visually, no code.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">RULES · ACTIVE</div>
+          <div class="kpi-value">7<span class="unit">/ 9</span></div>
+          <div class="kpi-delta flat">→ 2 paused</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">EXECUTIONS · 30D</div>
+          <div class="kpi-value">327</div>
+          <div class="kpi-delta up">↑ +84 vs prior 30d</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">SUCCESS RATE</div>
+          <div class="kpi-value">98.7%</div>
+          <div class="kpi-delta up">↑ +0.4 pts</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">EMAILS SENT</div>
+          <div class="kpi-value">204</div>
+          <div class="kpi-delta up">↑ +52 via Resend</div>
+        </div>
+      </div>
+
+      <div id="rules"></div>
+
+      <div class="card" style="margin-top: 24px">
+        <div class="card-hd">
+          <h3>Build a new automation<span class="stop">.</span></h3>
+          <div class="hint">When <em>this</em> happens · do <em>that</em></div>
+        </div>
+        <div class="card-body">
+          <div class="rule-flow" style="max-width:none">
+            <div class="rule-block">
+              <div class="lbl">WHEN · TRIGGER</div>
+              <select style="border:none; background:transparent; font: inherit; width:100%; outline:none; padding: 0; font-weight:500; font-size:13px">
+                <option>Choose a trigger…</option>
+                <option>Form submitted · Anti-Hiring Calculator</option>
+                <option>Form submitted · 60-second fit quiz</option>
+                <option>Form submitted · Book a call</option>
+                <option>Lead stage changes to HOT</option>
+                <option>Blog post published</option>
+                <option>Calendly event created</option>
+                <option>Lead untouched for X hours</option>
+              </select>
+            </div>
+            <div class="rule-arrow">→</div>
+            <div class="rule-block">
+              <div class="lbl">THEN · ACTION</div>
+              <select style="border:none; background:transparent; font: inherit; width:100%; outline:none; padding: 0; font-weight:500; font-size:13px">
+                <option>Choose an action…</option>
+                <option>Send Resend template…</option>
+                <option>Post to Slack channel…</option>
+                <option>Create HubSpot contact + deal</option>
+                <option>Update HubSpot deal stage</option>
+                <option>Assign to team member</option>
+                <option>Send LinkedIn DM (semi-auto)</option>
+                <option>Trigger Zapier webhook</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:18px">
+            <button class="btn btn-ghost">Test rule</button>
+            <button class="btn btn-accent">Save & enable</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 16px">
+        <div class="card-hd">
+          <h3>Recent runs<span class="stop">.</span></h3>
+          <div class="hint">Last 20 executions across all rules</div>
+        </div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead><tr><th>Rule</th><th>Trigger context</th><th>Result</th><th>When</th></tr></thead>
+            <tbody id="runs"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('automations.html');
+
+  function renderRules() {
+    document.getElementById('rules').innerHTML = VP.automations.map(a => `
+      <div class="rule ${a.enabled ? '' : 'off'}">
+        <div class="rule-toggle ${a.enabled ? 'on' : ''}" onclick="toggle('${a.id}')"></div>
+        <div>
+          <div class="rule-name">${a.name}</div>
+          <div class="rule-flow" style="margin-top:8px">
+            <div class="rule-block">
+              <div class="lbl">WHEN</div>
+              <div class="body">${a.trigger}</div>
+            </div>
+            <div class="rule-arrow">→</div>
+            <div class="rule-block">
+              <div class="lbl">THEN</div>
+              <div class="body">${a.action}</div>
+            </div>
+          </div>
+          <div class="rule-meta" style="margin-top:12px">
+            <span>${a.runs} RUNS · 30D</span>
+            <span>LAST FIRED · ${a.last.toUpperCase()}</span>
+            <span>${a.enabled ? 'ENABLED' : 'PAUSED'}</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; flex-direction:column">
+          <button class="btn btn-ghost btn-sm">Edit</button>
+          <button class="btn btn-ghost btn-sm">Logs</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggle(id) {
+    const a = VP.automations.find(x => x.id === id);
+    if (!a) return;
+    a.enabled = !a.enabled;
+    renderRules();
+    toast(a.enabled ? '✓ ' + a.name + ' enabled' : a.name + ' paused', a.enabled ? 'success' : 'info');
+  }
+
+  renderRules();
+
+  // Recent runs
+  const runs = [
+    { rule: 'Calculator completed → Discovery email', ctx: 'Jordan Mensah · Lumen Tech',     result: 'ok',  when: '2m ago' },
+    { rule: 'Lead value > €50k → Founder ping',        ctx: 'Pavel Sørensen · €120k',         result: 'ok',  when: '38m ago' },
+    { rule: 'Quiz completed (any) → Tag in CRM',       ctx: 'Marcus Chen · score 56',         result: 'ok',  when: '2h ago' },
+    { rule: 'Calculator completed → Discovery email',  ctx: 'Sarah Klein · Treloar & Co',     result: 'ok',  when: '3h ago' },
+    { rule: 'Fit quiz HOT → Slack alert + AE',         ctx: 'Hanna Nyström · score 91',       result: 'ok',  when: '1d ago' },
+    { rule: 'Book a call → HubSpot deal',              ctx: 'Daniel Okuda · Quarry Logistics', result: 'ok',  when: '1d ago' },
+    { rule: 'Calculator completed → Discovery email',  ctx: 'Léa Marchetti · Pavia Studio',   result: 'ok',  when: '2d ago' },
+    { rule: 'No reply in 48h → Founder nudge',         ctx: 'PAUSED · would have run',         result: 'paused', when: '3d ago' },
+  ];
+  document.getElementById('runs').innerHTML = runs.map(r => `
+    <tr>
+      <td>${r.rule}</td>
+      <td class="muted" style="font-size:12px">${r.ctx}</td>
+      <td>${r.result === 'ok' ? '<span class="pill new"><span class="dot"></span>OK</span>' : '<span class="pill cold"><span class="dot"></span>SKIPPED</span>'}</td>
+      <td class="mono" style="font-size:11px; color:var(--vp-muted)">${r.when}</td>
+    </tr>
+  `).join('');
+</script>
+</body>
+</html>

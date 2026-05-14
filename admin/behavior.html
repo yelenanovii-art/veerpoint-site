@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · User behavior</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">User behavior</div>
+      <div class="search"><input type="text" placeholder="Filter sessions, paths, events…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Last 30 days ▾</button>
+        <button class="btn btn-accent btn-sm">Open Plausible ↗</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">SITE ANALYTICS · LAST 30 DAYS</div>
+          <h1>How prospects actually move through the site<span class="stop">.</span></h1>
+          <div class="desc">Pulled from Plausible. Cookie-free. Funnels, scroll depth, time-on-page, and where leads drop off — all on one screen.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Conversion funnel<span class="stop">.</span></h3>
+            <div class="hint">From first visit to closed-won</div>
+          </div>
+          <div class="card-body" id="funnel"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <h3>Drop-off insight<span class="stop">.</span></h3>
+            <div class="hint">Biggest leaks ranked</div>
+          </div>
+          <div class="card-body">
+            <div style="padding: 12px 0;">
+              <div style="display:flex; justify-content:space-between; padding: 8px 0; border-bottom:1px solid var(--vp-border)">
+                <div>
+                  <div style="font-weight:500; font-size:13px">Engaged → Started a tool</div>
+                  <div class="muted" style="font-size:12px">3,140 visitors stopped at the offer</div>
+                </div>
+                <div style="font-family:var(--vp-font-mono); color:var(--vp-terracotta); font-weight:500">-73%</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding: 8px 0; border-bottom:1px solid var(--vp-border)">
+                <div>
+                  <div style="font-weight:500; font-size:13px">Started → Completed Calculator</div>
+                  <div class="muted" style="font-size:12px">654 abandoned before all 4 inputs</div>
+                </div>
+                <div style="font-family:var(--vp-font-mono); color:var(--vp-terracotta); font-weight:500">-57%</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding: 8px 0; border-bottom:1px solid var(--vp-border)">
+                <div>
+                  <div style="font-weight:500; font-size:13px">Completed → Shared contact</div>
+                  <div class="muted" style="font-size:12px">239 saw the email gate but didn't submit</div>
+                </div>
+                <div style="font-family:var(--vp-font-mono); color:var(--vp-terracotta); font-weight:500">-49%</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding: 8px 0">
+                <div>
+                  <div style="font-weight:500; font-size:13px">Shared contact → Booked</div>
+                  <div class="muted" style="font-size:12px">Discovery booking conversion is healthy</div>
+                </div>
+                <div style="font-family:var(--vp-font-mono); color:var(--vp-green); font-weight:500">+34%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd">
+            <h3>Top pages<span class="stop">.</span></h3>
+            <div class="hint">Visits · scroll depth · time on page</div>
+          </div>
+          <div class="card-body flush">
+            <table class="table">
+              <thead>
+                <tr><th>Path</th><th style="text-align:right">Visits</th><th style="text-align:right">Scroll</th><th style="text-align:right">Time</th></tr>
+              </thead>
+              <tbody id="topPages"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd">
+            <h3>Traffic sources<span class="stop">.</span></h3>
+            <div class="hint">UTM and referrer</div>
+          </div>
+          <div class="card-body" id="sources"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <h3>Live sessions · last hour<span class="stop">.</span></h3>
+          <div class="hint">14 active right now</div>
+        </div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead>
+              <tr><th>When</th><th>Country</th><th>Device</th><th>Path</th><th>Source</th><th>Events</th></tr>
+            </thead>
+            <tbody id="sessions"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('behavior.html');
+
+  // KPIs
+  document.getElementById('kpis').innerHTML = ['siteVisits','convRate','qualified','closed'].map(k => renderKpi(VP.kpis[k])).join('');
+
+  // Funnel
+  document.getElementById('funnel').innerHTML = funnelChart(VP.funnel);
+
+  // Top pages
+  document.getElementById('topPages').innerHTML = VP.topPages.map(p => `
+    <tr>
+      <td class="mono">${p.path}</td>
+      <td class="mono" style="text-align:right">${p.visits.toLocaleString()}</td>
+      <td class="mono" style="text-align:right; color:${p.scroll > 80 ? 'var(--vp-green)' : 'var(--vp-ink)'}">${p.scroll}%</td>
+      <td class="mono" style="text-align:right; color:var(--vp-muted)">${Math.floor(p.ts/60)}:${String(p.ts%60).padStart(2,'0')}</td>
+    </tr>
+  `).join('');
+
+  // Sources
+  const srcs = [
+    { label: 'Direct',                value: 4280, display: '4,280 · 34%' },
+    { label: 'LinkedIn (posts/profile)', value: 2840, display: '2,840 · 23%' },
+    { label: 'X · Twitter',            value: 1620, display: '1,620 · 13%' },
+    { label: 'Google · organic',       value: 1480, display: '1,480 · 12%' },
+    { label: 'Newsletter (Beehiiv)',   value:  960, display: '960 · 8%' },
+    { label: 'Pavilion community',     value:  580, display: '580 · 5%' },
+    { label: 'Other referrals',        value:  660, display: '660 · 5%' },
+  ];
+  document.getElementById('sources').innerHTML = barChart(srcs);
+
+  // Live sessions
+  const sessions = [
+    { when: 'now',     country: 'DE', city: 'Berlin',     device: 'Mac · Safari',    path: '/calculator',         source: 'LinkedIn', events: 7 },
+    { when: '1m ago',  country: 'UK', city: 'London',     device: 'iPhone · Safari', path: '/pricing',            source: 'Direct',   events: 3 },
+    { when: '2m ago',  country: 'US', city: 'New York',   device: 'Win · Chrome',    path: '/',                   source: 'Google',   events: 2 },
+    { when: '3m ago',  country: 'NL', city: 'Amsterdam',  device: 'Mac · Chrome',    path: '/calculator',         source: 'Newsletter', events: 12 },
+    { when: '5m ago',  country: 'ES', city: 'Barcelona',  device: 'iPhone · Safari', path: '/how-it-works',       source: 'Direct',   events: 4 },
+    { when: '7m ago',  country: 'FR', city: 'Paris',      device: 'Mac · Safari',    path: '/about',              source: 'X',        events: 2 },
+    { when: '9m ago',  country: 'SE', city: 'Stockholm',  device: 'Win · Firefox',   path: '/pricing#faq',        source: 'Google',   events: 6 },
+    { when: '12m ago', country: 'DE', city: 'Munich',     device: 'Mac · Chrome',    path: '/calculator',         source: 'LinkedIn', events: 8 },
+  ];
+  const flag = (c) => c === 'UK' ? '🇬🇧' : c === 'DE' ? '🇩🇪' : c === 'US' ? '🇺🇸' : c === 'NL' ? '🇳🇱' : c === 'ES' ? '🇪🇸' : c === 'FR' ? '🇫🇷' : c === 'SE' ? '🇸🇪' : '·';
+  document.getElementById('sessions').innerHTML = sessions.map(s => `
+    <tr>
+      <td class="mono" style="font-size:12px">${s.when}</td>
+      <td><span style="margin-right:6px">${flag(s.country)}</span><span class="muted" style="font-size:12px">${s.city}</span></td>
+      <td class="muted" style="font-size:12px">${s.device}</td>
+      <td class="mono">${s.path}</td>
+      <td><span style="font-size:12px">${s.source}</span></td>
+      <td class="mono" style="text-align:right">${s.events}</td>
+    </tr>
+  `).join('');
+</script>
+</body>
+</html>

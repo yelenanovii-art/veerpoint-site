@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Team & Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .setting-section {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .setting-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--vp-border);
+    align-items: center;
+  }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-row .lbl { font-size: 14px; font-weight: 500; }
+  .setting-row .desc { font-size: 13px; color: var(--vp-muted); margin-top: 2px; }
+  .toggle {
+    position: relative; width: 38px; height: 22px;
+    background: var(--vp-border-strong); border-radius: 99px;
+    cursor: pointer; transition: background 0.18s;
+  }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; background: white; border-radius: 50%;
+    transition: transform 0.18s; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .toggle.on { background: var(--vp-green); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  .role-pill {
+    font-family: var(--vp-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 99px;
+    background: var(--vp-paper-2);
+    color: var(--vp-ink-70);
+  }
+  .role-pill.admin { background: var(--vp-terracotta-soft); color: var(--vp-terracotta); }
+  .role-pill.editor { background: rgba(52, 95, 138, 0.14); color: var(--vp-blue); }
+
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+    margin-right: 6px; vertical-align: 1px;
+  }
+  .status-dot.online { background: var(--vp-green); }
+  .status-dot.away { background: var(--vp-amber); }
+  .status-dot.offline { background: var(--vp-muted-soft); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Team & Settings</div>
+      <div class="search"><input type="text" placeholder="Search settings…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-accent btn-sm">+ Invite teammate</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">WORKSPACE · VEERPOINT</div>
+          <h1>Team & settings<span class="stop">.</span></h1>
+          <div class="desc">Manage who can access this dashboard, what they can do, and how the workspace behaves.</div>
+        </div>
+      </div>
+
+      <!-- TEAM -->
+      <div class="card" style="margin-bottom: 24px">
+        <div class="card-hd">
+          <h3>Team members · 4<span class="stop">.</span></h3>
+          <div class="hint">Only @veerpoint.io emails can sign in</div>
+        </div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead><tr><th>Member</th><th>Role</th><th>Status</th><th>Last active</th><th></th></tr></thead>
+            <tbody id="teamRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ROLES -->
+      <div class="setting-section">
+        <div class="card-hd"><h3>Roles & permissions<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Admin</div>
+            <div class="desc">Full access. Can edit team, integrations, automations, billing, and all data.</div>
+          </div>
+          <span class="role-pill admin">ADMIN</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Editor</div>
+            <div class="desc">Edit content, blog posts, images, and events. Read-only on leads and integrations.</div>
+          </div>
+          <span class="role-pill editor">EDITOR</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Closer</div>
+            <div class="desc">Read/edit leads, run automations, view analytics. No content or integration changes.</div>
+          </div>
+          <span class="role-pill">CLOSER</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Viewer</div>
+            <div class="desc">Read-only access to dashboards. Cannot edit anything.</div>
+          </div>
+          <span class="role-pill">VIEWER</span>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="setting-section">
+        <div class="card-hd"><h3>Notifications<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Daily lead digest</div>
+            <div class="desc">Email summary at 08:00 CET with new leads and pipeline movement.</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Slack alerts for hot leads</div>
+            <div class="desc">Post to #sales-veerpoint when a HOT lead is captured.</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Founder ping on €50k+ ACV</div>
+            <div class="desc">SMS Anton + Pablo when an inferred ACV exceeds €50k.</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Weekly metrics email</div>
+            <div class="desc">Monday morning report to all admins.</div>
+          </div>
+          <div class="toggle"></div>
+        </div>
+      </div>
+
+      <!-- WORKSPACE / BRANDING -->
+      <div class="setting-section">
+        <div class="card-hd"><h3>Workspace<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Company</div>
+            <div class="desc">Veerpoint · Sales-as-a-Service · Barcelona, ES</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">Edit</button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Domain</div>
+            <div class="desc"><span class="mono">veerpoint.io</span> · admin lives at <span class="mono">admin.veerpoint.io</span></div>
+          </div>
+          <span style="font-family:var(--vp-font-mono); font-size:11px; color:var(--vp-green)">● VERIFIED</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Brand colour · accent</div>
+            <div class="desc">Used in CTAs, badges, and the marketing site terracotta. Affects emails too.</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <span style="width:24px; height:24px; background:var(--vp-terracotta); border-radius:4px; border:1px solid var(--vp-border-strong)"></span>
+            <span class="mono" style="font-size:12px">#A04022</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Sender email</div>
+            <div class="desc">Outbound transactional emails. DKIM + SPF managed by Resend.</div>
+          </div>
+          <span class="mono" style="font-size:13px">hello@veerpoint.io</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Time zone</div>
+            <div class="desc">Default for scheduling, digests, and reports.</div>
+          </div>
+          <span style="font-size:13px">Europe/Madrid · CET</span>
+        </div>
+      </div>
+
+      <!-- SECURITY -->
+      <div class="setting-section">
+        <div class="card-hd"><h3>Security<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Sign-in method</div>
+            <div class="desc">Google SSO restricted to @veerpoint.io. Magic-link fallback for guests.</div>
+          </div>
+          <span style="font-family:var(--vp-font-mono); font-size:11px; color:var(--vp-green)">● ENFORCED</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">2-factor auth</div>
+            <div class="desc">Required for all admin and editor roles.</div>
+          </div>
+          <div class="toggle on"></div>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Session length</div>
+            <div class="desc">Force re-auth every 7 days.</div>
+          </div>
+          <span style="font-size:13px">7 days</span>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Audit log</div>
+            <div class="desc">All admin actions tracked. Last 90 days.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">View log</button>
+        </div>
+      </div>
+
+      <!-- BILLING -->
+      <div class="setting-section">
+        <div class="card-hd"><h3>Billing<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Plan</div>
+            <div class="desc">Team · €49/mo · 10 seats included</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">Change plan</button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Usage</div>
+            <div class="desc">4 / 10 seats · 247 / 2,000 leads this month</div>
+          </div>
+          <span style="font-family:var(--vp-font-mono); font-size:11px; color:var(--vp-muted)">12% USED</span>
+        </div>
+      </div>
+
+      <!-- DANGER -->
+      <div class="setting-section" style="border-color: rgba(160, 64, 34, 0.3)">
+        <div class="card-hd" style="border-bottom-color: rgba(160, 64, 34, 0.3)"><h3 style="color:var(--vp-terracotta)">Danger zone<span class="stop">.</span></h3></div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Export all data</div>
+            <div class="desc">Download a ZIP of leads, content, automations, audit log — JSON + CSV.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm">Export</button>
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="lbl">Delete workspace</div>
+            <div class="desc">Permanent. All data wiped after 30 days. Cannot be undone.</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" style="color:var(--vp-terracotta); border-color:var(--vp-terracotta)">Delete</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+<script>
+  renderShell('team.html');
+
+  // Team rows
+  const roles = ['admin', 'admin', 'editor', 'editor'];
+  document.getElementById('teamRows').innerHTML = VP.team.map((m, i) => `
+    <tr>
+      <td>
+        <div style="display:flex; align-items:center; gap:12px">
+          <div style="width:32px; height:32px; border-radius:50%; background: ${i % 2 ? 'var(--vp-ink)' : 'var(--vp-terracotta)'}; color:var(--vp-warm-white); display:flex; align-items:center; justify-content:center; font-family:var(--vp-font-display); font-weight:600; font-size:12px">${m.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div>
+            <div style="font-weight:500">${m.name}</div>
+            <div class="muted" style="font-size:12px"><span class="mono">${m.email}</span> · ${m.role}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="role-pill ${roles[i]}">${roles[i].toUpperCase()}</span></td>
+      <td><span class="status-dot ${m.status.toLowerCase()}"></span>${m.status}</td>
+      <td class="muted" style="font-size:12px">${m.last}</td>
+      <td><button class="btn btn-ghost btn-sm">Manage</button></td>
+    </tr>
+  `).join('');
+
+  // Toggle handlers
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      t.classList.toggle('on');
+    });
+  });
+</script>
+</body>
+</html>
