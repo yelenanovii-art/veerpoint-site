@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Outbound</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Outbound</div>
+      <div class="search"><input type="text" placeholder="Search sequences, lists…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Templates</button>
+        <button class="btn btn-accent btn-sm">+ New sequence</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">SEQUENCES + PROSPECT LISTS</div>
+          <h1>The outbound machine<span class="stop">.</span></h1>
+          <div class="desc">Multi-step sequences powered by Resend + LinkedIn. ICP filters defined once, lists rebuilt nightly from Apollo. Replies route back into Leads automatically.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-hd"><h3>Active sequences<span class="stop">.</span></h3><div class="hint">Click any to see the steps + reply rates</div></div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead>
+              <tr><th>Sequence</th><th>ICP</th><th>Sent</th><th>Opens</th><th>Replies</th><th>Booked</th><th>Status</th></tr>
+            </thead>
+            <tbody id="seqs"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd"><h3>Prospect lists<span class="stop">.</span></h3><div class="hint">Pulled from Apollo + LinkedIn</div></div>
+          <div class="card-body" id="lists"></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Email infrastructure<span class="stop">.</span></h3><div class="hint">Sending domains + warmup status</div></div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px">
+              <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">PRIMARY · veerpoint.io</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:4px">●  Warmed</div>
+                <div style="font-size:12px; color:var(--vp-muted); margin-top:4px">Reputation 98 · DKIM ✓ · SPF ✓ · DMARC ✓</div>
+              </div>
+              <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">OUTREACH · veerpoint.team</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:4px">●  Warming · 84%</div>
+                <div style="font-size:12px; color:var(--vp-muted); margin-top:4px">Reputation 76 · DKIM ✓ · SPF ✓ · DMARC partial</div>
+              </div>
+              <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">OUTREACH · veerpoint.co</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:4px">●  Warmed</div>
+                <div style="font-size:12px; color:var(--vp-muted); margin-top:4px">Reputation 94 · 4 inboxes</div>
+              </div>
+              <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">PERSONAL · LINKEDIN</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:4px">●  Active · 3 users</div>
+                <div style="font-size:12px; color:var(--vp-muted); margin-top:4px">Sales Nav + connection limits OK</div>
+              </div>
+            </div>
+            <div style="font-size:12px; color:var(--vp-muted); margin-top:14px; padding-top:14px; border-top:1px solid var(--vp-border)">Sending budget today · <strong style="color:var(--vp-ink)">312 of 600</strong> emails used.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="card-hd"><h3>Recent replies · 24h<span class="stop">.</span></h3><div class="hint">Auto-tagged + routed to Leads</div></div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead><tr><th>From</th><th>Sequence</th><th>Step</th><th>Sentiment</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Sarah Klein</strong><div class="muted" style="font-size:12px">skleinhotz@treloar.de</div></td>
+                <td>Series-A · DACH · founder-led</td>
+                <td class="mono">Step 3 · pricing question</td>
+                <td><span class="pill new"><span class="dot"></span>POSITIVE</span></td>
+                <td>→ booked Discovery</td>
+              </tr>
+              <tr>
+                <td><strong>Marcus Chen</strong><div class="muted" style="font-size:12px">mchen@brightform.io</div></td>
+                <td>Seed · US · post-fundraise</td>
+                <td class="mono">Step 2 · interest</td>
+                <td><span class="pill warm"><span class="dot"></span>NEUTRAL</span></td>
+                <td>→ added to Leads</td>
+              </tr>
+              <tr>
+                <td><strong>Priya Raman</strong><div class="muted" style="font-size:12px">priya@atlas.so</div></td>
+                <td>Seed · US · post-fundraise</td>
+                <td class="mono">Step 4 · objection</td>
+                <td><span class="pill hot"><span class="dot"></span>NEGATIVE</span></td>
+                <td>→ paused sequence</td>
+              </tr>
+              <tr>
+                <td><strong>Lukas Berg</strong><div class="muted" style="font-size:12px">lukas@norddata.se</div></td>
+                <td>Series-B · NORDIC · expansion</td>
+                <td class="mono">Step 1 · interest</td>
+                <td><span class="pill new"><span class="dot"></span>POSITIVE</span></td>
+                <td>→ booked Discovery</td>
+              </tr>
+              <tr>
+                <td><strong>Tomás Riveira</strong><div class="muted" style="font-size:12px">tomas@cumulo.es</div></td>
+                <td>Series-A · EU · sales-tech</td>
+                <td class="mono">Step 3 · not now</td>
+                <td><span class="pill cold"><span class="dot"></span>LATER</span></td>
+                <td>→ snoozed 60d</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('outbound.html');
+
+  document.getElementById('kpis').innerHTML = [
+    { label: 'EMAILS SENT · 30D', value: '744', delta: '+18%', dir: 'up', spark: [20,22,24,26,28,30,32,28,30,34,38,42,40,44,46] },
+    { label: 'OPEN RATE',         value: '64%', delta: '+4 pts', dir: 'up', spark: [58,60,62,61,62,63,64,63,62,64,65,64,64,66,64] },
+    { label: 'REPLY RATE',        value: '15%', delta: '+2 pts', dir: 'up', spark: [11,12,13,12,13,14,14,15,14,15,15,16,15,16,15] },
+    { label: 'BOOKED · 30D',      value: '35',  delta: '+9',   dir: 'up', spark: [2,2,3,3,4,5,5,4,5,6,5,6,7,6,7] },
+  ].map(renderKpi).join('');
+
+  // Sequences
+  document.getElementById('seqs').innerHTML = VP.sequences.map(s => `
+    <tr>
+      <td><strong>${s.name}</strong></td>
+      <td><span style="font-size:13px">${s.icp}</span></td>
+      <td class="mono">${s.sent}</td>
+      <td class="mono"><strong>${s.opened}</strong> <span class="muted">· ${Math.round(s.opened/s.sent*100)}%</span></td>
+      <td class="mono"><strong style="color:var(--vp-terracotta)">${s.replied}</strong> <span class="muted">· ${Math.round(s.replied/s.sent*100)}%</span></td>
+      <td class="mono"><strong>${s.booked}</strong></td>
+      <td><span class="pill ${s.status === 'Active' ? 'new' : 'cold'}"><span class="dot"></span>${s.status.toUpperCase()}</span></td>
+    </tr>
+  `).join('');
+
+  // Lists
+  document.getElementById('lists').innerHTML = VP.prospectLists.map(l => `
+    <div style="display:grid; grid-template-columns:1fr auto; gap:14px; padding:12px 0; border-bottom:1px solid var(--vp-border); align-items:center">
+      <div>
+        <div style="font-weight:500; font-size:14px">${l.name}</div>
+        <div class="muted" style="font-size:12px; margin-top:2px">${l.filters}</div>
+        <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.12em; color:var(--vp-muted); text-transform:uppercase; margin-top:6px">${l.source}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:var(--vp-font-display); font-size:22px; font-weight:700">${l.size}</div>
+        <div><span class="pill ${l.status === 'Live' ? 'new' : 'warm'}"><span class="dot"></span>${l.status.toUpperCase()}</span></div>
+      </div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

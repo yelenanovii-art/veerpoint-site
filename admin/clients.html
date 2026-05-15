@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Clients</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .client-card {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    margin-bottom: 14px;
+    align-items: stretch;
+  }
+  .client-card .health {
+    width: 4px;
+    background: var(--vp-green);
+    border-radius: 2px;
+    margin-left: -22px;
+    margin-right: 18px;
+    margin-top: -20px;
+    margin-bottom: -20px;
+  }
+  .client-card.amber .health { background: var(--vp-amber); }
+  .client-card.red .health { background: var(--vp-terracotta); }
+  .client-body { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px; flex: 1; }
+  .client-name { font-family: var(--vp-font-display); font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .client-sub { font-size: 12px; color: var(--vp-muted); margin-top: 3px; }
+  .client-stat-l { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--vp-muted); margin-bottom: 4px; }
+  .client-stat-v { font-family: var(--vp-font-display); font-size: 18px; font-weight: 600; }
+  .lifecycle {
+    display: flex;
+    gap: 0;
+    margin: 16px 0 0;
+    height: 28px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--vp-paper);
+  }
+  .lifecycle-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--vp-font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--vp-muted);
+    border-right: 2px solid var(--vp-warm-white);
+    padding: 0 6px;
+    text-align: center;
+  }
+  .lifecycle-stage:last-child { border-right: none; }
+  .lifecycle-stage.done { background: var(--vp-ink); color: var(--vp-warm-white); }
+  .lifecycle-stage.current { background: var(--vp-terracotta); color: var(--vp-warm-white); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Clients</div>
+      <div class="search"><input type="text" placeholder="Search clients, engagements…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Export ledger</button>
+        <button class="btn btn-accent btn-sm">+ New engagement</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">ACTIVE ENGAGEMENTS · 6 OF 9 CAPACITY</div>
+          <h1>Clients · the cycles you're running<span class="stop">.</span></h1>
+          <div class="desc">Every paying client, where they sit in the cycle, what pipeline you've built for them, and when they renew. Health is computed from utilization, sentiment, and pipeline pace.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="filters">
+        <button class="filter-pill active">All <span class="count" id="cAll"></span></button>
+        <button class="filter-pill">Discovery <span class="count">1</span></button>
+        <button class="filter-pill">Pipeline <span class="count">2</span></button>
+        <button class="filter-pill">Steady state <span class="count">2</span></button>
+        <button class="filter-pill">Off-ramp <span class="count">1</span></button>
+        <div style="width:1px; height:20px; background:var(--vp-border); margin:0 6px"></div>
+        <button class="filter-pill">Health: All</button>
+        <button class="filter-pill">Operator: All</button>
+      </div>
+
+      <div id="clientList"></div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('clients.html');
+
+  document.getElementById('kpis').innerHTML = ['mrr', 'pipeline', 'closed', 'utilization'].map(k => renderKpi(VP.kpis[k])).join('');
+  document.getElementById('cAll').textContent = VP.clients.length;
+
+  const stages = ['Discovery', 'Pipeline', 'Steady state', 'Off-ramp', 'Renewal'];
+  function renderClients() {
+    document.getElementById('clientList').innerHTML = VP.clients.map(c => {
+      const stageIdx = stages.indexOf(c.stage);
+      return `
+        <div class="client-card ${c.health === 'amber' ? 'amber' : c.health === 'red' ? 'red' : ''}">
+          <div style="display:flex">
+            <div class="health"></div>
+            <div style="flex:1">
+              <div style="display:flex; align-items:center; gap:10px">
+                <div class="client-name">${c.name}<span class="stop">.</span></div>
+                <span class="pill ${c.health === 'green' ? 'new' : c.health === 'amber' ? 'warm' : 'hot'}"><span class="dot"></span>${c.health.toUpperCase()}</span>
+                <span class="pill cold"><span class="dot"></span>${c.id}</span>
+              </div>
+              <div class="client-sub">${c.motion} · ${c.market} · started ${c.startDate} · renews ${c.renewDate} · operator <strong style="color:var(--vp-ink)">${c.operator}</strong></div>
+
+              <div class="lifecycle">
+                ${stages.map((s, i) => `
+                  <div class="lifecycle-stage ${i < stageIdx ? 'done' : i === stageIdx ? 'current' : ''}">${s.toUpperCase()}</div>
+                `).join('')}
+              </div>
+
+              <div class="client-body" style="margin-top:18px">
+                <div>
+                  <div class="client-stat-l">RETAINER · MONTHLY</div>
+                  <div class="client-stat-v">€${c.retainer.toLocaleString()}<span style="font-size:11px; color:var(--vp-muted); margin-left:4px">+ ${c.commission}% comm</span></div>
+                </div>
+                <div>
+                  <div class="client-stat-l">PIPELINE GENERATED</div>
+                  <div class="client-stat-v">${c.pipelineGen}</div>
+                </div>
+                <div>
+                  <div class="client-stat-l">CLOSED-WON · CYCLE</div>
+                  <div class="client-stat-v" style="color:${c.closed === '€0' ? 'var(--vp-muted)' : 'var(--vp-ink)'}">${c.closed}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; gap:10px">
+            <div style="display:flex; gap:6px">
+              <button class="btn btn-ghost btn-sm">Open</button>
+              <button class="btn btn-ghost btn-sm">QBR</button>
+            </div>
+            <div style="text-align:right">
+              <div class="client-stat-l">DAYS TO RENEWAL</div>
+              <div class="client-stat-v" style="font-size:24px; color:${daysTo(c.renewDate) < 30 ? 'var(--vp-terracotta)' : 'var(--vp-ink)'}">${daysTo(c.renewDate)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  function daysTo(d) {
+    const diff = (new Date(d) - new Date()) / (1000*60*60*24);
+    return Math.max(0, Math.round(diff));
+  }
+  renderClients();
+</script>
+</body>
+</html>

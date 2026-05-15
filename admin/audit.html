@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Audit log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Audit log</div>
+      <div class="search"><input type="text" placeholder="Search by user, action, target…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Last 30 days ▾</button>
+        <button class="btn btn-accent btn-sm">Export · CSV</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">SECURITY · LAST 90 DAYS</div>
+          <h1>Every admin action, on record<span class="stop">.</span></h1>
+          <div class="desc">Who changed what, when, from where. Compliance-grade trail across the whole workspace — leads, automations, integrations, content, settings. Exportable for audits.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">ACTIONS · 30D</div><div class="kpi-value">412</div><div class="kpi-delta up">↑ +18% vs prior</div></div>
+        <div class="kpi"><div class="kpi-label">DISTINCT USERS</div><div class="kpi-value">4</div><div class="kpi-delta flat">→ stable</div></div>
+        <div class="kpi"><div class="kpi-label">FAILED LOGINS</div><div class="kpi-value">2</div><div class="kpi-delta up">↓ -3 vs prior</div></div>
+        <div class="kpi"><div class="kpi-label">EXPORTS · 30D</div><div class="kpi-value">8</div><div class="kpi-delta flat">→ usual</div></div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-pill active">All</button>
+        <button class="filter-pill">Sign-ins</button>
+        <button class="filter-pill">Lead changes</button>
+        <button class="filter-pill">Automations</button>
+        <button class="filter-pill">Integrations</button>
+        <button class="filter-pill">Content</button>
+        <button class="filter-pill">API tokens</button>
+        <div style="width:1px; height:20px; background:var(--vp-border); margin:0 6px"></div>
+        <button class="filter-pill">User: Any</button>
+      </div>
+
+      <div class="card">
+        <div class="card-body flush">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>When</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Change</th>
+                <th>Location</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="audit"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:20px">
+        <button class="btn btn-ghost">Load 30 more events</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('audit.html');
+
+  document.getElementById('audit').innerHTML = VP.audit.map(a => `
+    <tr>
+      <td class="mono" style="font-size:11px; color:var(--vp-muted)">${a.when.toUpperCase()}</td>
+      <td>
+        <div style="display:flex; align-items:center; gap:10px">
+          <div style="width:24px; height:24px; border-radius:50%; background:var(--vp-terracotta); color:var(--vp-warm-white); display:flex; align-items:center; justify-content:center; font-family:var(--vp-font-display); font-weight:600; font-size:10px">${a.who.split(' ').map(n=>n[0]).join('')}</div>
+          <span style="font-size:13px; font-weight:500">${a.who}</span>
+        </div>
+      </td>
+      <td><span style="font-size:13px">${a.what}</span></td>
+      <td><span class="mono" style="font-size:11px">${a.from === '—' ? '—' : a.from + ' → ' + a.to}</span></td>
+      <td>
+        <div style="font-size:13px">${a.city}</div>
+        <div class="mono" style="font-size:11px; color:var(--vp-muted)">${a.ip}</div>
+      </td>
+      <td><button class="btn btn-ghost btn-sm">View</button></td>
+    </tr>
+  `).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Capacity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .op-card {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 22px;
+    align-items: center;
+  }
+  .util-bar {
+    background: var(--vp-paper);
+    height: 14px;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 10px;
+    position: relative;
+  }
+  .util-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
+  .heatmap { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 4px; }
+  .heatmap-cell { aspect-ratio: 2/1; border-radius: 3px; background: var(--vp-paper); }
+  .heatmap-label { display: flex; align-items: center; font-size: 12px; color: var(--vp-muted); font-family: var(--vp-font-mono); }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Capacity</div>
+      <div class="search"><input type="text" placeholder="Search operators…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">This week ▾</button>
+        <button class="btn btn-accent btn-sm">+ Add operator</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">OPERATOR UTILIZATION · 5 OPERATORS</div>
+          <h1>Capacity · who can take on the next client<span class="stop">.</span></h1>
+          <div class="desc">You sell operator time. This view tells you where every hour goes — by operator, by client, by motion — and surfaces who's available before you say "yes" to the next deal.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="card" style="margin-bottom: 14px">
+        <div class="card-hd"><h3>Active operators<span class="stop">.</span></h3><div class="hint">Click an operator to see weekly calendar</div></div>
+        <div class="card-body" id="ops"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd"><h3>Weekly heatmap · this week<span class="stop">.</span></h3><div class="hint">Light = available, dark = booked</div></div>
+        <div class="card-body" id="heatmap"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('capacity.html');
+  document.getElementById('kpis').innerHTML = ['utilization', 'commission', 'mrr', 'pipeline'].map(k => renderKpi(VP.kpis[k])).join('');
+
+  document.getElementById('ops').innerHTML = VP.operators.map(o => {
+    const c = o.utilization >= 85 ? 'var(--vp-terracotta)' : o.utilization >= 60 ? 'var(--vp-amber)' : o.utilization > 0 ? 'var(--vp-green)' : 'var(--vp-muted-soft)';
+    const initials = o.name.split(' ').map(n => n[0]).join('');
+    return `
+      <div class="op-card">
+        <div>
+          ${ringChart(o.utilization, 90, c)}
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:10px">
+            <div style="font-family:var(--vp-font-display); font-size:17px; font-weight:700; letter-spacing:-0.02em">${o.name}<span class="stop">.</span></div>
+            <span class="pill ${o.avail === 'Bench' ? 'new' : o.avail === 'Onboarding' ? 'warm' : 'hot'}"><span class="dot"></span>${o.avail.toUpperCase()}</span>
+          </div>
+          <div style="font-size:13px; color:var(--vp-muted); margin-top:2px">${o.role}</div>
+          <div style="display:flex; gap:24px; margin-top:14px; flex-wrap:wrap">
+            <div>
+              <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted); text-transform:uppercase">CLIENTS · ${o.clients.length}</div>
+              <div style="font-size:13px; font-weight:500; margin-top:3px">${o.clients.length ? o.clients.join(' · ') : '— on the bench'}</div>
+            </div>
+            <div>
+              <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted); text-transform:uppercase">CALLS · WK</div>
+              <div style="font-size:13px; font-weight:500; margin-top:3px">${o.callsWk}</div>
+            </div>
+            <div>
+              <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted); text-transform:uppercase">PIPELINE · 30D</div>
+              <div style="font-size:13px; font-weight:500; margin-top:3px">${o.pipelineCreated30d}</div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right; display:flex; flex-direction:column; gap:8px">
+          <button class="btn btn-ghost btn-sm">Assign client</button>
+          <button class="btn btn-ghost btn-sm">View calendar</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Heatmap
+  const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  document.getElementById('heatmap').innerHTML = `
+    <div class="heatmap" style="margin-bottom:6px">
+      <div></div>
+      ${days.map(d => `<div style="font-family:var(--vp-font-mono); font-size:9px; letter-spacing:0.18em; color:var(--vp-muted); text-align:center">${d}</div>`).join('')}
+    </div>
+    ${VP.operators.map(o => `
+      <div class="heatmap" style="margin-bottom:6px">
+        <div class="heatmap-label">${o.name.split(' ')[0]}</div>
+        ${days.map((d, di) => {
+          // Random but deterministic per operator+day for demo
+          const seed = (o.name.charCodeAt(0) + di * 7) % 100;
+          const intensity = di > 4 ? 0 : Math.min(100, o.utilization - 20 + seed % 30);
+          const opacity = intensity / 100;
+          return `<div class="heatmap-cell" style="background: rgba(160, 64, 34, ${opacity * 0.9}); ${intensity === 0 ? 'background: var(--vp-paper)' : ''}"></div>`;
+        }).join('')}
+      </div>
+    `).join('')}
+  `;
+</script>
+</body>
+</html>

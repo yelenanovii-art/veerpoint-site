@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Knowledge base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .kb-grid { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .kb-grid { grid-template-columns: 1fr; } }
+  .kb-cats { display: flex; flex-direction: column; gap: 2px; }
+  .kb-cat {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: var(--vp-ink-70);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .kb-cat.active { background: var(--vp-ink); color: var(--vp-warm-white); }
+  .kb-cat:hover:not(.active) { background: var(--vp-paper); color: var(--vp-ink); }
+  .kb-cat .n { font-family: var(--vp-font-mono); font-size: 10px; opacity: 0.7; }
+  .kb-article {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .kb-article:hover { border-color: var(--vp-ink); }
+  .kb-cat-pill {
+    font-family: var(--vp-font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: var(--vp-paper);
+    color: var(--vp-muted);
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Knowledge base</div>
+      <div class="search"><input type="text" placeholder="Search playbooks, scripts, templates…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Templates</button>
+        <button class="btn btn-accent btn-sm">+ New article</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">PLAYBOOKS · 12 ARTICLES · 7 CATEGORIES</div>
+          <h1>Operator playbook<span class="stop">.</span></h1>
+          <div class="desc">Discovery scripts, pricing language, ICP qualifying questions, objection handling, onboarding for new operators. Everything an operator should know — searchable, with versioned changes.</div>
+        </div>
+      </div>
+
+      <div class="kb-grid">
+        <div>
+          <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.16em; color:var(--vp-muted); margin-bottom:10px; padding:0 12px">CATEGORIES</div>
+          <div class="kb-cats" id="cats"></div>
+
+          <div style="margin-top:24px; padding:14px; background:var(--vp-paper); border-radius:8px">
+            <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.16em; color:var(--vp-muted); margin-bottom:8px">ASK COPILOT</div>
+            <p style="font-size:12px; color:var(--vp-ink-70); line-height:1.5">Click the <strong>✦ Copilot</strong> button bottom-right to ask the playbook anything in plain English. "How do I handle the legal pushback on commission clauses?" — answered with the matching article + the relevant lead context.</p>
+          </div>
+        </div>
+
+        <div id="articles"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('kb.html');
+
+  const cats = ['All', 'Discovery', 'Pricing', 'ICP', 'Closing', 'Onboarding', 'Tools'];
+  function render(cat = 'All') {
+    document.getElementById('cats').innerHTML = cats.map(c => {
+      const n = c === 'All' ? VP.kb.length : VP.kb.filter(a => a.cat === c).length;
+      return `<div class="kb-cat ${c === cat ? 'active' : ''}" data-c="${c}">
+        <span>${c}</span>
+        <span class="n">${n}</span>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('.kb-cat').forEach(el => el.addEventListener('click', () => render(el.dataset.c)));
+
+    const filtered = cat === 'All' ? VP.kb : VP.kb.filter(a => a.cat === cat);
+    document.getElementById('articles').innerHTML = filtered.map(a => `
+      <div class="kb-article">
+        <div>
+          <span class="kb-cat-pill">${a.cat.toUpperCase()}</span>
+          <div style="font-family:var(--vp-font-display); font-size:15px; font-weight:600; letter-spacing:-0.01em">${a.title}</div>
+          <div style="font-size:12px; color:var(--vp-muted); margin-top:4px">Updated ${a.updated} · ${a.reads} reads</div>
+        </div>
+        <div style="text-align:right">
+          <button class="btn btn-ghost btn-sm">Open</button>
+        </div>
+      </div>
+    `).join('');
+  }
+  render();
+</script>
+</body>
+</html>

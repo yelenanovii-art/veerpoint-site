@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Revenue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Revenue</div>
+      <div class="search"><input type="text" placeholder="Search invoices, payouts…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Q2 2026 ▾</button>
+        <button class="btn btn-accent btn-sm">Export · CSV/PDF</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">FINANCIAL · CASH + COMMISSION</div>
+          <h1>The money view<span class="stop">.</span></h1>
+          <div class="desc">Retainer MRR, commission earned, profitability per engagement, cash runway. The view Anton + Elena open when planning hires or pricing changes.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd"><h3>MRR over time<span class="stop">.</span></h3><div class="hint">Retainers only · last 12 months</div></div>
+          <div class="card-body" id="mrrChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Cash runway<span class="stop">.</span></h3><div class="hint">Months at current burn</div></div>
+          <div class="card-body" style="text-align:center; padding: 32px 20px">
+            <div style="font-family:var(--vp-font-display); font-size:60px; font-weight:700; letter-spacing:-0.04em; line-height:1">14<span style="font-size:24px; color:var(--vp-muted)"> months</span></div>
+            <div style="color:var(--vp-green); font-family:var(--vp-font-mono); font-size:11px; letter-spacing:0.12em; margin-top:4px">↑ +2 MONTHS VS LAST QUARTER</div>
+            <div style="margin-top:32px; padding-top:20px; border-top:1px solid var(--vp-border); display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; text-align:left">
+              <div>
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">CASH</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:3px">€840k</div>
+              </div>
+              <div>
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">MRR</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:3px">€72k</div>
+              </div>
+              <div>
+                <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">BURN</div>
+                <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:600; margin-top:3px">€60k/mo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 14px">
+        <div class="card-hd"><h3>Retainer ledger · this month<span class="stop">.</span></h3><div class="hint">€72k invoiced · €60k received · €12k outstanding</div></div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead><tr><th>Client</th><th>Retainer</th><th>Issued</th><th>Due</th><th>Status</th><th></th></tr></thead>
+            <tbody id="ledger"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-hd"><h3>Commission ledger · 30d<span class="stop">.</span></h3><div class="hint">€38k earned · split by operator</div></div>
+          <div class="card-body" id="commission"></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>Profitability · per engagement<span class="stop">.</span></h3><div class="hint">Revenue minus loaded operator cost</div></div>
+          <div class="card-body flush">
+            <table class="table">
+              <thead><tr><th>Client</th><th>Revenue</th><th>Op cost</th><th>Margin</th></tr></thead>
+              <tbody id="profit"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 14px">
+        <div class="card-hd"><h3>Upcoming invoices · next 30 days<span class="stop">.</span></h3><div class="hint">From Stripe</div></div>
+        <div class="card-body flush">
+          <table class="table">
+            <thead><tr><th>Client</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody id="upcoming"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('revenue.html');
+  document.getElementById('kpis').innerHTML = ['mrr', 'commission', 'runway', 'closed'].map(k => renderKpi(VP.kpis[k])).join('');
+
+  const mrrTrail = [36, 36, 36, 48, 48, 48, 48, 60, 60, 60, 60, 72];
+  document.getElementById('mrrChart').innerHTML = lineChart(mrrTrail, 720, 260, ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May']);
+
+  const ledger = VP.clients.map(c => ({
+    name: c.name, retainer: c.retainer,
+    issued: '2026-05-01',
+    due: '2026-05-15',
+    status: c.id === 'C-014' || c.id === 'C-009' || c.id === 'C-013' || c.id === 'C-012' || c.id === 'C-010' ? 'PAID' : 'PENDING',
+  }));
+  document.getElementById('ledger').innerHTML = ledger.map(l => `
+    <tr>
+      <td><strong>${l.name}</strong></td>
+      <td class="mono">€${l.retainer.toLocaleString()}</td>
+      <td class="mono">${l.issued}</td>
+      <td class="mono">${l.due}</td>
+      <td><span class="pill ${l.status === 'PAID' ? 'new' : 'warm'}"><span class="dot"></span>${l.status}</span></td>
+      <td><button class="btn btn-ghost btn-sm">View invoice</button></td>
+    </tr>
+  `).join('');
+
+  // Commission
+  const commission = [
+    { op: 'Anton Voronov',  amount: 14200, deals: 5 },
+    { op: 'Pablo Reyes',    amount: 12800, deals: 4 },
+    { op: 'Dylan Auerbach', amount: 8800,  deals: 3 },
+    { op: 'Søren Halvorsen', amount: 2200, deals: 1 },
+  ];
+  document.getElementById('commission').innerHTML = `
+    ${commission.map(c => `
+      <div style="display:grid; grid-template-columns: 1fr auto auto; gap:14px; padding:10px 0; border-bottom:1px solid var(--vp-border); align-items:center">
+        <div>
+          <div style="font-weight:500">${c.op}</div>
+          <div class="muted" style="font-size:12px">${c.deals} closed-won deals</div>
+        </div>
+        <div style="font-family:var(--vp-font-mono); font-size:13px; color:var(--vp-muted)">${c.deals} × deals</div>
+        <div style="font-family:var(--vp-font-display); font-size:18px; font-weight:700">€${c.amount.toLocaleString()}</div>
+      </div>
+    `).join('')}
+    <div style="padding-top:14px; display:flex; justify-content:space-between; align-items:baseline">
+      <div style="font-family:var(--vp-font-mono); font-size:11px; letter-spacing:0.14em; color:var(--vp-muted)">TOTAL · 30D</div>
+      <div style="font-family:var(--vp-font-display); font-size:22px; font-weight:700">€38,000</div>
+    </div>
+  `;
+
+  // Profitability
+  const profit = VP.clients.map(c => {
+    const rev = c.retainer + (parseInt(c.closed.replace(/[^\d]/g, '')) * 1000 * c.commission / 100);
+    const cost = 7200; // mocked operator loaded cost
+    const margin = rev - cost;
+    return { name: c.name, rev, cost, margin };
+  });
+  document.getElementById('profit').innerHTML = profit.map(p => `
+    <tr>
+      <td><strong>${p.name}</strong></td>
+      <td class="mono">€${Math.round(p.rev/1000)}k</td>
+      <td class="mono" style="color:var(--vp-muted)">€${Math.round(p.cost/1000)}k</td>
+      <td class="mono" style="color:${p.margin > 0 ? 'var(--vp-green)' : 'var(--vp-terracotta)'}">€${Math.round(p.margin/1000)}k</td>
+    </tr>
+  `).join('');
+
+  // Upcoming
+  const upcoming = [
+    { client: 'Revolut Business', amount: 14000, date: '2026-06-01', status: 'Scheduled' },
+    { client: 'Skyfall Studios',  amount: 12000, date: '2026-06-04', status: 'Scheduled' },
+    { client: 'Norddata',         amount: 12000, date: '2026-06-18', status: 'Scheduled' },
+    { client: 'Cumulo Sales',     amount: 10000, date: '2026-05-22', status: 'Sent' },
+    { client: 'Treloar & Co',     amount: 16000, date: '2026-06-20', status: 'Scheduled' },
+  ];
+  document.getElementById('upcoming').innerHTML = upcoming.map(u => `
+    <tr>
+      <td><strong>${u.client}</strong></td>
+      <td class="mono">€${u.amount.toLocaleString()}</td>
+      <td class="mono">${u.date}</td>
+      <td><span class="pill ${u.status === 'Sent' ? 'synced' : 'cold'}"><span class="dot"></span>${u.status.toUpperCase()}</span></td>
+    </tr>
+  `).join('');
+</script>
+</body>
+</html>

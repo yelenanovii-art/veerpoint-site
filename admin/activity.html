@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Activity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .act-item {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--vp-border);
+  }
+  .act-item:last-child { border-bottom: none; }
+  .act-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    background: var(--vp-paper);
+    color: var(--vp-terracotta);
+    flex-shrink: 0;
+  }
+  .act-icon.call { background: var(--vp-terracotta-soft); }
+  .act-icon.email { background: rgba(52, 95, 138, 0.16); color: var(--vp-blue); }
+  .act-icon.linkedin { background: rgba(10, 102, 194, 0.16); color: #0A66C2; }
+  .act-icon.note { background: var(--vp-paper-2); color: var(--vp-muted); }
+  .act-icon.demo { background: rgba(45, 125, 70, 0.14); color: var(--vp-green); }
+  .act-who { font-size: 13px; font-weight: 500; }
+  .act-target { color: var(--vp-terracotta); font-weight: 500; }
+  .act-summary { font-size: 13px; color: var(--vp-ink-70); line-height: 1.55; margin-top: 4px; }
+  .act-meta { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.12em; color: var(--vp-muted); margin-top: 6px; display: flex; gap: 14px; }
+  .act-when { font-family: var(--vp-font-mono); font-size: 10px; color: var(--vp-muted); letter-spacing: 0.06em; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Activity</div>
+      <div class="search"><input type="text" placeholder="Search by lead, client, operator…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Today ▾</button>
+        <button class="btn btn-accent btn-sm">+ Log activity</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">UNIFIED TIMELINE · CALLS · EMAILS · DMS · NOTES</div>
+          <h1>Every touch in one feed<span class="stop">.</span></h1>
+          <div class="desc">Each call (auto-recorded via Gong), each Resend email, each LinkedIn DM, each operator note — in one stream. Filter by operator, client, or kind. Drill into any item for the full context.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">CALLS · 30D</div>
+          <div class="kpi-value">186</div>
+          <div class="kpi-delta up">↑ +24 vs prior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">EMAILS · 30D</div>
+          <div class="kpi-value">412</div>
+          <div class="kpi-delta up">↑ +88 via Resend</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">AVG REPLY · HRS</div>
+          <div class="kpi-value">2.1</div>
+          <div class="kpi-delta up">↓ -0.4 hrs</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">LINKEDIN DMS · 30D</div>
+          <div class="kpi-value">94</div>
+          <div class="kpi-delta up">↑ +18</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-pill active">All</button>
+        <button class="filter-pill">Calls</button>
+        <button class="filter-pill">Emails</button>
+        <button class="filter-pill">LinkedIn</button>
+        <button class="filter-pill">Demos</button>
+        <button class="filter-pill">Notes</button>
+        <div style="width:1px; height:20px; background:var(--vp-border); margin:0 6px"></div>
+        <button class="filter-pill">Anton</button>
+        <button class="filter-pill">Pablo</button>
+        <button class="filter-pill">Dylan</button>
+      </div>
+
+      <div class="card">
+        <div class="card-body" id="acts"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('activity.html');
+
+  const iconFor = (k) => k === 'call' ? '☎' : k === 'email' ? '✉' : k === 'linkedin' ? 'in' : k === 'demo' ? '▶' : '✎';
+  const labelFor = (k) => k.toUpperCase();
+  document.getElementById('acts').innerHTML = VP.activityTimeline.map(a => `
+    <div class="act-item">
+      <div class="act-icon ${a.kind}">${iconFor(a.kind)}</div>
+      <div>
+        <div class="act-who"><strong>${a.who}</strong> · <span class="act-target">${a.target}</span></div>
+        <div class="act-summary">${a.summary}</div>
+        <div class="act-meta">
+          <span>${labelFor(a.kind)}</span>
+          ${a.duration !== '—' ? `<span>DURATION · ${a.duration}</span>` : ''}
+          <span>SOURCE · ${a.kind === 'call' ? 'GONG' : a.kind === 'email' ? 'RESEND' : a.kind === 'linkedin' ? 'LINKEDIN' : 'MANUAL'}</span>
+        </div>
+      </div>
+      <div class="act-when">${a.when.toUpperCase()}</div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Notifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .nf {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: 38px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .nf:hover { border-color: var(--vp-border-strong); }
+  .nf.unread { background: rgba(160, 64, 34, 0.03); border-left: 3px solid var(--vp-terracotta); padding-left: 17px; }
+  .nf-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--vp-paper);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--vp-terracotta);
+    font-size: 14px;
+  }
+  .nf.unread .nf-icon { background: var(--vp-terracotta); color: var(--vp-warm-white); }
+  .nf-title { font-size: 14px; font-weight: 500; }
+  .nf-body { font-size: 13px; color: var(--vp-muted); margin-top: 2px; line-height: 1.5; }
+  .nf-when { font-family: var(--vp-font-mono); font-size: 11px; color: var(--vp-muted); letter-spacing: 0.06em; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Notifications</div>
+      <div class="search"><input type="text" placeholder="Search notifications…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Mark all read</button>
+        <button class="btn btn-ghost btn-sm">Notification settings</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">INBOX · 5 UNREAD</div>
+          <h1>What needs your attention<span class="stop">.</span></h1>
+          <div class="desc">Hot leads, @mentions from teammates, system events, goal alerts. The view you open first in the morning. Notifications mirror to Slack and email per your settings.</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-pill active">All <span class="count">8</span></button>
+        <button class="filter-pill">Unread <span class="count">5</span></button>
+        <button class="filter-pill">Hot leads <span class="count">2</span></button>
+        <button class="filter-pill">Mentions <span class="count">2</span></button>
+        <button class="filter-pill">System <span class="count">2</span></button>
+        <button class="filter-pill">Goal alerts <span class="count">1</span></button>
+      </div>
+
+      <div id="nfs"></div>
+
+      <div class="card" style="margin-top: 24px">
+        <div class="card-hd"><h3>Delivery channels<span class="stop">.</span></h3><div class="hint">Where notifications go</div></div>
+        <div class="card-body" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px">
+          <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+            <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">IN-APP · INBOX</div>
+            <div style="font-family:var(--vp-font-display); font-size:16px; font-weight:600; margin-top:3px">All events</div>
+          </div>
+          <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+            <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">EMAIL</div>
+            <div style="font-family:var(--vp-font-display); font-size:16px; font-weight:600; margin-top:3px">Daily digest</div>
+          </div>
+          <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+            <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">SLACK · #SALES-VEERPOINT</div>
+            <div style="font-family:var(--vp-font-display); font-size:16px; font-weight:600; margin-top:3px">Hot leads + mentions</div>
+          </div>
+          <div style="padding:14px; background:var(--vp-paper); border-radius:8px">
+            <div style="font-family:var(--vp-font-mono); font-size:10px; letter-spacing:0.14em; color:var(--vp-muted)">SMS · FOUNDERS ONLY</div>
+            <div style="font-family:var(--vp-font-display); font-size:16px; font-weight:600; margin-top:3px">€50k+ ACV ping</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('notifications.html');
+
+  const iconFor = (k) => k === 'hot-lead' ? '◉' : k === 'mention' ? '@' : k === 'goal' ? '◎' : k === 'task' ? '✓' : '⌬';
+  document.getElementById('nfs').innerHTML = VP.notifications.map(n => `
+    <div class="nf ${n.read ? '' : 'unread'}">
+      <div class="nf-icon">${iconFor(n.kind)}</div>
+      <div>
+        <div class="nf-title">${n.title}</div>
+        <div class="nf-body">${n.body}</div>
+      </div>
+      <div class="nf-when">${n.when.toUpperCase()}</div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>

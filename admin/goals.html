@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Goals & OKRs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .goal {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .goal-title { font-family: var(--vp-font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.015em; }
+  .goal-sub { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--vp-muted); margin-top: 4px; }
+  .goal-bar { background: var(--vp-paper); height: 8px; border-radius: 99px; overflow: hidden; margin-top: 12px; }
+  .goal-bar-fill { height: 100%; border-radius: 99px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Goals & OKRs</div>
+      <div class="search"><input type="text" placeholder="Search objectives…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Q2 2026 ▾</button>
+        <button class="btn btn-accent btn-sm">+ New objective</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">${'Q2 2026'} · 67% THROUGH</div>
+          <h1>Quarterly objectives<span class="stop">.</span></h1>
+          <div class="desc">Six objectives this quarter. Progress computed live from the underlying data — leads, MRR, capacity, content. When something slips, you get a Monday-morning email with the at-risk list.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">OBJECTIVES</div><div class="kpi-value">6</div><div class="kpi-delta flat">→ this quarter</div></div>
+        <div class="kpi"><div class="kpi-label">ON TRACK</div><div class="kpi-value" style="color:var(--vp-green)">4</div><div class="kpi-delta up">↑ +1 vs last week</div></div>
+        <div class="kpi"><div class="kpi-label">AT RISK</div><div class="kpi-value" style="color:var(--vp-terracotta)">2</div><div class="kpi-delta flat">→ need attention</div></div>
+        <div class="kpi"><div class="kpi-label">AVG PROGRESS</div><div class="kpi-value">64%</div><div class="kpi-delta up">↑ +9 pts wk-over-wk</div></div>
+      </div>
+
+      <div id="goals"></div>
+
+      <div class="card" style="margin-top: 20px">
+        <div class="card-hd"><h3>Weekly tempo<span class="stop">.</span></h3><div class="hint">Founders' Monday review</div></div>
+        <div class="card-body">
+          <p style="font-size:13px; line-height:1.6; color:var(--vp-ink-70)">Each Monday at 09:00 CET, the system emails Elena + Anton + Pablo a one-pager: progress to every objective, what shifted last week, what's at risk, and AI-suggested actions for the week. The same view ships to investors on the 1st of each month as the official progress update.</p>
+          <div style="display:flex; gap:10px; margin-top:14px">
+            <button class="btn btn-ghost btn-sm">Preview Monday email</button>
+            <button class="btn btn-ghost btn-sm">Configure recipients</button>
+            <button class="btn btn-ghost btn-sm">Investor update template</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('goals.html');
+
+  document.getElementById('goals').innerHTML = VP.goals.objectives.map(g => {
+    const c = g.status === 'On-track' ? 'var(--vp-green)' : g.status === 'At-risk' ? 'var(--vp-amber)' : 'var(--vp-terracotta)';
+    return `
+      <div class="goal">
+        <div>${ringChart(g.progress, 80, c)}</div>
+        <div>
+          <div class="goal-title">${g.title}<span class="stop">.</span></div>
+          <div class="goal-sub">TARGET · ${g.target} · CURRENT · ${g.current}</div>
+          <div class="goal-bar"><div class="goal-bar-fill" style="width:${g.progress}%; background:${c}"></div></div>
+        </div>
+        <div style="text-align:right">
+          <span class="pill ${g.status === 'On-track' ? 'new' : 'warm'}"><span class="dot"></span>${g.status.toUpperCase()}</span>
+          <div style="margin-top:8px">
+            <button class="btn btn-ghost btn-sm">Open</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+</script>
+</body>
+</html>

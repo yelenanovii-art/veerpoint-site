@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Admin · Experiments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+<style>
+  .xp-card {
+    background: var(--vp-warm-white);
+    border: 1px solid var(--vp-border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .xp-card.running { border-left: 3px solid var(--vp-amber); }
+  .xp-card.concluded { border-left: 3px solid var(--vp-green); }
+  .xp-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .xp-title { font-family: var(--vp-font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .xp-meta { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--vp-muted); display: flex; gap: 12px; margin-top: 6px; }
+  .xp-desc { color: var(--vp-ink-70); font-size: 13px; line-height: 1.55; margin: 12px 0; }
+  .xp-result { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; padding-top: 14px; border-top: 1px solid var(--vp-border); }
+  .xp-result-l { font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--vp-muted); text-transform: uppercase; }
+  .xp-result-v { font-family: var(--vp-font-display); font-size: 22px; font-weight: 700; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar"></aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="page-title">Experiments</div>
+      <div class="search"><input type="text" placeholder="Search tests…"></div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm">Past tests</button>
+        <button class="btn btn-accent btn-sm">+ New experiment</button>
+      </div>
+    </header>
+    <div class="content">
+      <div class="page-hd">
+        <div>
+          <div class="eyebrow">A/B TESTING · 2 RUNNING · 3 CONCLUDED</div>
+          <h1>Site experiments<span class="stop">.</span></h1>
+          <div class="desc">Headlines, CTAs, form copy, calculator defaults — tested with split traffic. Wired to Plausible for sampling. Winners ship automatically when significance is hit.</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">RUNNING</div><div class="kpi-value">2</div><div class="kpi-delta flat">→ 600 sessions to sig</div></div>
+        <div class="kpi"><div class="kpi-label">SHIPPED · Q2</div><div class="kpi-value">7</div><div class="kpi-delta up">↑ +3 vs Q1</div></div>
+        <div class="kpi"><div class="kpi-label">AVG LIFT · WINS</div><div class="kpi-value">14%</div><div class="kpi-delta up">↑ +2 pts</div></div>
+        <div class="kpi"><div class="kpi-label">CALC CONV · NOW</div><div class="kpi-value">25%</div><div class="kpi-delta up">↑ +18% (cumulative wins)</div></div>
+      </div>
+
+      <div id="xps"></div>
+
+    </div>
+  </div>
+</div>
+<script src="admin.js"></script>
+<script>
+  renderShell('experiments.html');
+
+  document.getElementById('xps').innerHTML = VP.experiments.map(x => `
+    <div class="xp-card ${x.status.toLowerCase()}">
+      <div class="xp-head">
+        <div>
+          <div class="xp-title">${x.name}<span class="stop">.</span></div>
+          <div class="xp-meta">
+            <span>PAGE · ${x.page}</span>
+            <span>VARIANTS · ${x.variants}</span>
+            <span>SAMPLED · ${x.sampled.toLocaleString()}</span>
+            <span class="pill ${x.status === 'Running' ? 'warm' : 'new'}" style="margin-left:auto"><span class="dot"></span>${x.status.toUpperCase()}</span>
+          </div>
+        </div>
+      </div>
+      <div class="xp-desc">${x.desc}</div>
+      <div class="xp-result">
+        <div>
+          <div class="xp-result-l">WINNER</div>
+          <div class="xp-result-v" style="color:${x.winner === '—' ? 'var(--vp-muted)' : 'var(--vp-terracotta)'}">${x.winner === '—' ? '—' : 'VARIANT ' + x.winner}</div>
+        </div>
+        <div>
+          <div class="xp-result-l">LIFT</div>
+          <div class="xp-result-v" style="color:${x.lift === '—' ? 'var(--vp-muted)' : 'var(--vp-green)'}">${x.lift}</div>
+        </div>
+        <div>
+          <div class="xp-result-l">SIGNIFICANCE</div>
+          <div class="xp-result-v">${x.status === 'Concluded' ? '95%' : '78%'}</div>
+        </div>
+        <div style="display:flex; align-items:end; justify-content:flex-end; gap:8px">
+          ${x.status === 'Running'
+            ? '<button class="btn btn-ghost btn-sm">Stop</button>'
+            : '<button class="btn btn-ghost btn-sm">View report</button>'}
+        </div>
+      </div>
+    </div>
+  `).join('');
+</script>
+</body>
+</html>
