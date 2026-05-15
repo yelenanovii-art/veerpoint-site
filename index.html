@@ -1,415 +1,526 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Veerpoint · Full-cycle sales, run by senior operators. Six months.</title>
-<meta name="description" content="An external full-cycle sales team for funded startups going to market for the first time, and sales orgs expanding into new markets without hiring." />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veerpoint · Sales-as-a-Service</title>
+<meta name="description" content="Sales operators, not consultants. We don't advise on revenue — we build and run it. For funded teams that want execution, not advice.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --vp-cream: #F7F4ED;
+  --vp-cream-2: #ECE7DC;
+  --vp-cream-3: #DFD8C8;
+  --vp-ink: #18191E;
+  --vp-ink-2: #2E3038;
+  --vp-ink-3: #5A5D67;
+  --vp-muted: #7E8088;
+  --vp-muted-soft: #A5A7AE;
+  --vp-border: #D8D2C4;
+  --vp-rust: #B8401C;
+  --vp-rust-hover: #9F341A;
+  --vp-rust-soft: #DB7B57;
+  --vp-navy: #1A2238;
+  --vp-navy-2: #232D49;
+
+  --vp-font-display: 'Inter Tight', system-ui, sans-serif;
+  --vp-font-body: 'Inter', system-ui, sans-serif;
+  --vp-font-mono: 'Geist Mono', ui-monospace, monospace;
+
+  --vp-pad: 64px;
+  --vp-max: 1280px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; min-width: 0; }
+html, body { overflow-x: hidden; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--vp-cream);
+  color: var(--vp-ink);
+  font-family: var(--vp-font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+
+.wrap { max-width: var(--vp-max); margin: 0 auto; padding: 0 var(--vp-pad); }
+.stop { color: var(--vp-rust); }
+.rust { color: var(--vp-rust); }
+.under {
+  background-image: linear-gradient(var(--vp-rust), var(--vp-rust));
+  background-position: 0 92%;
+  background-repeat: no-repeat;
+  background-size: 100% 7%;
+  padding-bottom: 2px;
+}
+
+.top-strip {
+  background: var(--vp-ink);
+  color: var(--vp-cream-3);
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  padding: 8px 0;
+}
+.top-strip .wrap { display: flex; justify-content: space-between; gap: 24px; }
+.top-strip .live::before {
+  content: ""; display: inline-block;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--vp-rust); margin-right: 8px; vertical-align: 1px;
+  animation: vp-pulse 1.6s ease-in-out infinite;
+}
+@keyframes vp-pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+.nav {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(247, 244, 237, 0.86);
+  backdrop-filter: saturate(1.1) blur(10px);
+  -webkit-backdrop-filter: saturate(1.1) blur(10px);
+  border-bottom: 1px solid var(--vp-border);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 18px var(--vp-pad);
+  max-width: var(--vp-max); margin: 0 auto;
+  min-height: 64px;
+}
+.wordmark {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--vp-font-display); font-weight: 700;
+  font-size: 19px; letter-spacing: -0.03em; color: var(--vp-ink);
+}
+.wordmark::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--vp-rust);
+}
+.nav-links { display: flex; gap: 36px; }
+.nav-links a { font-size: 14px; color: var(--vp-ink-3); transition: color 0.12s; font-weight: 500; }
+.nav-links a:hover { color: var(--vp-rust); }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: 999px;
+  font-size: 13px; font-weight: 500;
+  border: 1px solid var(--vp-ink);
+  transition: all 0.15s; white-space: nowrap;
+}
+.btn-pill { background: transparent; color: var(--vp-ink); }
+.btn-pill:hover { background: var(--vp-ink); color: var(--vp-cream); }
+.btn-primary { background: var(--vp-ink); color: var(--vp-cream); }
+.btn-primary:hover { background: var(--vp-rust); border-color: var(--vp-rust); }
+.btn-rust { background: var(--vp-rust); color: var(--vp-cream); border-color: var(--vp-rust); }
+.btn-rust:hover { background: var(--vp-rust-hover); border-color: var(--vp-rust-hover); }
+.btn-ghost { background: transparent; color: var(--vp-cream); border-color: rgba(255,255,255,0.3); }
+.btn-ghost:hover { border-color: var(--vp-cream); }
+
+.link-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--vp-font-display); font-weight: 600;
+  font-size: 18px; color: var(--vp-ink);
+  border-bottom: 1px solid var(--vp-ink); padding-bottom: 4px;
+  transition: all 0.15s;
+}
+.link-cta .arrow { color: var(--vp-rust); transition: transform 0.15s; }
+.link-cta:hover { color: var(--vp-rust); border-color: var(--vp-rust); }
+.link-cta:hover .arrow { transform: translateX(4px); }
+
+.eyebrow {
+  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.18em;
+  color: var(--vp-rust); text-transform: uppercase; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 12px;
+}
+.eyebrow::before {
+  content: ""; display: inline-block; width: 28px; height: 1px; background: var(--vp-rust);
+}
+.eyebrow.plain::before { display: none; }
+
+.hero {
+  position: relative; padding: 88px 0 120px;
+  background:
+    radial-gradient(ellipse 80% 60% at 12% 0%, rgba(184, 64, 28, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 55% at 100% 100%, rgba(26, 34, 56, 0.06) 0%, transparent 60%),
+    var(--vp-cream);
+  overflow: hidden;
+}
+.hero .eyebrow { margin-bottom: 36px; }
+.hero h1 {
+  font-family: var(--vp-font-display); font-weight: 700;
+  font-size: clamp(48px, 8vw, 124px); line-height: 0.96; letter-spacing: -0.045em;
+  max-width: 16ch; margin-bottom: 56px;
+}
+.hero h1 .stop { color: var(--vp-rust); }
+.hero-ctas { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
+.hero-sub { margin-top: 40px; font-size: 18px; color: var(--vp-ink-3); max-width: 52ch; line-height: 1.5; }
+
+.section { padding: 120px 0; position: relative; }
+.section h2 {
+  font-family: var(--vp-font-display); font-weight: 700;
+  font-size: clamp(36px, 5vw, 68px); line-height: 1.04; letter-spacing: -0.035em;
+}
+.section p { line-height: 1.6; }
+.section.dark {
+  background:
+    radial-gradient(ellipse 60% 50% at 18% 18%, rgba(184, 64, 28, 0.28), transparent 62%),
+    radial-gradient(ellipse 70% 60% at 92% 92%, rgba(219, 123, 87, 0.14), transparent 65%),
+    var(--vp-navy);
+  color: var(--vp-cream);
+}
+.section.dark .eyebrow { color: var(--vp-rust-soft); }
+.section.dark .eyebrow::before { background: var(--vp-rust-soft); }
+
+.side-grid { display: grid; grid-template-columns: 260px 1fr; gap: 80px; align-items: start; }
+.side-grid .eyebrow.plain { margin-top: 8px; color: var(--vp-muted); }
+.side-grid h2 { margin-bottom: 28px; max-width: 18ch; }
+.side-grid p { font-size: 18px; color: var(--vp-ink-3); max-width: 56ch; margin-bottom: 18px; }
+.side-grid p:last-child { margin-bottom: 0; }
+
+.stages-hd { margin-bottom: 72px; max-width: 22ch; }
+.stages-hd .six { color: var(--vp-rust); }
+.stages { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--vp-border); border: 1px solid var(--vp-border); }
+.stage {
+  background: var(--vp-cream); padding: 40px 48px;
+  display: grid; grid-template-columns: 280px 1fr; gap: 56px; align-items: center;
+}
+.stage-n {
+  font-family: var(--vp-font-display); font-weight: 700;
+  font-size: 88px; line-height: 1; letter-spacing: -0.04em; color: var(--vp-rust);
+  display: flex; align-items: baseline; gap: 16px;
+}
+.stage-n .lbl {
+  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.16em;
+  color: var(--vp-muted); text-transform: uppercase;
+}
+.stage-name { font-family: var(--vp-font-display); font-weight: 700; font-size: 32px; letter-spacing: -0.025em; margin-top: 8px; }
+.stage-body { font-size: 17px; color: var(--vp-ink-3); line-height: 1.55; border-left: 1px solid var(--vp-border); padding-left: 32px; }
+
+.dash-placeholder {
+  margin-top: 64px; padding: 48px;
+  border: 1px dashed var(--vp-border); border-radius: 12px;
+  background: rgba(255,255,255,0.5); text-align: center;
+  color: var(--vp-muted);
+  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+}
+
+.principle { padding: 140px 0; text-align: center; }
+.principle .eyebrow { margin-bottom: 36px; justify-content: center; }
+.principle h2 {
+  font-size: clamp(40px, 6vw, 84px); line-height: 1.04;
+  letter-spacing: -0.04em; font-weight: 700; max-width: 18ch; margin: 0 auto;
+}
+
+.fit-hd { margin-bottom: 56px; display: flex; justify-content: space-between; align-items: end; gap: 40px; }
+.fit-hd h2 { max-width: 18ch; }
+.fit-counts { font-family: var(--vp-font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--vp-muted); white-space: nowrap; }
+.fit-counts .fit { color: var(--vp-rust); font-weight: 500; }
+.fit-list { border-top: 1px solid var(--vp-border); }
+.fit-row {
+  display: grid; grid-template-columns: 80px 110px 1fr; gap: 32px;
+  align-items: center; padding: 26px 0; border-bottom: 1px solid var(--vp-border);
+}
+.fit-n { font-family: var(--vp-font-display); font-weight: 700; font-size: 28px; letter-spacing: -0.02em; color: var(--vp-ink); }
+.fit-tag {
+  font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.20em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 99px;
+  display: inline-block; width: max-content; font-weight: 500;
+}
+.fit-tag.fit { background: rgba(184, 64, 28, 0.12); color: var(--vp-rust); }
+.fit-tag.pass { background: var(--vp-cream-2); color: var(--vp-muted); }
+.fit-text { font-size: 18px; line-height: 1.45; color: var(--vp-ink); }
+.fit-foot { margin-top: 40px; font-size: 15px; color: var(--vp-muted); font-style: italic; }
+
+.team-hd { margin-bottom: 64px; max-width: 22ch; }
+.team-sub { margin-top: 16px; font-size: 18px; color: var(--vp-ink-3); max-width: 56ch; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.member { border-top: 1px solid var(--vp-border); padding-top: 32px; }
+.member-name { font-family: var(--vp-font-display); font-size: 32px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 6px; }
+.member-role {
+  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.16em;
+  color: var(--vp-rust); text-transform: uppercase; margin-bottom: 18px;
+}
+.member-bio { font-size: 15px; line-height: 1.6; color: var(--vp-ink-3); }
+
+.placeholder {
+  border: 1px dashed var(--vp-border); border-radius: 12px;
+  padding: 80px 40px; text-align: center; background: rgba(255,255,255,0.4);
+}
+.placeholder .tag {
+  font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--vp-rust); margin-bottom: 14px;
+}
+.placeholder .head {
+  font-family: var(--vp-font-display); font-size: 24px; font-weight: 700;
+  letter-spacing: -0.02em; margin-bottom: 8px;
+}
+.placeholder .desc { color: var(--vp-muted); font-size: 14px; max-width: 50ch; margin: 0 auto; }
+
+.final { padding: 140px 0; text-align: center; }
+.final .eyebrow { margin-bottom: 32px; justify-content: center; }
+.final h2 {
+  font-size: clamp(40px, 6vw, 84px); line-height: 1.05; letter-spacing: -0.04em;
+  max-width: 22ch; margin: 0 auto 56px;
+}
+.final .hero-ctas { justify-content: center; }
+.final .btn { padding: 14px 28px; font-size: 14px; }
+
+footer { background: var(--vp-ink); color: var(--vp-muted-soft); padding: 56px 0 32px; }
+footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+.foot-wm { font-family: var(--vp-font-display); font-weight: 700; font-size: 18px; color: var(--vp-cream); letter-spacing: -0.03em; }
+.foot-links { display: flex; gap: 24px; font-size: 13px; font-family: var(--vp-font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.foot-links a { color: var(--vp-muted-soft); }
+.foot-links a:hover { color: var(--vp-cream); }
+.foot-copy { font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.12em; color: var(--vp-muted-soft); }
+
+@media (max-width: 900px) {
+  :root { --vp-pad: 28px; }
+  .section { padding: 80px 0; }
+  .principle, .final { padding: 100px 0; }
+  .nav-links { display: none; }
+  .top-strip span:nth-child(2) { display: none; }
+  .side-grid { grid-template-columns: 1fr; gap: 24px; }
+  .stage { grid-template-columns: 1fr; gap: 24px; padding: 32px 24px; }
+  .stage-body { border-left: none; border-top: 1px solid var(--vp-border); padding-left: 0; padding-top: 24px; }
+  .stage-n { font-size: 64px; }
+  .stage-name { font-size: 26px; }
+  .fit-hd { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .fit-row { grid-template-columns: 56px 88px 1fr; gap: 14px; padding: 18px 0; }
+  .fit-text { font-size: 15px; }
+  .team-grid { grid-template-columns: 1fr; gap: 32px; }
+  .hero { padding: 60px 0 88px; }
+  .hero-sub { font-size: 16px; }
+  .placeholder { padding: 56px 24px; }
+}
+</style>
 </head>
 <body>
 
-<!-- Scroll-following terracotta ball -->
-<span class="scroll-trail-dot" aria-hidden="true"></span>
-<span class="scroll-trail-dot" aria-hidden="true"></span>
-<span class="scroll-trail-dot" aria-hidden="true"></span>
-<button class="scroll-dot" type="button" aria-label="Open fit quiz" data-quiz></button>
-
-<!-- TOP META STRIP -->
 <div class="top-strip">
-  <span>Veerpoint · Sales-as-a-Service</span>
-  <span>Barcelona · Working across EU &amp; US</span>
-  <span class="live">6-month engagements · custom scope</span>
+  <div class="wrap">
+    <span>VEERPOINT · SALES-AS-A-SERVICE</span>
+    <span>BARCELONA · WORKING ACROSS EU & US</span>
+    <span class="live">FOR TEAMS THAT WANT EXECUTION, NOT ADVICE</span>
+  </div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#top" class="wordmark">Veerpoint<span class="stop">.</span></a>
-    <input type="checkbox" id="nav-burger-toggle" class="nav-burger-toggle" />
-    <label for="nav-burger-toggle" class="nav-burger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </label>
+    <a href="#top" class="wordmark">Veerpoint</a>
     <div class="nav-links">
-      <a href="how-it-works.html">How it works</a>
-      <div class="nav-dd">
-        <a href="pricing.html" class="nav-dd-trigger">Pricing <span class="caret">▾</span></a>
-        <div class="nav-dd-menu">
-          <a href="pricing.html">Plans &amp; pricing<span class="sub">Retainer + commission, fixed in writing</span></a>
-          <a href="calculator.html">Anti-Hiring Calculator<span class="sub">Hire vs. Veerpoint · live math</span></a>
-        </div>
-      </div>
-      <a href="about.html">About</a>
-      <a href="pricing.html#faq">FAQ</a>
+      <a href="#approach">Approach</a>
+      <a href="#principle">Principle</a>
+      <a href="#fit">Fit</a>
+      <a href="#team">Team</a>
     </div>
-    <div class="nav-cta">
-      <a class="btn btn-primary btn-sm" href="#book">Scope a cycle <span class="arrow">→</span></a>
-    </div>
+    <a href="#talk" class="btn btn-pill">See if there's a fit</a>
   </div>
 </nav>
 
-
 <section class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <h1>
-        We don't advise<br />on sales. <span class="underline-accent">We close it<span class="stop">.</span></span>
-      </h1>
-      <p class="hero-sub">
-        Senior operators run your full sales cycle. For first GTMs and new-market plays, without adding headcount.
-      </p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="#book">Scope a 6-month engagement <span class="arrow">→</span></a>
-        <a class="btn btn-ghost" href="how-it-works.html">How a cycle runs</a>
-        <button type="button" class="quiz-launcher" data-quiz>60-second fit quiz <span class="arrow">→</span></button>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-n">15+<span class="stop">.</span></div>
-          <div class="hero-stat-l">Years closing · combined</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-n">3<span class="stop">.</span></div>
-          <div class="hero-stat-l">Stages · 6-month cycle</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-n">2<span class="stop">.</span></div>
-          <div class="hero-stat-l">ICPs we serve</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hero side card · live ops terminal -->
-    <aside class="hero-card" id="heroFloor" data-glow aria-label="Live operations feed">
-      <header class="hero-card-head">
-        <span class="title">THE FLOOR · LIVE</span>
-        <span class="clock" id="floorClock">--:--</span>
-      </header>
-      <div class="hero-card-feed">
-        <div class="hero-card-feed-list" id="floorFeed"></div>
-      </div>
-      <div class="hero-card-stats">
-        <div class="hero-card-stat">
-          <div class="l">Pipeline · 7d</div>
-          <div class="n" id="floorPipe">€4.2M</div>
-        </div>
-        <div class="hero-card-stat">
-          <div class="l">Demos · live</div>
-          <div class="n" id="floorDemos">38</div>
-        </div>
-        <div class="hero-card-stat">
-          <div class="l">Closes · 30d</div>
-          <div class="n" id="floorClose">12<span class="stop">.</span></div>
-        </div>
-      </div>
-    </aside>
-  </div>
-</section>
-
-
-<section class="trust">
-  <div class="trust-inner">
-    <div class="trust-label">15 years of closing, built at, sold at, or founded ·</div>
-    <div class="trust-logos">
-      <div class="trust-track" aria-label="Companies the founders built, closed at, or sold">
-        <span>Revolut</span>
-        <span class="sep"></span>
-        <span>Google Cloud</span>
-        <span class="sep"></span>
-        <span>Revolut Business</span>
-        <span class="sep"></span>
-        <span>Gaming SaaS</span>
-        <span class="sep"></span>
-        <span>Hospitality SaaS · founded &amp; sold</span>
-        <span class="sep"></span>
-        <!-- duplicate for seamless loop · aria-hidden so screen readers don't repeat -->
-        <span aria-hidden="true">Revolut</span>
-        <span class="sep" aria-hidden="true"></span>
-        <span aria-hidden="true">Google Cloud</span>
-        <span class="sep" aria-hidden="true"></span>
-        <span aria-hidden="true">Revolut Business</span>
-        <span class="sep" aria-hidden="true"></span>
-        <span aria-hidden="true">Gaming SaaS</span>
-        <span class="sep" aria-hidden="true"></span>
-        <span aria-hidden="true">Hospitality SaaS · founded &amp; sold</span>
-        <span class="sep" aria-hidden="true"></span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section class="gap" id="why-this">
   <div class="wrap">
-    <div class="eyebrow" style="margin-bottom: 32px"><span class="dot"></span><span>Why this exists</span></div>
-    <blockquote class="gap-quote">
-      &ldquo;<span class="em">Strong products don't always land.</span> Not because they're wrong, because making them clear, compelling and sellable is harder than it looks. <span class="em">We step into that gap.</span>&rdquo;
-    </blockquote>
-    <div class="gap-attr">Anton, Pablo &amp; Dylan · Founders</div>
+    <div class="eyebrow">SALES-AS-A-SERVICE</div>
+    <h1>Your product is great. Your <span class="under">revenue</span> should be too<span class="stop">.</span></h1>
+    <a href="#talk" class="link-cta">See if there's a fit <span class="arrow">→</span></a>
+    <p class="hero-sub">For teams that want execution, not advice.</p>
   </div>
 </section>
 
-
-<section class="section" id="who">
+<section class="section" id="about" style="background: var(--vp-cream-2)">
   <div class="wrap">
-    <div class="section-hd">
+    <div class="side-grid">
+      <div class="eyebrow plain">ABOUT VEERPOINT</div>
       <div>
-        <div class="eyebrow"><span class="dot"></span><span>Who we work with</span></div>
-        <h2 style="margin-top:24px">Two shapes of company. One offer<span class="stop">.</span></h2>
+        <h2><span class="rust">Sales operators,</span> not consultants<span class="stop">.</span></h2>
+        <p>Too many good businesses are losing to worse competitors simply because their sales function is weaker. That gap is what Veerpoint solves.</p>
+        <p>Veerpoint brings modern go-to-market execution, automation, pipeline discipline, and real commercial momentum to companies ready to grow — backed by years of sales experience.</p>
       </div>
-    </div>
-    <div class="icp-2">
-      <article class="icp-card" data-glow>
-        <div class="tag">Profile A · First go-to-market</div>
-        <h3 class="who">Funded, scaled or exited. Product live. No sales function yet<span class="stop">.</span></h3>
-        <p class="desc">You've raised, you've shipped. Founders still run every call. You need a motion that runs without you.</p>
-        <ul class="icp-signals">
-          <li><span class="k">Stage</span><span>Pre-seed → Series A · or post-exit re-launch</span></li>
-          <li><span class="k">Motion</span><span>B2B · SMB, mid-market, or enterprise</span></li>
-          <li><span class="k">Today</span><span>Founder-led sales · ad-hoc pipeline</span></li>
-          <li><span class="k">In 6 mo</span><span>A motion you can forecast and scale</span></li>
-        </ul>
-      </article>
-
-      <article class="icp-card alt" data-glow>
-        <div class="tag">Profile B · Expansion play</div>
-        <h3 class="who">Existing sales team. New market or segment. No headcount budget<span class="stop">.</span></h3>
-        <p class="desc">Your motion works at home. You need it working in a new market, without two quarters of hiring.</p>
-        <ul class="icp-signals">
-          <li><span class="k">Stage</span><span>Series A+ · revenue-scaling</span></li>
-          <li><span class="k">Motion</span><span>Proven elsewhere · porting to new ground</span></li>
-          <li><span class="k">Today</span><span>Pipeline capped by hiring &amp; ramp</span></li>
-          <li><span class="k">In 6 mo</span><span>Channel proven · ready to staff or scale</span></li>
-        </ul>
-      </article>
-    </div>
-
-    <div class="icp-note">
-      <span class="badge">Not a fit</span>
-      <span>Consumer brands, agencies, pre-product, or 30-day sprints. We don't take work we can't deliver.</span>
     </div>
   </div>
 </section>
 
-
-<section class="section tight" style="background: var(--vp-paper)">
+<section class="section" id="approach">
   <div class="wrap">
-    <div class="section-hd">
-      <div>
-        <div class="eyebrow"><span class="dot"></span><span>Why teams pick us</span></div>
-        <h2 style="margin-top:24px">Three reasons over hiring or an agency<span class="stop">.</span></h2>
+    <div class="eyebrow" style="margin-bottom: 28px">THE CYCLE</div>
+    <h2 class="stages-hd">What you should expect after <span class="six">6 months</span> of proper execution<span class="stop">.</span></h2>
+
+    <div class="stages">
+      <div class="stage">
+        <div>
+          <div class="stage-n">01 <span class="lbl">STAGE 1</span></div>
+          <div class="stage-name">Foundations</div>
+        </div>
+        <div class="stage-body">we sharpen positioning, build outbound systems, launch cold outreach, deploy first campaigns. pipeline starts moving.</div>
+      </div>
+      <div class="stage">
+        <div>
+          <div class="stage-n">02 <span class="lbl">STAGE 2</span></div>
+          <div class="stage-name">Execution</div>
+        </div>
+        <div class="stage-body">we run discovery calls, demos, negotiations, optimise ad creatives. real conversations recorded, analysed, fed back.</div>
+      </div>
+      <div class="stage">
+        <div>
+          <div class="stage-n">03 <span class="lbl">STAGE 3</span></div>
+          <div class="stage-name">Scale</div>
+        </div>
+        <div class="stage-body">we close deals, scale what works, stabilise repeatable revenue engine. predictable growth.</div>
       </div>
     </div>
 
-    <div class="pillars">
-      <div class="pillar">
-        <div class="pillar-icon">⟶</div>
-        <h3>Speed to revenue<span class="stop">.</span></h3>
-        <p>By Day 14 we're in your CRM running outbound. Your first AE would still be reading the offer letter.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon">≡</div>
-        <h3>Senior talent · no overhead<span class="stop">.</span></h3>
-        <p>The people who scope the work do the calls. Closers from Revolut and Google Cloud, not interns running someone else's playbook.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-icon">↔</div>
-        <h3>Aligned incentives<span class="stop">.</span></h3>
-        <p>Retainer plus commission. We win when you close, not before.</p>
-      </div>
-    </div>
+    <div class="dash-placeholder">▦  INTERACTIVE 6-MONTH DASHBOARD · SCROLL-DRIVEN ANIMATION COMES NEXT  ▦</div>
   </div>
 </section>
 
-
-
-<section class="section" id="offer-summary">
+<section class="section" style="padding: 64px 0; background: var(--vp-cream-2)">
   <div class="wrap">
-    <div class="section-hd">
-      <div>
-        <div class="eyebrow"><span class="dot"></span><span>The offer</span></div>
-        <h2 style="margin-top:24px">One engagement. Three stages. Six months<span class="stop">.</span></h2>
+    <div class="placeholder">
+      <div class="tag">LIVE TRACKER · iOS-NOTIFICATION STYLE</div>
+      <div class="head">Real-time deal floor — coming next commit<span class="stop">.</span></div>
+      <div class="desc">Wrapped in an iOS push-notification frame, stabilised so values don't reshuffle on refresh, with a small "simulation" disclaimer.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="video" style="padding-top: 80px">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 28px">WHY US, IN 90 SECONDS</div>
+    <div class="placeholder" style="padding: 120px 40px; background: var(--vp-ink); color: var(--vp-cream-3); border-color: transparent">
+      <div style="font-family: var(--vp-font-display); font-size: 56px; opacity: 0.5; margin-bottom: 14px">▶</div>
+      <div class="head" style="color: var(--vp-cream)">Founders' message<span class="stop">.</span></div>
+      <div class="desc" style="color: var(--vp-muted-soft)">Self-recorded · ~90 seconds · embed slot ready.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding: 80px 0">
+  <div class="wrap">
+    <div class="placeholder" style="background: rgba(184, 64, 28, 0.06); border-color: rgba(184, 64, 28, 0.25)">
+      <div class="tag">QUIZ · IN-FLOW POPUP</div>
+      <div class="head">Where are you now<span class="stop">?</span></div>
+      <div class="desc">Three-question qualifier, opens as a popup card. Plots your position on the growth graph. Personalised PDF report at the end in exchange for email.</div>
+      <div style="margin-top: 24px"><button class="btn btn-rust" disabled style="opacity: 0.7">Open quiz · wired next commit</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="section dark principle" id="principle">
+  <div class="wrap">
+    <div class="eyebrow">OPERATING PRINCIPLE</div>
+    <h2>We don't advise on revenue.<br>We <span class="under">build and run it</span><span class="stop">.</span></h2>
+  </div>
+</section>
+
+<section class="section" id="fit">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 24px">THE FIT INDEX</div>
+    <div class="fit-hd">
+      <h2>Six signals that tell us if we should be talking<span class="stop">.</span></h2>
+      <div class="fit-counts"><span class="fit">03 FIT</span> / 03 PASS</div>
+    </div>
+
+    <div class="fit-list">
+      <div class="fit-row">
+        <div class="fit-n">01</div>
+        <div><span class="fit-tag fit">FIT</span></div>
+        <div class="fit-text">funded B2B startups with product in market</div>
+      </div>
+      <div class="fit-row">
+        <div class="fit-n">02</div>
+        <div><span class="fit-tag pass">PASS</span></div>
+        <div class="fit-text">founders not ready to commit to a focused 6-month engagement</div>
+      </div>
+      <div class="fit-row">
+        <div class="fit-n">03</div>
+        <div><span class="fit-tag fit">FIT</span></div>
+        <div class="fit-text">SaaS, AI tools ready to scale beyond founder-led sales</div>
+      </div>
+      <div class="fit-row">
+        <div class="fit-n">04</div>
+        <div><span class="fit-tag pass">PASS</span></div>
+        <div class="fit-text">teams prioritising lowest cost over measurable commercial impact</div>
+      </div>
+      <div class="fit-row">
+        <div class="fit-n">05</div>
+        <div><span class="fit-tag fit">FIT</span></div>
+        <div class="fit-text">teams entering new markets wanting to adapt to local complexity</div>
+      </div>
+      <div class="fit-row">
+        <div class="fit-n">06</div>
+        <div><span class="fit-tag pass">PASS</span></div>
+        <div class="fit-text">teams wanting advice, not execution</div>
       </div>
     </div>
 
-    <div class="offer-card">
-      <div>
-        <div class="eyebrow"><span class="dot"></span><span>The cycle</span></div>
-        <h3>First list to first closed deal to repeatable motion<span class="stop">.</span></h3>
-        <p>Same operators end to end. Weekly pipeline review, monthly QBR, shared dashboard. 30-day notice between stages.</p>
-        <div class="row">
-          <a class="btn btn-accent" href="how-it-works.html">See how a cycle runs <span class="arrow">→</span></a>
-          <a class="btn btn-ghost" style="border-color:rgba(255,255,255,0.25); color:var(--vp-warm-white)" href="pricing.html">Pricing</a>
-        </div>
+    <p class="fit-foot">We'd rather start a hard conversation now than a wrong engagement later.</p>
+  </div>
+</section>
+
+<section class="section" style="background: var(--vp-cream-2)">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 28px">WHERE WE'RE OPERATING</div>
+    <h2 style="margin-bottom: 32px; max-width: 22ch">Barcelona-based.<br>Working across Europe and the US<span class="stop">.</span></h2>
+    <div class="placeholder" style="padding: 100px 40px">
+      <div class="tag">MAP OF EUROPE · BRANCHING ANIMATION</div>
+      <div class="head">SVG map slot ready<span class="stop">.</span></div>
+      <div class="desc">Hand-drawn SVG of Europe + US. Dots for team locations. Branches animate outward to active markets (DACH, UK, Nordics, EU, US).</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team">
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom: 28px">THE TEAM</div>
+    <div class="team-hd">
+      <h2>Three operators.<br>Fifteen years closing experience<span class="stop">.</span></h2>
+      <p class="team-sub">Built by people who carried a number.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="member">
+        <div class="member-name">Anton<span class="stop">.</span></div>
+        <div class="member-role">REVENUE INFRASTRUCTURE</div>
+        <div class="member-bio">Closed 6-figure deals at Revolut and Google Cloud, selling SaaS and financial products. Founded and grew his own startup before joining Veerpoint.</div>
       </div>
-      <div class="stack">
-        <div class="stack-row">
-          <span class="n">01</span>
-          <span class="name">Setup &amp; Pipeline<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
-          <span class="when">M01 — M02</span>
-        </div>
-        <div class="stack-row">
-          <span class="n">02</span>
-          <span class="name">Qualification &amp; Negotiation<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
-          <span class="when">M03 — M04</span>
-        </div>
-        <div class="stack-row">
-          <span class="n">03</span>
-          <span class="name">Closing &amp; Handoff<span class="stop" style="color:var(--vp-terracotta)">.</span></span>
-          <span class="when">M05 — M06</span>
-        </div>
+      <div class="member">
+        <div class="member-name">Pablo<span class="stop">.</span></div>
+        <div class="member-role">GO-TO-MARKET</div>
+        <div class="member-bio">Founded and exited a hospitality SaaS. Now runs go-to-market and franchise expansion across three European markets, focused on entering new markets and generating commercial traction for B2B AI products.</div>
+      </div>
+      <div class="member">
+        <div class="member-name">Dylan<span class="stop">.</span></div>
+        <div class="member-role">HEAD OF REVENUE</div>
+        <div class="member-bio">High-performance closer with a track record of exceeding targets across iGaming, fintech, SaaS, and hospitality. Specialises in high-value deals, negotiation, and converting pipeline into revenue.</div>
       </div>
     </div>
   </div>
 </section>
 
-
-<section class="manifesto" id="process">
-  <div class="wrap manifesto-inner">
-    <div class="eyebrow"><span class="dot"></span><span>· Veerpoint · the bet we're making</span></div>
-    <h2>
-      A lot of great products never get a fair shot in front of the right customers. <span class="underline-accent">We step into that gap<span class="stop">.</span></span>
-    </h2>
-    <p class="manifesto-sub">
-      Position. Price. Validate, through real calls with real buyers. Not surveys. Not slides. The motion that comes out is yours to keep.
-    </p>
-    <div class="row">
-      <a class="btn btn-accent" href="#book">Scope a 6-month engagement <span class="arrow">→</span></a>
-      <button type="button" class="quiz-launcher" style="border-color: var(--vp-warm-white); color: var(--vp-warm-white)" data-quiz>Take the fit quiz <span class="arrow">→</span></button>
+<section class="section dark final" id="talk">
+  <div class="wrap">
+    <div class="eyebrow">THE NEXT STEP</div>
+    <h2>What happens when sales becomes an engineered system<span class="stop">.</span></h2>
+    <div class="hero-ctas">
+      <a href="mailto:hello@veerpoint.io?subject=Discovery%20call" class="btn btn-rust">See if there's a fit →</a>
+      <a href="calculator.html" class="btn btn-ghost">Run the cost calculator</a>
     </div>
   </div>
 </section>
 
-
-
-<section class="closing" id="book">
-  <div class="wrap closing-grid">
-    <div>
-      <div class="eyebrow"><span class="dot"></span><span>Start here</span></div>
-      <h2>Two weeks from now,<br />you've either started a hiring search, or we've started a cycle<span class="stop">.</span></h2>
-      <p class="closing-sub">
-        30 minutes. No deck. Three questions, written read in 48 hours.
-      </p>
-      <ul class="closing-list">
-        <li><span class="n">01</span><span>You answer three questions. We listen, no pitch.</span><span class="arrow">→</span></li>
-        <li><span class="n">02</span><span>Written diagnostic in 48 hours. Yes / no / not yet.</span><span class="arrow">→</span></li>
-        <li><span class="n">03</span><span>If yes, Proposal in week 1, kickoff in week 2.</span><span class="arrow">→</span></li>
-      </ul>
-
-      <div class="quiz-dock-wrap">
-        <span class="quiz-dock-label">Or skip the form</span>
-        <div id="quizDock" class="quiz-dock">
-          <button type="button" class="quiz-dock-fallback" data-quiz aria-label="Take the 60-second fit quiz">Take the fit quiz →</button>
-        </div>
-      </div>
-    </div>
-
-    <aside class="form-card">
-      <div class="form-hd">Discovery form · 90 seconds</div>
-      <div class="field">
-        <label for="f-name">Your name</label>
-        <input id="f-name" type="text" placeholder="Jordan Stevens" />
-      </div>
-      <div class="field">
-        <label for="f-email">Work email</label>
-        <input id="f-email" type="email" placeholder="jordan@yourcompany.com" />
-      </div>
-      <div class="field">
-        <label for="f-company">Company · stage</label>
-        <input id="f-company" type="text" placeholder="Lumen · Series A · B2B SaaS" />
-      </div>
-      <div class="field">
-        <label for="f-icp">Which profile fits you</label>
-        <select id="f-icp">
-          <option>A · First go-to-market (no sales function yet)</option>
-          <option>B · Expansion into new market / segment</option>
-          <option>Both / not sure yet</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="f-stage">Where revenue is stuck today</label>
-        <select id="f-stage">
-          <option>Founder-led, no AE in seat</option>
-          <option>1 AE ramping, pipeline thin</option>
-          <option>Sales team in place, capped by hiring</option>
-          <option>Entering a new market this quarter</option>
-          <option>Other / not sure</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="f-note">One sentence on what you'd want from 6 months with us</label>
-        <textarea id="f-note" placeholder="We've raised our seed, product is live with 8 paying customers, and we need a working outbound motion before Series A..."></textarea>
-      </div>
-      <a class="btn btn-accent" href="mailto:hello@veerpoint.io?subject=Discovery%20call%20%C2%B7%20Veerpoint">Send &amp; book Discovery <span class="arrow">→</span></a>
-      <div class="form-foot">Or email hello@veerpoint.io · We reply same day</div>
-    </aside>
-  </div>
-</section>
-
-
-<!-- FOOTER -->
 <footer>
   <div class="wrap">
-    <div class="foot-grid">
-      <div class="foot-brand">
-        <div class="wordmark">Veerpoint<span class="stop">.</span></div>
-        <p>Full-cycle sales, run by senior operators. For funded teams building a motion from scratch, and sales orgs entering new markets without adding headcount.</p>
-      </div>
-      <div class="foot-col">
-        <h4>Veerpoint</h4>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="how-it-works.html">How it works</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="calculator.html">Anti-Hiring Calculator</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </div>
-      <div class="foot-col">
-        <h4>Contact</h4>
-        <ul>
-          <li><a href="mailto:hello@veerpoint.io">hello@veerpoint.io</a></li>
-          <li><a href="#book">Book a call</a></li>
-          <li><a href="#">LinkedIn</a></li>
-        </ul>
-      </div>
-      <div class="foot-col">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Privacy</a></li>
-          <li><a href="#">Imprint</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>© 2026 Veerpoint · All rights reserved</span>
-      <span>Barcelona · ES</span>
-      <span>v1.0</span>
-    </div>
+    <span class="foot-wm">Veerpoint<span class="stop">.</span></span>
+    <span class="foot-copy">© 2026 VEERPOINT · BARCELONA · ES</span>
+    <span class="foot-links">
+      <a href="mailto:hello@veerpoint.io">CONTACT</a>
+      <a href="#">PRIVACY</a>
+      <a href="#">TERMS</a>
+    </span>
   </div>
 </footer>
-
-<!-- FIT QUIZ MODAL -->
-<div class="quiz-overlay" id="quiz" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
-  <div class="quiz-modal">
-    <div class="quiz-head">
-      <span id="quiz-title">Veerpoint · Fit quiz · 5 questions</span>
-      <button class="quiz-close" type="button" aria-label="Close quiz" data-quiz-close>✕</button>
-    </div>
-    <div class="quiz-body">
-      <div class="quiz-progress" style="--p: 20%"></div>
-      <div id="quiz-stage"></div>
-    </div>
-  </div>
-</div>
-
-<script src="app.js" defer></script>
 
 </body>
 </html>
