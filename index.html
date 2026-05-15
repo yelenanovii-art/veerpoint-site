@@ -46,6 +46,61 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  position: relative;
+}
+
+/* THE POINT · scroll-follow + breadcrumb trail */
+.vp-point-trail {
+  position: absolute;
+  top: 0; left: 26px;
+  width: 14px; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.vp-point-trail::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(184, 64, 28, 0.12) 8%, rgba(184, 64, 28, 0.12) 92%, transparent);
+  transform: translateX(-50%);
+}
+.vp-point-mark {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--vp-rust);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1.2, 0.36, 1);
+}
+.vp-point-mark.placed { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+.vp-point {
+  position: fixed;
+  left: 33px;
+  top: 50vh;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--vp-rust);
+  box-shadow:
+    0 0 0 5px rgba(184, 64, 28, 0.16),
+    0 4px 14px rgba(184, 64, 28, 0.35);
+  z-index: 30;
+  pointer-events: none;
+  transition: top 0.5s cubic-bezier(0.22, 0.61, 0.36, 1), width 0.3s, height 0.3s, opacity 0.4s;
+  opacity: 0;
+}
+.vp-point.ready { opacity: 1; }
+.vp-point.docked {
+  width: 18px; height: 18px;
+  box-shadow:
+    0 0 0 7px rgba(184, 64, 28, 0.20),
+    0 6px 18px rgba(184, 64, 28, 0.40);
+}
+@media (max-width: 1100px) {
+  .vp-point, .vp-point-trail { display: none; }
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
@@ -521,6 +576,81 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     </span>
   </div>
 </footer>
+
+<!-- THE POINT · scroll-following mascot + breadcrumb trail -->
+<div class="vp-point-trail" id="vpPointTrail" aria-hidden="true"></div>
+<div class="vp-point" id="vpPoint" aria-hidden="true"></div>
+
+<script>
+(function() {
+  if (window.matchMedia('(max-width: 1100px)').matches) return;
+
+  const point = document.getElementById('vpPoint');
+  const trail = document.getElementById('vpPointTrail');
+  const sections = Array.from(document.querySelectorAll('section'));
+  if (!point || !trail || sections.length === 0) return;
+
+  // Place a breadcrumb dot in the trail for each section
+  const marks = sections.map((s) => {
+    const m = document.createElement('div');
+    m.className = 'vp-point-mark';
+    trail.appendChild(m);
+    return m;
+  });
+
+  let activeIdx = -1;
+  let raf = null;
+
+  function recompute() {
+    // Position each mark at its section's vertical anchor
+    sections.forEach((s, i) => {
+      const top = s.offsetTop + Math.min(120, s.offsetHeight * 0.15);
+      marks[i].style.top = top + 'px';
+    });
+  }
+
+  function update() {
+    raf = null;
+    const winH = window.innerHeight;
+    const scrollY = window.scrollY;
+
+    // Find which section is the current "active" one
+    let idx = 0;
+    for (let i = 0; i < sections.length; i++) {
+      const top = sections[i].offsetTop;
+      if (scrollY + winH * 0.45 >= top) idx = i;
+    }
+
+    if (idx !== activeIdx) {
+      activeIdx = idx;
+      // Light up all marks up to and including the active one
+      marks.forEach((m, i) => m.classList.toggle('placed', i <= idx));
+    }
+
+    // Where is the active mark on screen? Move the Point to track it.
+    const activeMarkTop = sections[idx].offsetTop + Math.min(120, sections[idx].offsetHeight * 0.15) - scrollY;
+    // Clamp to viewport with margins
+    const targetY = Math.max(96, Math.min(winH - 96, activeMarkTop));
+    point.style.top = targetY + 'px';
+
+    // Dock the Point at the active mark (slightly larger when "landed")
+    point.classList.toggle('docked', Math.abs(activeMarkTop - targetY) < 4);
+  }
+
+  function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
+
+  // Initial setup
+  recompute();
+  requestAnimationFrame(() => {
+    update();
+    point.classList.add('ready');
+  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { recompute(); update(); });
+  // Recompute after fonts/images may have shifted layout
+  window.addEventListener('load', () => { recompute(); update(); });
+})();
+</script>
 
 </body>
 </html>
