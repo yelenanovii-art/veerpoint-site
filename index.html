@@ -314,6 +314,112 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .placeholder .desc { color: var(--vp-muted); font-size: 14px; max-width: 50ch; margin: 0 auto; }
 
+/* LIVE TRACKER · iOS push-notification frame */
+.tracker-section {
+  background: linear-gradient(180deg, var(--vp-cream) 0%, var(--vp-cream-2) 100%);
+  padding: 96px 0 112px;
+}
+.tracker-hd { text-align: center; margin-bottom: 48px; }
+.tracker-hd .eyebrow { justify-content: center; margin-bottom: 18px; }
+.tracker-hd h2 {
+  font-family: var(--vp-font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.tracker-hd p {
+  margin-top: 14px; color: var(--vp-ink-3); font-size: 16px;
+  max-width: 50ch; margin-left: auto; margin-right: auto;
+}
+.tracker-wrap {
+  display: flex; flex-direction: column; align-items: center;
+}
+.tracker-phone-bg {
+  position: absolute;
+  inset: -40px -10% -40px -10%;
+  background: radial-gradient(ellipse 60% 60% at 50% 60%, rgba(26, 34, 56, 0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+.tracker-frame {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 24px 0;
+}
+.tracker-notif, .tracker-notif-bg {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 24px 48px rgba(26, 34, 56, 0.16),
+    0 6px 14px rgba(26, 34, 56, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.tracker-notif {
+  position: relative;
+  z-index: 3;
+  background: rgba(255, 252, 246, 0.86);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  align-items: start;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1.2, 0.36, 1);
+}
+.tracker-notif-bg {
+  position: absolute;
+  left: 0; right: 0;
+  background: rgba(255, 252, 246, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 1;
+  pointer-events: none;
+}
+.tracker-notif-bg.b1 { top: 64px; left: 14px; right: 14px; height: 72px; z-index: 2; opacity: 0.85; }
+.tracker-notif-bg.b2 { top: 112px; left: 28px; right: 28px; height: 64px; z-index: 1; opacity: 0.6; }
+.tracker-app-icon {
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--vp-ink) 0%, var(--vp-navy) 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.tracker-app-icon::before {
+  content: ""; display: block; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--vp-rust);
+  box-shadow: 0 0 0 2px rgba(184, 64, 28, 0.35);
+}
+.tracker-content { min-width: 0; padding-top: 2px; }
+.tracker-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; line-height: 1.2;
+}
+.tracker-app-name {
+  font-weight: 600; color: var(--vp-ink-2); letter-spacing: 0.01em;
+  text-transform: uppercase; font-size: 12px;
+}
+.tracker-time { color: var(--vp-muted); font-size: 13px; }
+.tracker-title {
+  font-size: 15px; font-weight: 600; color: var(--vp-ink);
+  margin-top: 4px; line-height: 1.3;
+}
+.tracker-body {
+  font-size: 14px; color: var(--vp-ink-3);
+  margin-top: 2px; line-height: 1.35;
+}
+.tracker-disclaimer {
+  margin-top: 36px;
+  font-family: var(--vp-font-mono);
+  font-size: 10px; letter-spacing: 0.18em;
+  color: var(--vp-muted); text-transform: uppercase;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  .tracker-frame { max-width: 360px; }
+}
+
 .final { padding: 140px 0; text-align: center; }
 .final .eyebrow { margin-bottom: 32px; justify-content: center; }
 .final h2 {
@@ -430,12 +536,32 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="section" style="padding: 64px 0; background: var(--vp-cream-2)">
+<section class="tracker-section">
   <div class="wrap">
-    <div class="placeholder">
-      <div class="tag">LIVE TRACKER · iOS-NOTIFICATION STYLE</div>
-      <div class="head">Real-time deal floor — coming next commit<span class="stop">.</span></div>
-      <div class="desc">Wrapped in an iOS push-notification frame, stabilised so values don't reshuffle on refresh, with a small "simulation" disclaimer.</div>
+    <div class="tracker-hd">
+      <div class="eyebrow">THE FLOOR · LIVE</div>
+      <h2>This is what runs in your pocket<span class="stop">.</span></h2>
+      <p>The activity log from a Veerpoint cycle, one notification at a time. Closes, demos booked, sequences sent — pinged straight to founders.</p>
+    </div>
+
+    <div class="tracker-wrap">
+      <div class="tracker-frame">
+        <div class="tracker-phone-bg"></div>
+        <div class="tracker-notif-bg b2"></div>
+        <div class="tracker-notif-bg b1"></div>
+        <div class="tracker-notif">
+          <div class="tracker-app-icon"></div>
+          <div class="tracker-content">
+            <div class="tracker-meta">
+              <span class="tracker-app-name">Veerpoint</span>
+              <span class="tracker-time" id="trkTime">now</span>
+            </div>
+            <div class="tracker-title" id="trkTitle">Closed · €38k ARR</div>
+            <div class="tracker-body" id="trkBody">Berlin, DE · Series A SaaS · 22 days from first touch</div>
+          </div>
+        </div>
+      </div>
+      <div class="tracker-disclaimer">SIMULATION · LIVE FEED WIRES UP AT LAUNCH</div>
     </div>
   </div>
 </section>
@@ -576,6 +702,54 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     </span>
   </div>
 </footer>
+
+<!-- LIVE TRACKER · cycles through fixed events (stable across refreshes) -->
+<script>
+(function() {
+  const events = [
+    { title: 'Closed · €38k ARR',            body: 'Berlin, DE · Series A SaaS · 22 days from first touch', time: 'now' },
+    { title: 'Demo booked',                  body: 'London, UK · fintech · founder-led · Thu 16:00',         time: '2m' },
+    { title: 'Sequence sent · 28 prospects', body: 'Stockholm, SE · Series B target list',                   time: '8m' },
+    { title: 'Call notes synced · 14 calls', body: 'CRM updated · sentiment + objections tagged',            time: '12m' },
+    { title: 'Discovery scheduled',          body: 'Brussels, BE · sales-tech · Tue 11:00 CET',              time: '24m' },
+    { title: 'Demo · rebooked',              body: 'Lisbon, PT · €24k ARR · was a no-show',                  time: '38m' },
+    { title: 'Pipeline added · €1.2M',       body: 'New SOW signed · Skyfall Studios',                       time: '1h' },
+    { title: 'Closed · €24k ARR',            body: 'Warsaw, PL · 8 day cycle from intro',                    time: '1h' },
+    { title: 'Reply rate · 15%',             body: 'Series-A · DACH sequence beating the benchmark',         time: '2h' },
+    { title: 'Proposal out',                 body: 'Dublin, IE · €180k ARR · 2 stakeholders',                time: '2h' },
+  ];
+  const tEl = document.getElementById('trkTitle');
+  const bEl = document.getElementById('trkBody');
+  const wEl = document.getElementById('trkTime');
+  const notifEl = document.querySelector('.tracker-notif');
+  if (!tEl || !bEl || !wEl || !notifEl) return;
+
+  let idx = 0;
+  function rotate() {
+    idx = (idx + 1) % events.length;
+    const e = events[idx];
+    notifEl.style.transform = 'translateY(-12px)';
+    notifEl.style.opacity = '0';
+    setTimeout(() => {
+      tEl.textContent = e.title;
+      bEl.textContent = e.body;
+      wEl.textContent = e.time;
+      notifEl.style.transform = 'translateY(0)';
+      notifEl.style.opacity = '1';
+    }, 280);
+  }
+  // Only animate when the tracker is on screen (saves battery + makes it feel "live" on view)
+  const trackerSec = document.querySelector('.tracker-section');
+  let timer = null;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !timer) timer = setInterval(rotate, 3400);
+      else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
+    });
+  }, { threshold: 0.25 });
+  if (trackerSec) io.observe(trackerSec);
+})();
+</script>
 
 <!-- THE POINT · scroll-following mascot + breadcrumb trail -->
 <div class="vp-point-trail" id="vpPointTrail" aria-hidden="true"></div>
