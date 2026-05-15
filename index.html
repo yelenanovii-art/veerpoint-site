@@ -314,6 +314,253 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .placeholder .desc { color: var(--vp-muted); font-size: 14px; max-width: 50ch; margin: 0 auto; }
 
+/* QUIZ POPUP MODAL */
+.quiz-trigger-section {
+  padding: 96px 0;
+  background: var(--vp-cream);
+}
+.quiz-trigger-card {
+  max-width: 920px;
+  margin: 0 auto;
+  background:
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(184, 64, 28, 0.10) 0%, transparent 70%),
+    var(--vp-cream-2);
+  border: 1px solid var(--vp-border);
+  border-radius: 16px;
+  padding: 52px 56px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+}
+.quiz-trigger-card .eyebrow { margin-bottom: 14px; }
+.quiz-trigger-card h3 {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.quiz-trigger-card p {
+  color: var(--vp-ink-3);
+  font-size: 15px;
+  max-width: 48ch;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  .quiz-trigger-card { grid-template-columns: 1fr; padding: 32px 24px; }
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 25, 30, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  padding: 24px;
+}
+.modal.open { opacity: 1; pointer-events: auto; }
+.modal-card {
+  background: var(--vp-cream);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 18px;
+  padding: 32px 36px 28px;
+  position: relative;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.22, 1.2, 0.36, 1);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.32);
+}
+.modal.open .modal-card { transform: translateY(0) scale(1); }
+.modal-close {
+  position: absolute;
+  top: 18px; right: 20px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--vp-cream-2);
+  color: var(--vp-ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.modal-close:hover { background: var(--vp-ink); color: var(--vp-cream); }
+.modal-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.modal-step-label {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--vp-rust);
+  text-transform: uppercase;
+}
+.modal-step-bar {
+  display: flex; gap: 4px;
+}
+.modal-step-bar span {
+  width: 24px; height: 3px;
+  background: var(--vp-cream-3);
+  border-radius: 99px;
+  transition: background 0.2s;
+}
+.modal-step-bar span.done { background: var(--vp-rust); }
+.modal-q {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+.modal-sub {
+  font-size: 14px; color: var(--vp-muted);
+  margin-bottom: 24px;
+}
+.modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-option {
+  text-align: left;
+  background: var(--vp-cream);
+  border: 1px solid var(--vp-border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--vp-ink);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.modal-option:hover {
+  border-color: var(--vp-rust);
+  background: rgba(184, 64, 28, 0.04);
+}
+.modal-option .key {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--vp-rust);
+  width: 24px;
+  font-weight: 600;
+}
+.modal-option .lbl-main { font-weight: 600; line-height: 1.2; }
+.modal-option .lbl-sub { font-size: 12px; color: var(--vp-muted); margin-top: 3px; }
+
+/* Result screen */
+.modal-result h2 {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.modal-result .stage-pill {
+  display: inline-block;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(184, 64, 28, 0.12);
+  color: var(--vp-rust);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.modal-result-graph {
+  margin: 14px 0 20px;
+  padding: 16px 18px;
+  background: var(--vp-cream-2);
+  border-radius: 10px;
+}
+.modal-result-text {
+  font-size: 15px; line-height: 1.55; color: var(--vp-ink-3);
+  margin-bottom: 24px;
+}
+.modal-gate {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--vp-border);
+}
+.modal-gate-l {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--vp-rust);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.modal-gate-q {
+  font-family: var(--vp-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.modal-gate-sub { font-size: 13px; color: var(--vp-muted); margin-bottom: 14px; }
+.modal-gate-form {
+  display: flex; gap: 8px;
+}
+.modal-gate-form input {
+  flex: 1;
+  background: var(--vp-cream);
+  border: 1px solid var(--vp-border-strong, var(--vp-border));
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+.modal-gate-form input:focus { border-color: var(--vp-ink); }
+.modal-gate-form button {
+  background: var(--vp-rust);
+  color: var(--vp-cream);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.modal-gate-form button:hover { background: var(--vp-rust-hover); }
+.modal-done {
+  text-align: center;
+  padding: 36px 0 20px;
+}
+.modal-done .check {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--vp-rust); color: var(--vp-cream);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700;
+  margin-bottom: 14px;
+}
+.modal-done h3 { font-family: var(--vp-font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; }
+.modal-done p { color: var(--vp-ink-3); margin-top: 6px; font-size: 14px; }
+
 /* MAP OF EUROPE */
 .map-section {
   background: var(--vp-cream-2);
@@ -874,16 +1121,193 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="section" style="padding: 80px 0">
+<section class="quiz-trigger-section">
   <div class="wrap">
-    <div class="placeholder" style="background: rgba(184, 64, 28, 0.06); border-color: rgba(184, 64, 28, 0.25)">
-      <div class="tag">QUIZ · IN-FLOW POPUP</div>
-      <div class="head">Where are you now<span class="stop">?</span></div>
-      <div class="desc">Three-question qualifier, opens as a popup card. Plots your position on the growth graph. Personalised PDF report at the end in exchange for email.</div>
-      <div style="margin-top: 24px"><button class="btn btn-rust" disabled style="opacity: 0.7">Open quiz · wired next commit</button></div>
+    <div class="quiz-trigger-card">
+      <div>
+        <div class="eyebrow">THE 60-SECOND READ</div>
+        <h3>Where are you on the curve<span class="stop">?</span></h3>
+        <p>Three questions. Plots your position on the growth graph. You'll get back a personalised six-month plan as a PDF — what stage we'd start at, what the cycle would look like, what to expect by month six.</p>
+      </div>
+      <div>
+        <button class="btn btn-rust" onclick="vpQuizOpen()" style="padding: 14px 22px; font-size: 14px">Take the fit quiz →</button>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- QUIZ MODAL -->
+<div class="modal" id="vpQuiz" role="dialog" aria-modal="true" aria-labelledby="quizQ" tabindex="-1">
+  <div class="modal-card">
+    <button class="modal-close" onclick="vpQuizClose()" aria-label="Close">✕</button>
+
+    <!-- QUESTIONS -->
+    <div id="quizQuestion">
+      <div class="modal-step">
+        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 3</span>
+        <span class="modal-step-bar" id="qStepBar">
+          <span class="done"></span><span></span><span></span>
+        </span>
+      </div>
+      <h2 class="modal-q" id="quizQ">Where are you now?</h2>
+      <p class="modal-sub" id="quizSub">Pick the closest. Doesn't have to be exact.</p>
+      <div class="modal-options" id="quizOptions"></div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="quizResult" style="display: none">
+      <div class="modal-step">
+        <span class="modal-step-label" style="color: var(--vp-ink-3)">YOUR PROFILE</span>
+        <span class="modal-step-bar"><span class="done"></span><span class="done"></span><span class="done"></span></span>
+      </div>
+      <span class="stage-pill" id="resultStage">PIPELINE STAGE · M3 — M4 START</span>
+      <h2>Here's where you sit<span class="stop">.</span></h2>
+      <div class="modal-result-graph">
+        <svg viewBox="0 0 480 100" style="width: 100%; height: 90px; display: block">
+          <line x1="0" y1="80" x2="480" y2="80" stroke="#D8D2C4" stroke-width="1"/>
+          <path d="M 0,80 C 80,78 160,68 240,52 C 320,34 400,18 480,12" stroke="#B8401C" stroke-width="2" fill="none"/>
+          <circle id="resultDot" cx="180" cy="60" r="7" fill="#B8401C"/>
+          <circle id="resultDot2" cx="180" cy="60" r="14" fill="none" stroke="#B8401C" stroke-width="1.5" opacity="0.35"/>
+          <text x="0" y="98" font-family="Geist Mono" font-size="9" fill="#7E8088" letter-spacing="0.12em">M1</text>
+          <text x="160" y="98" font-family="Geist Mono" font-size="9" fill="#7E8088" letter-spacing="0.12em">M3</text>
+          <text x="320" y="98" font-family="Geist Mono" font-size="9" fill="#7E8088" letter-spacing="0.12em">M5</text>
+          <text x="472" y="98" font-family="Geist Mono" font-size="9" fill="#7E8088" letter-spacing="0.12em" text-anchor="end">M6</text>
+        </svg>
+      </div>
+      <p class="modal-result-text" id="resultText">A six-month Veerpoint cycle would start by sharpening positioning, then move you into a repeatable close pattern. By M6 you'd have a self-sustaining engine.</p>
+
+      <div class="modal-gate">
+        <div class="modal-gate-l">YOUR PERSONALISED REPORT</div>
+        <div class="modal-gate-q">Get the full plan as a PDF<span class="stop">.</span></div>
+        <p class="modal-gate-sub">Your answers, the stage we'd start at, the cycle breakdown, and an indicative scope. Sent in 60 seconds.</p>
+        <form class="modal-gate-form" onsubmit="vpQuizSend(event)">
+          <input type="email" id="quizEmail" placeholder="jordan@yourcompany.com" required autocomplete="email">
+          <button type="submit">Send me the PDF →</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- DONE -->
+    <div id="quizDone" class="modal-done" style="display: none">
+      <div class="check">✓</div>
+      <h3>Sent<span class="stop">.</span></h3>
+      <p>Check <strong id="doneEmail"></strong> in a minute. If you don't see it, look in promotions.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const QS = [
+    {
+      q: "Where are you now?",
+      sub: "Pick the closest. Doesn't have to be exact.",
+      opts: [
+        { k: 'A', t: "Pre-revenue",         s: "Product in market, no paying customers yet" },
+        { k: 'B', t: "Under €500k ARR",     s: "First deals, no repeatable motion" },
+        { k: 'C', t: "€500k – €2M ARR",     s: "Founder-led closes, scaling beyond is the bottleneck" },
+        { k: 'D', t: "Above €2M ARR",       s: "Have a team. New market or motion." },
+      ]
+    },
+    {
+      q: "What does your sales function look like today?",
+      sub: "Whoever is closing deals right now.",
+      opts: [
+        { k: 'A', t: "Founders selling, no AE" },
+        { k: 'B', t: "One AE in seat, ramping" },
+        { k: 'C', t: "Small team · 2–5 reps" },
+        { k: 'D', t: "Full org · entering a new market" },
+      ]
+    },
+    {
+      q: "What's the biggest blocker?",
+      sub: "The thing that's been stuck for the longest.",
+      opts: [
+        { k: 'A', t: "Pipeline is too thin" },
+        { k: 'B', t: "Conversion · qualified leads don't close" },
+        { k: 'C', t: "Deal velocity · cycles too slow" },
+        { k: 'D', t: "Scaling beyond the founders" },
+      ]
+    },
+  ];
+
+  const STAGE_BY_Q1 = {
+    A: { label: 'FOUNDATIONS · M1 START', text: 'A six-month Veerpoint cycle would start at zero: positioning, ICP calibration, outbound launch, first discovery calls. Expect pipeline to start moving by M2, first closes by M3.', x: 40 },
+    B: { label: 'FOUNDATIONS → EXECUTION · M2', text: 'You have early signal but no engine. We\'d productise what\'s working and run two sequences in parallel, then move into Execution by M3 — discovery, demos, structured close motion.', x: 100 },
+    C: { label: 'EXECUTION · M3 START', text: 'A six-month Veerpoint cycle would focus on repeatable closes from day one — pricing reviews, deal-velocity work, and a second motion to lift you out of the founder bottleneck.', x: 180 },
+    D: { label: 'SCALE / NEW MARKET · M4 START', text: 'You don\'t need foundations — you need a new motion or a new market. A six-month sprint would compress the typical 12-month new-market entry into a tighter, ops-led one.', x: 280 },
+  };
+
+  let step = 0;
+  let answers = [];
+
+  const modal = document.getElementById('vpQuiz');
+  function render() {
+    document.getElementById('quizQuestion').style.display = step < QS.length ? 'block' : 'none';
+    document.getElementById('quizResult').style.display = (step === QS.length) ? 'block' : 'none';
+    document.getElementById('quizDone').style.display = (step === QS.length + 1) ? 'block' : 'none';
+
+    if (step < QS.length) {
+      const Q = QS[step];
+      document.getElementById('quizQ').textContent = Q.q;
+      document.getElementById('quizSub').textContent = Q.sub;
+      document.getElementById('qStepLabel').textContent = `QUESTION ${step + 1} OF ${QS.length}`;
+      document.getElementById('qStepBar').innerHTML = QS.map((_, i) =>
+        `<span class="${i <= step ? 'done' : ''}"></span>`).join('');
+      document.getElementById('quizOptions').innerHTML = Q.opts.map(o => `
+        <button class="modal-option" onclick="vpQuizPick('${o.k}')">
+          <span class="key">${o.k}</span>
+          <span>
+            <span class="lbl-main">${o.t}</span>
+            ${o.s ? `<span class="lbl-sub">${o.s}</span>` : ''}
+          </span>
+        </button>
+      `).join('');
+    }
+    if (step === QS.length) {
+      const s = STAGE_BY_Q1[answers[0]] || STAGE_BY_Q1.C;
+      document.getElementById('resultStage').textContent = s.label;
+      document.getElementById('resultText').textContent = s.text;
+      const dotX = s.x;
+      // Map x to curve y (approximate, matching the path curve in SVG)
+      const pct = dotX / 480;
+      const dotY = 80 - (68 * Math.pow(pct, 1.2));
+      const dot = document.getElementById('resultDot');
+      const dot2 = document.getElementById('resultDot2');
+      dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY);
+      dot2.setAttribute('cx', dotX); dot2.setAttribute('cy', dotY);
+    }
+  }
+
+  window.vpQuizOpen = function() {
+    step = 0; answers = [];
+    render();
+    modal.classList.add('open');
+    setTimeout(() => modal.focus(), 50);
+    document.body.style.overflow = 'hidden';
+  };
+  window.vpQuizClose = function() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  window.vpQuizPick = function(k) {
+    answers.push(k);
+    step++;
+    render();
+  };
+  window.vpQuizSend = function(e) {
+    e.preventDefault();
+    const v = document.getElementById('quizEmail').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return;
+    document.getElementById('doneEmail').textContent = v;
+    step++; render();
+  };
+
+  // ESC to close, backdrop click to close
+  modal.addEventListener('click', e => { if (e.target === modal) vpQuizClose(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) vpQuizClose(); });
+})();
+</script>
 
 <section class="section dark principle" id="principle">
   <div class="wrap">
