@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
 <style>
 :root {
@@ -50,59 +51,9 @@ body {
   position: relative;
 }
 
-/* THE POINT · scroll-follow + breadcrumb trail */
-.vp-point-trail {
-  position: absolute;
-  top: 0; left: 26px;
-  width: 14px; height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
-.vp-point-trail::before {
-  content: "";
-  position: absolute;
-  left: 50%; top: 0; bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(160, 64, 34, 0.12) 8%, rgba(160, 64, 34, 0.12) 92%, transparent);
-  transform: translateX(-50%);
-}
-.vp-point-mark {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.7);
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--vp-terracotta);
-  opacity: 0;
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1.2, 0.36, 1);
-}
-.vp-point-mark.placed { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
-.vp-point {
-  position: fixed;
-  left: 33px;
-  top: 50vh;
-  transform: translate(-50%, -50%);
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--vp-terracotta);
-  box-shadow:
-    0 0 0 5px rgba(160, 64, 34, 0.16),
-    0 4px 14px rgba(160, 64, 34, 0.35);
-  z-index: 30;
-  pointer-events: none;
-  transition: top 0.5s cubic-bezier(0.22, 0.61, 0.36, 1), width 0.3s, height 0.3s, opacity 0.4s;
-  opacity: 0;
-}
-.vp-point.ready { opacity: 1; }
-.vp-point.docked {
-  width: 18px; height: 18px;
-  box-shadow:
-    0 0 0 7px rgba(160, 64, 34, 0.20),
-    0 6px 18px rgba(160, 64, 34, 0.40);
-}
-@media (max-width: 1100px) {
-  .vp-point, .vp-point-trail { display: none; }
-}
+/* Connecting ball — see style.css for .scroll-dot / .scroll-trail-dot rules.
+   The dot springs between every <h1>/<h2> .stop on the page as you scroll. */
+
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
 
@@ -418,16 +369,68 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .fit-text { font-size: 18px; line-height: 1.45; color: var(--vp-ink); }
 .fit-foot { margin-top: 40px; font-size: 15px; color: var(--vp-muted); font-style: italic; }
 
-.team-hd { margin-bottom: 64px; max-width: 22ch; }
-.team-sub { margin-top: 16px; font-size: 18px; color: var(--vp-ink-70); max-width: 56ch; }
-.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
-.member { border-top: 1px solid var(--vp-border); padding-top: 32px; }
-.member-name { font-family: var(--vp-font-display); font-size: 32px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 6px; }
-.member-role {
-  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.16em;
-  color: var(--vp-terracotta); text-transform: uppercase; margin-bottom: 18px;
+.team-hd { margin-bottom: 56px; max-width: 60ch; }
+.team-hd h2 {
+  font-family: var(--vp-font-display);
+  font-size: clamp(28px, 3.2vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin: 0;
 }
-.member-bio { font-size: 15px; line-height: 1.6; color: var(--vp-ink-70); }
+.team-sub { margin-top: 14px; font-size: 17px; color: var(--vp-ink-70); max-width: 56ch; }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.member {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.member-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(135deg, var(--vp-paper) 0%, var(--vp-paper-2) 100%);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.member-photo .ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(28, 28, 30, 0.32);
+  z-index: 0;
+}
+.member-photo img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.member-photo img[src=""], .member-photo img:not([src]) { display: none; }
+.member-name {
+  font-family: var(--vp-font-display);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 8px 0 0;
+}
+.member-role {
+  font-family: var(--vp-font-mono); font-size: 10px; letter-spacing: 0.18em;
+  color: var(--vp-terracotta); text-transform: uppercase; margin-bottom: 6px;
+}
+.member-bio { font-size: 14.5px; line-height: 1.55; color: var(--vp-ink-70); margin: 0; }
 
 .placeholder {
   border: 1px dashed var(--vp-border); border-radius: 4px;
@@ -690,111 +693,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .modal-done h3 { font-family: var(--vp-font-display); font-weight: 700; font-size: 24px; letter-spacing: -0.02em; }
 .modal-done p { color: var(--vp-ink-70); margin-top: 6px; font-size: 14px; }
 
-/* MAP OF EUROPE */
-.map-section {
-  background: var(--vp-paper);
-  padding: 120px 0;
-  overflow: hidden;
-}
-.map-hd { margin-bottom: 48px; max-width: 720px; }
-.map-hd .eyebrow { margin-bottom: 20px; }
-.map-hd h2 {
-  font-family: var(--vp-font-display);
-  font-weight: 700;
-  font-size: clamp(36px, 5vw, 64px);
-  letter-spacing: -0.035em;
-  line-height: 1.05;
-}
-.map-sub {
-  margin-top: 18px; font-size: 17px; color: var(--vp-ink-70);
-  max-width: 52ch; line-height: 1.55;
-}
-.map-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 24px 0;
-}
-.eu-map { width: 100%; height: auto; display: block; }
-.eu-map .pulse {
-  transform-origin: 242px 405px;
-  animation: vp-map-pulse 2.4s ease-out infinite;
-}
-.eu-map .pulse-2 {
-  transform-origin: 242px 405px;
-  animation: vp-map-pulse 2.4s ease-out infinite;
-  animation-delay: 0.6s;
-}
-@keyframes vp-map-pulse {
-  0%   { transform: scale(1);   opacity: 0.6; }
-  100% { transform: scale(3.5); opacity: 0; }
-}
-.eu-map .branch {
-  stroke-dasharray: 4 5;
-  stroke-dashoffset: 200;
-  animation: vp-branch-draw 1.6s ease-out forwards;
-  animation-play-state: paused;
-}
-.eu-map.in-view .branch { animation-play-state: running; }
-.eu-map .graticule { stroke: var(--vp-border-strong); stroke-width: 0.5; stroke-dasharray: 1 4; opacity: 0.55; }
-@keyframes vp-branch-draw {
-  to { stroke-dashoffset: 0; }
-}
-.eu-map .branch.b1 { animation-delay: 0.1s; }
-.eu-map .branch.b2 { animation-delay: 0.25s; }
-.eu-map .branch.b3 { animation-delay: 0.4s; }
-.eu-map .branch.b4 { animation-delay: 0.55s; }
-.eu-map .branch.b5 { animation-delay: 0.7s; }
-.eu-map .branch.us { animation-delay: 0.9s; }
-.eu-map .city-label { font-family: 'Inter Tight', sans-serif; }
-.eu-map .city-meta { font-family: 'Geist Mono', monospace; }
-
-.map-legend {
-  display: flex;
-  gap: 32px;
-  margin-top: 32px;
-  flex-wrap: wrap;
-  font-family: var(--vp-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--vp-muted);
-  text-transform: uppercase;
-}
-.map-legend .item { display: inline-flex; align-items: center; gap: 8px; }
-.map-legend .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--vp-terracotta); }
-.map-legend .dot.small { width: 6px; height: 6px; opacity: 0.7; }
-.map-legend .dot.line { width: 16px; height: 2px; border-radius: 0; background: transparent; border-top: 1.5px dashed var(--vp-terracotta); }
-
-@media (max-width: 900px) {
-  .map-section { padding: 80px 0; }
-  .map-legend { gap: 16px; font-size: 10px; }
-}
-/* ── Mobile map · viewBox text needs CSS bumps because SVG scales linearly with width ── */
-@media (max-width: 760px) {
-  .map-hd h2 { font-size: clamp(28px, 7.5vw, 40px); }
-  .map-sub { font-size: 15px; }
-  /* viewBox = 900 wide; on a 360-wide screen, raw 13px attrs render at 5px. Bump via CSS. */
-  .eu-map .city-label { font-size: 22px; font-weight: 600; }
-  .eu-map .city-meta  { font-size: 14px; letter-spacing: 0.18em; }
-  /* HQ label needs to stay readable at mobile too */
-  .eu-map .prospect { display: none; }
-  .eu-map .graticule { display: none; }
-  /* Larger circle hits so they don't disappear into the silhouette */
-  .eu-map circle[r="6"] { r: 9; }
-  .eu-map circle[r="11"] { r: 14; }
-  .eu-map circle[r="9"] { r: 12; }
-  /* US callout text at a size that survives mobile downscale */
-  .eu-map .us-callout text:first-child { font-size: 20px; }
-  .eu-map .us-callout text:last-child  { font-size: 14px; letter-spacing: 0.14em; }
-}
-@media (max-width: 480px) {
-  /* Allow svg to stay portrait-friendly: trim section padding */
-  .map-section { padding: 64px 0; }
-  .map-hd { margin-bottom: 28px; }
-  .map-legend { font-size: 9.5px; gap: 14px; row-gap: 10px; }
-}
-
+/* Map of Europe · advanced .map-sec styles live in style.css */
 /* 6-MONTH SCROLL DASHBOARD */
 .dash-section { background: var(--vp-warm-white); }
 .dash-stage {
@@ -1591,144 +1490,297 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="map-section">
+<section class="map-sec" id="markets">
   <div class="wrap">
     <div class="map-hd">
-      <div class="eyebrow">WHERE WE'RE OPERATING</div>
-      <h2>Barcelona-based.<br>Working across Europe and the US<span class="stop">.</span></h2>
-      <p class="map-sub">Three operators in three cities. Active engagements across DACH, the UK, the Nordics, the EU, and the US East Coast.</p>
+      <div>
+        <div class="eyebrow" style="color: var(--vp-terracotta)"><span class="dot"></span><span>Where we work</span></div>
+        <h2>Based in Barcelona. Closing across Europe<span class="stop">.</span></h2>
+      </div>
+      <p class="map-sub">
+        Western and Northern Europe, plus US calendars on demand. Hover any city for local time and specialty.
+      </p>
     </div>
 
-    <div class="map-wrap">
-      <svg viewBox="0 0 900 520" class="eu-map" id="euMap" aria-hidden="true">
-        <!-- Latitude reference lines (subtle data-viz feel) -->
-        <line class="graticule" x1="0" y1="195" x2="900" y2="195"/>
-        <line class="graticule" x1="0" y1="280" x2="900" y2="280"/>
-        <line class="graticule" x1="0" y1="365" x2="900" y2="365"/>
+    <div class="map-canvas">
+    <div class="map-stage vp-reveal" id="mapStage">
+      <div class="map-stage-meta">
+        <span>VP · LIVE NETWORK</span>
+        <span class="live">SIGNAL · ACTIVE</span>
+      </div>
+      <svg class="map-svg" viewBox="0 0 760 600" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="vp-hq-glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%"   stop-color="#A04022" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#A04022" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
 
-        <!-- Mainland Europe silhouette (simplified, recognizable) -->
-        <path d="M 96,452
-                 C 86,420 92,380 110,355
-                 C 160,348 210,355 232,330
-                 C 250,310 235,288 220,278
-                 C 240,260 280,255 320,260
-                 C 360,265 392,260 402,228
-                 C 402,200 412,210 418,238
-                 C 432,205 458,150 488,90
-                 C 510,72 540,75 555,90
-                 C 558,130 564,170 572,210
-                 C 580,250 582,278 578,300
-                 C 565,325 540,348 515,365
-                 C 488,388 462,408 452,420
-                 C 442,410 458,388 472,375
-                 C 478,395 470,418 458,418
-                 C 442,408 422,388 402,365
-                 C 380,358 350,365 322,378
-                 C 280,395 220,415 150,438
-                 C 115,452 96,452 96,452 Z"
-              fill="rgba(160, 64, 34, 0.05)"
-              stroke="rgba(160, 64, 34, 0.45)"
-              stroke-width="1"/>
-
-        <!-- Great Britain -->
-        <path d="M 198,310
-                 C 215,302 230,290 228,265
-                 C 232,242 218,222 200,225
-                 C 180,232 175,260 180,288
-                 C 184,302 192,310 198,310 Z"
-              fill="rgba(160, 64, 34, 0.05)"
-              stroke="rgba(160, 64, 34, 0.45)"
-              stroke-width="1"/>
-
-        <!-- Ireland -->
-        <path d="M 118,260
-                 C 132,252 152,256 156,272
-                 C 152,290 132,294 118,288
-                 C 108,278 108,265 118,260 Z"
-              fill="rgba(160, 64, 34, 0.05)"
-              stroke="rgba(160, 64, 34, 0.45)"
-              stroke-width="1"/>
-
-        <!-- Trans-Atlantic arc to US (curves off the left edge of the map) -->
-        <path class="branch us"
-              d="M 242,405 C 180,360 110,320 50,290 C 30,283 18,278 8,275"
-              stroke="var(--vp-terracotta)" stroke-width="1.5" fill="none" opacity="0.75"/>
-        <g class="us-callout">
-          <text x="10" y="262" font-family="Inter Tight" font-weight="600" font-size="13" fill="var(--vp-terracotta)">→ US East Coast</text>
-          <text x="10" y="278" font-family="Geist Mono" font-size="10" fill="var(--vp-muted)" letter-spacing="0.12em">NYC · BOS · ATL</text>
+        <!-- Graticule · faint long/lat grid -->
+        <g class="graticule">
+          <line x1="0"   y1="100" x2="760" y2="100"/>
+          <line x1="0"   y1="200" x2="760" y2="200"/>
+          <line x1="0"   y1="300" x2="760" y2="300"/>
+          <line x1="0"   y1="400" x2="760" y2="400"/>
+          <line x1="0"   y1="500" x2="760" y2="500"/>
+          <line x1="100" y1="0"   x2="100" y2="600"/>
+          <line x1="200" y1="0"   x2="200" y2="600"/>
+          <line x1="300" y1="0"   x2="300" y2="600"/>
+          <line x1="400" y1="0"   x2="400" y2="600"/>
+          <line x1="500" y1="0"   x2="500" y2="600"/>
+          <line x1="600" y1="0"   x2="600" y2="600"/>
+          <line x1="700" y1="0"   x2="700" y2="600"/>
         </g>
 
-        <!-- Branches from Barcelona to active cities -->
-        <line class="branch b1" x1="242" y1="405" x2="220" y2="290" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-        <line class="branch b2" x1="242" y1="405" x2="290" y2="280" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-        <line class="branch b3" x1="242" y1="405" x2="405" y2="275" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-        <line class="branch b4" x1="242" y1="405" x2="468" y2="195" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-        <line class="branch b5" x1="242" y1="405" x2="440" y2="328" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-
-        <!-- Barcelona · HQ -->
+        <!-- Land dots · loose Europe outline -->
         <g>
-          <circle cx="242" cy="405" r="11" fill="none" stroke="var(--vp-terracotta)" stroke-width="2" opacity="0.6" class="pulse"/>
-          <circle cx="242" cy="405" r="11" fill="none" stroke="var(--vp-terracotta)" stroke-width="2" opacity="0.6" class="pulse-2"/>
-          <circle cx="242" cy="405" r="9" fill="var(--vp-terracotta)"/>
-          <text x="258" y="407" class="city-label" font-weight="700" font-size="15" fill="var(--vp-ink)">Barcelona</text>
-          <text x="258" y="424" class="city-meta" font-size="10" fill="var(--vp-terracotta)" letter-spacing="0.16em">HQ · 3 OPERATORS</text>
+          <!-- Iberia -->
+          <circle class="land-dot" cx="60"  cy="470" r="2.2"/><circle class="land-dot" cx="80"  cy="490" r="2.2"/>
+          <circle class="land-dot" cx="100" cy="475" r="2.2"/><circle class="land-dot" cx="120" cy="465" r="2.2"/>
+          <circle class="land-dot" cx="140" cy="495" r="2.2"/><circle class="land-dot" cx="160" cy="470" r="2.2"/>
+          <circle class="land-dot" cx="100" cy="520" r="2.2"/><circle class="land-dot" cx="130" cy="535" r="2.2"/>
+          <circle class="land-dot" cx="160" cy="510" r="2.2"/><circle class="land-dot" cx="185" cy="490" r="2.2"/>
+          <circle class="land-dot" cx="40"  cy="505" r="2.2"/><circle class="land-dot" cx="200" cy="475" r="2.2"/>
+
+          <!-- British Isles -->
+          <circle class="land-dot" cx="170" cy="240" r="2.2"/><circle class="land-dot" cx="190" cy="220" r="2.2"/>
+          <circle class="land-dot" cx="210" cy="240" r="2.2"/><circle class="land-dot" cx="225" cy="260" r="2.2"/>
+          <circle class="land-dot" cx="245" cy="265" r="2.2"/><circle class="land-dot" cx="215" cy="290" r="2.2"/>
+          <circle class="land-dot" cx="235" cy="305" r="2.2"/><circle class="land-dot" cx="200" cy="275" r="2.2"/>
+          <circle class="land-dot" cx="220" cy="200" r="2.2"/><circle class="land-dot" cx="250" cy="225" r="2.2"/>
+          <circle class="land-dot" cx="180" cy="270" r="2.2"/>
+
+          <!-- France / Benelux -->
+          <circle class="land-dot" cx="275" cy="320" r="2.2"/><circle class="land-dot" cx="295" cy="345" r="2.2"/>
+          <circle class="land-dot" cx="285" cy="370" r="2.2"/><circle class="land-dot" cx="310" cy="385" r="2.2"/>
+          <circle class="land-dot" cx="270" cy="395" r="2.2"/><circle class="land-dot" cx="300" cy="320" r="2.2"/>
+          <circle class="land-dot" cx="335" cy="340" r="2.2"/><circle class="land-dot" cx="325" cy="365" r="2.2"/>
+          <circle class="land-dot" cx="290" cy="295" r="2.2"/><circle class="land-dot" cx="310" cy="295" r="2.2"/>
+          <circle class="land-dot" cx="345" cy="295" r="2.2"/><circle class="land-dot" cx="265" cy="345" r="2.2"/>
+
+          <!-- Germany / Central Europe -->
+          <circle class="land-dot" cx="385" cy="280" r="2.2"/><circle class="land-dot" cx="405" cy="265" r="2.2"/>
+          <circle class="land-dot" cx="420" cy="290" r="2.2"/><circle class="land-dot" cx="415" cy="320" r="2.2"/>
+          <circle class="land-dot" cx="460" cy="305" r="2.2"/><circle class="land-dot" cx="475" cy="320" r="2.2"/>
+          <circle class="land-dot" cx="430" cy="345" r="2.2"/><circle class="land-dot" cx="475" cy="345" r="2.2"/>
+          <circle class="land-dot" cx="395" cy="340" r="2.2"/><circle class="land-dot" cx="455" cy="270" r="2.2"/>
+          <circle class="land-dot" cx="475" cy="280" r="2.2"/><circle class="land-dot" cx="510" cy="305" r="2.2"/>
+
+          <!-- Italy -->
+          <circle class="land-dot" cx="395" cy="395" r="2.2"/><circle class="land-dot" cx="410" cy="420" r="2.2"/>
+          <circle class="land-dot" cx="425" cy="445" r="2.2"/><circle class="land-dot" cx="440" cy="470" r="2.2"/>
+          <circle class="land-dot" cx="455" cy="490" r="2.2"/><circle class="land-dot" cx="430" cy="505" r="2.2"/>
+          <circle class="land-dot" cx="445" cy="510" r="2.2"/><circle class="land-dot" cx="420" cy="480" r="2.2"/>
+          <circle class="land-dot" cx="395" cy="525" r="2.2"/><circle class="land-dot" cx="430" cy="530" r="2.2"/>
+
+          <!-- Scandinavia -->
+          <circle class="land-dot" cx="440" cy="215" r="2.2"/><circle class="land-dot" cx="455" cy="195" r="2.2"/>
+          <circle class="land-dot" cx="470" cy="175" r="2.2"/><circle class="land-dot" cx="485" cy="155" r="2.2"/>
+          <circle class="land-dot" cx="500" cy="135" r="2.2"/><circle class="land-dot" cx="515" cy="115" r="2.2"/>
+          <circle class="land-dot" cx="470" cy="230" r="2.2"/><circle class="land-dot" cx="490" cy="200" r="2.2"/>
+          <circle class="land-dot" cx="505" cy="175" r="2.2"/><circle class="land-dot" cx="485" cy="145" r="2.2"/>
+          <circle class="land-dot" cx="530" cy="130" r="2.2"/><circle class="land-dot" cx="510" cy="105" r="2.2"/>
+          <circle class="land-dot" cx="540" cy="100" r="2.2"/><circle class="land-dot" cx="465" cy="125" r="2.2"/>
+          <circle class="land-dot" cx="475" cy="90"  r="2.2"/>
+
+          <!-- Eastern Europe -->
+          <circle class="land-dot" cx="520" cy="270" r="2.2"/><circle class="land-dot" cx="540" cy="285" r="2.2"/>
+          <circle class="land-dot" cx="560" cy="295" r="2.2"/><circle class="land-dot" cx="580" cy="280" r="2.2"/>
+          <circle class="land-dot" cx="550" cy="320" r="2.2"/><circle class="land-dot" cx="570" cy="335" r="2.2"/>
+          <circle class="land-dot" cx="590" cy="320" r="2.2"/><circle class="land-dot" cx="610" cy="310" r="2.2"/>
+          <circle class="land-dot" cx="530" cy="350" r="2.2"/><circle class="land-dot" cx="600" cy="275" r="2.2"/>
+          <circle class="land-dot" cx="625" cy="290" r="2.2"/>
+
+          <!-- Balkans / Greece -->
+          <circle class="land-dot" cx="470" cy="425" r="2.2"/><circle class="land-dot" cx="490" cy="445" r="2.2"/>
+          <circle class="land-dot" cx="510" cy="460" r="2.2"/><circle class="land-dot" cx="530" cy="475" r="2.2"/>
+          <circle class="land-dot" cx="550" cy="490" r="2.2"/><circle class="land-dot" cx="495" cy="480" r="2.2"/>
+          <circle class="land-dot" cx="475" cy="460" r="2.2"/><circle class="land-dot" cx="530" cy="510" r="2.2"/>
+          <circle class="land-dot" cx="510" cy="520" r="2.2"/>
+
+          <!-- Baltics / further east -->
+          <circle class="land-dot" cx="570" cy="220" r="2.2"/><circle class="land-dot" cx="585" cy="230" r="2.2"/>
+          <circle class="land-dot" cx="605" cy="240" r="2.2"/><circle class="land-dot" cx="625" cy="250" r="2.2"/>
+          <circle class="land-dot" cx="645" cy="265" r="2.2"/><circle class="land-dot" cx="605" cy="270" r="2.2"/>
+          <circle class="land-dot" cx="665" cy="280" r="2.2"/>
         </g>
 
-        <!-- Active markets · solid dots -->
-        <g>
-          <circle cx="220" cy="290" r="6" fill="var(--vp-terracotta)"/>
-          <text x="232" y="286" class="city-label" font-weight="600" font-size="13" fill="var(--vp-ink)">London</text>
-          <text x="232" y="301" class="city-meta" font-size="9" fill="var(--vp-muted)" letter-spacing="0.14em">UK</text>
-        </g>
-        <g>
-          <circle cx="290" cy="280" r="6" fill="var(--vp-terracotta)"/>
-          <text x="302" y="276" class="city-label" font-weight="600" font-size="13" fill="var(--vp-ink)">Amsterdam</text>
-          <text x="302" y="291" class="city-meta" font-size="9" fill="var(--vp-muted)" letter-spacing="0.14em">BENELUX</text>
-        </g>
-        <g>
-          <circle cx="405" cy="275" r="6" fill="var(--vp-terracotta)"/>
-          <text x="417" y="271" class="city-label" font-weight="600" font-size="13" fill="var(--vp-ink)">Berlin</text>
-          <text x="417" y="286" class="city-meta" font-size="9" fill="var(--vp-muted)" letter-spacing="0.14em">DACH</text>
-        </g>
-        <g>
-          <circle cx="468" cy="195" r="6" fill="var(--vp-terracotta)"/>
-          <text x="480" y="191" class="city-label" font-weight="600" font-size="13" fill="var(--vp-ink)">Stockholm</text>
-          <text x="480" y="206" class="city-meta" font-size="9" fill="var(--vp-muted)" letter-spacing="0.14em">NORDICS</text>
-        </g>
-        <g>
-          <circle cx="440" cy="328" r="6" fill="var(--vp-terracotta)"/>
-          <text x="452" y="324" class="city-label" font-weight="600" font-size="13" fill="var(--vp-ink)">Vienna</text>
-          <text x="452" y="339" class="city-meta" font-size="9" fill="var(--vp-muted)" letter-spacing="0.14em">DACH · CEE</text>
+        <!-- Arcs · HQ Barcelona (180, 455) → every city -->
+        <g id="arcs">
+          <path class="arc" data-city="lisbon"     d="M180,455 Q120,412 60,510"   style="--len: 250"/>
+          <path class="arc" data-city="madrid"    d="M180,455 Q150,398 120,480"  style="--len: 180"/>
+          <path class="arc" data-city="dublin"    d="M180,455 Q180,283 180,250"  style="--len: 280"/>
+          <path class="arc" data-city="london"    d="M180,455 Q215,300 250,285"  style="--len: 340"/>
+          <path class="arc" data-city="paris"     d="M180,455 Q243,325 305,335"  style="--len: 320"/>
+          <path class="arc" data-city="brussels"  d="M180,455 Q250,310 320,305"  style="--len: 360"/>
+          <path class="arc" data-city="amsterdam" d="M180,455 Q258,298 335,280"  style="--len: 380"/>
+          <path class="arc" data-city="copenhagen" d="M180,455 Q305,275 430,235" style="--len: 440"/>
+          <path class="arc" data-city="stockholm" d="M180,455 Q338,243 495,170"  style="--len: 500"/>
+          <path class="arc" data-city="berlin"    d="M180,455 Q313,303 445,290"  style="--len: 420"/>
+          <path class="arc" data-city="munich"    d="M180,455 Q310,333 440,350"  style="--len: 360"/>
+          <path class="arc" data-city="vienna"    d="M180,455 Q335,340 490,365"  style="--len: 380"/>
+          <path class="arc" data-city="milan"     d="M180,455 Q293,360 405,405"  style="--len: 290"/>
+          <path class="arc" data-city="rome"      d="M180,455 Q313,393 445,470"  style="--len: 320"/>
+          <path class="arc" data-city="warsaw"    d="M180,455 Q363,300 545,285"  style="--len: 500"/>
         </g>
 
-        <!-- Secondary markets · hollow dots (prospect-only, no active client yet) -->
-        <g class="prospect" opacity="0.6">
-          <circle cx="250" cy="318" r="4" fill="none" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-          <text x="250" y="307" class="city-label" font-weight="500" font-size="11" fill="var(--vp-muted)" text-anchor="middle">Paris</text>
-        </g>
-        <g class="prospect" opacity="0.6">
-          <circle cx="138" cy="268" r="4" fill="none" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-          <text x="138" y="257" class="city-label" font-weight="500" font-size="11" fill="var(--vp-muted)" text-anchor="middle">Dublin</text>
-        </g>
-        <g class="prospect" opacity="0.6">
-          <circle cx="392" cy="245" r="4" fill="none" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-          <text x="392" y="234" class="city-label" font-weight="500" font-size="11" fill="var(--vp-muted)" text-anchor="middle">Copenhagen</text>
-        </g>
-        <g class="prospect" opacity="0.6">
-          <circle cx="118" cy="438" r="4" fill="none" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-          <text x="118" y="455" class="city-label" font-weight="500" font-size="11" fill="var(--vp-muted)" text-anchor="middle">Lisbon</text>
-        </g>
-        <g class="prospect" opacity="0.6">
-          <circle cx="348" cy="362" r="4" fill="none" stroke="var(--vp-terracotta)" stroke-width="1.5"/>
-          <text x="348" y="378" class="city-label" font-weight="500" font-size="11" fill="var(--vp-muted)" text-anchor="middle">Milan</text>
+        <!-- HQ glow halo behind Barcelona -->
+        <circle cx="180" cy="455" r="38" fill="url(#vp-hq-glow)" pointer-events="none"/>
+
+        <!-- Markers · grouped per city for hover handling -->
+        <g id="markers">
+          <g class="marker" data-city="barcelona" data-tier="hq">
+            <circle class="marker-ring" cx="180" cy="455" r="7"/>
+            <circle class="marker-ring delay" cx="180" cy="455" r="7"/>
+            <circle class="marker-dot" cx="180" cy="455" r="6.5"/>
+            <circle class="marker-hit" cx="180" cy="455" r="18"/>
+            <text class="marker-label" x="193" y="460">BARCELONA · HQ</text>
+          </g>
+
+          <g class="marker" data-city="madrid" data-tier="mkt">
+            <circle class="marker-dot" cx="120" cy="480" r="3.5"/>
+            <circle class="marker-hit" cx="120" cy="480" r="14"/>
+            <text class="marker-label" x="70" y="498" text-anchor="start">MADRID</text>
+          </g>
+
+          <g class="marker" data-city="lisbon" data-tier="mkt">
+            <circle class="marker-dot" cx="60" cy="510" r="3.5"/>
+            <circle class="marker-hit" cx="60" cy="510" r="14"/>
+            <text class="marker-label" x="22" y="525">LISBON</text>
+          </g>
+
+          <g class="marker" data-city="dublin" data-tier="mkt">
+            <circle class="marker-dot" cx="180" cy="250" r="3.5"/>
+            <circle class="marker-hit" cx="180" cy="250" r="14"/>
+            <text class="marker-label" x="138" y="247" text-anchor="start">DUBLIN</text>
+          </g>
+
+          <g class="marker" data-city="london" data-tier="hub">
+            <circle class="marker-ring" cx="250" cy="285" r="6"/>
+            <circle class="marker-dot" cx="250" cy="285" r="5"/>
+            <circle class="marker-hit" cx="250" cy="285" r="16"/>
+            <text class="marker-label" x="262" y="282">LONDON</text>
+          </g>
+
+          <g class="marker" data-city="paris" data-tier="mkt">
+            <circle class="marker-dot" cx="305" cy="335" r="3.5"/>
+            <circle class="marker-hit" cx="305" cy="335" r="14"/>
+            <text class="marker-label" x="313" y="348">PARIS</text>
+          </g>
+
+          <g class="marker" data-city="brussels" data-tier="mkt">
+            <circle class="marker-dot" cx="320" cy="305" r="3.5"/>
+            <circle class="marker-hit" cx="320" cy="305" r="14"/>
+            <text class="marker-label" x="305" y="295" text-anchor="end">BRUSSELS</text>
+          </g>
+
+          <g class="marker" data-city="amsterdam" data-tier="mkt">
+            <circle class="marker-dot" cx="335" cy="280" r="3.5"/>
+            <circle class="marker-hit" cx="335" cy="280" r="14"/>
+            <text class="marker-label" x="347" y="277">AMSTERDAM</text>
+          </g>
+
+          <g class="marker" data-city="copenhagen" data-tier="mkt">
+            <circle class="marker-dot" cx="430" cy="235" r="3.5"/>
+            <circle class="marker-hit" cx="430" cy="235" r="14"/>
+            <text class="marker-label" x="442" y="232">COPENHAGEN</text>
+          </g>
+
+          <g class="marker" data-city="stockholm" data-tier="hub">
+            <circle class="marker-ring" cx="495" cy="170" r="6"/>
+            <circle class="marker-dot" cx="495" cy="170" r="5"/>
+            <circle class="marker-hit" cx="495" cy="170" r="16"/>
+            <text class="marker-label" x="507" y="167">STOCKHOLM</text>
+          </g>
+
+          <g class="marker" data-city="berlin" data-tier="hub">
+            <circle class="marker-ring" cx="445" cy="290" r="6"/>
+            <circle class="marker-dot" cx="445" cy="290" r="5"/>
+            <circle class="marker-hit" cx="445" cy="290" r="16"/>
+            <text class="marker-label" x="457" y="287">BERLIN</text>
+          </g>
+
+          <g class="marker" data-city="munich" data-tier="mkt">
+            <circle class="marker-dot" cx="440" cy="350" r="3.5"/>
+            <circle class="marker-hit" cx="440" cy="350" r="14"/>
+            <text class="marker-label" x="452" y="355">MUNICH</text>
+          </g>
+
+          <g class="marker" data-city="vienna" data-tier="mkt">
+            <circle class="marker-dot" cx="490" cy="365" r="3.5"/>
+            <circle class="marker-hit" cx="490" cy="365" r="14"/>
+            <text class="marker-label" x="502" y="370">VIENNA</text>
+          </g>
+
+          <g class="marker" data-city="milan" data-tier="mkt">
+            <circle class="marker-dot" cx="405" cy="405" r="3.5"/>
+            <circle class="marker-hit" cx="405" cy="405" r="14"/>
+            <text class="marker-label" x="395" y="402" text-anchor="end">MILAN</text>
+          </g>
+
+          <g class="marker" data-city="rome" data-tier="mkt">
+            <circle class="marker-dot" cx="445" cy="470" r="3.5"/>
+            <circle class="marker-hit" cx="445" cy="470" r="14"/>
+            <text class="marker-label" x="457" y="475">ROME</text>
+          </g>
+
+          <g class="marker" data-city="warsaw" data-tier="mkt">
+            <circle class="marker-dot" cx="545" cy="285" r="3.5"/>
+            <circle class="marker-hit" cx="545" cy="285" r="14"/>
+            <text class="marker-label" x="557" y="282">WARSAW</text>
+          </g>
         </g>
       </svg>
+    </div>
 
-      <div class="map-legend">
-        <span class="item"><span class="dot"></span>HQ · BARCELONA</span>
-        <span class="item"><span class="dot"></span>ACTIVE MARKETS · 5</span>
-        <span class="item"><span class="dot small" style="background: transparent; border: 1.5px solid var(--vp-terracotta)"></span>PROSPECT-ONLY</span>
-        <span class="item"><span class="dot line"></span>OPEN BRANCHES</span>
+    <aside class="map-panel" id="mapPanel" aria-live="polite">
+      <header class="map-panel-head">
+        <span id="mpIndex">CITY · 01 / 16</span>
+        <span class="tier" id="mpTier">HQ</span>
+      </header>
+      <div>
+        <h3 class="map-panel-city" id="mpCity">Barcelona</h3>
+        <div class="map-panel-country" id="mpCountry">Spain · Operations HQ</div>
+      </div>
+      <div class="map-panel-clock">
+        <span class="t" id="mpTime">--:--</span>
+        <span class="z" id="mpZone">CET</span>
+        <span class="delta" id="mpDelta">LOCAL</span>
+      </div>
+      <dl class="map-panel-meta">
+        <div>
+          <dt>Specialty</dt>
+          <dd id="mpSpec">Full-cycle sales · founders' team</dd>
+        </div>
+        <div>
+          <dt>Active engagements</dt>
+          <dd id="mpEng">Live ops · all stages</dd>
+        </div>
+      </dl>
+      <p class="map-panel-desc" id="mpDesc">Where every engagement starts. Discovery, strategy and the senior operators who close. Calls into your buyers' timezones, never ours.</p>
+      <div class="map-panel-cta">
+        <span id="mpHint">Click any marker to pin</span>
+        <a href="#talk">Book a call →</a>
+      </div>
+    </aside>
+    </div>
+
+    <div class="map-stats">
+      <div class="map-stat">
+        <div class="n">16<span class="stop">.</span></div>
+        <div class="l">Active markets</div>
+      </div>
+      <div class="map-stat">
+        <div class="n">8</div>
+        <div class="l">Timezones</div>
+      </div>
+      <div class="map-stat">
+        <div class="n">3</div>
+        <div class="l">Hubs · LDN · BER · STK</div>
+      </div>
+      <div class="map-stat">
+        <div class="n">+US</div>
+        <div class="l">Calendars on demand</div>
       </div>
     </div>
   </div>
@@ -1738,22 +1790,35 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   <div class="wrap">
     <div class="eyebrow" style="margin-bottom: 28px">THE TEAM</div>
     <div class="team-hd">
-      <h2>Three operators.<br>Fifteen years closing experience<span class="stop">.</span></h2>
+      <h2>Three operators. Fifteen years closing experience<span class="stop">.</span></h2>
       <p class="team-sub">Built by people who carried a number.</p>
     </div>
 
     <div class="team-grid">
       <div class="member">
+        <div class="member-photo">
+          <span class="ph">Anton</span>
+          <!-- Drop in src="anton.jpg" when ready -->
+          <img src="" alt="Anton, co-founder" />
+        </div>
         <div class="member-name">Anton<span class="stop">.</span></div>
         <div class="member-role">REVENUE INFRASTRUCTURE</div>
         <div class="member-bio">Closed 6-figure deals at Revolut and Google Cloud, selling SaaS and financial products. Founded and grew his own startup before joining Veerpoint.</div>
       </div>
       <div class="member">
+        <div class="member-photo">
+          <span class="ph">Pablo</span>
+          <img src="" alt="Pablo, co-founder" />
+        </div>
         <div class="member-name">Pablo<span class="stop">.</span></div>
         <div class="member-role">GO-TO-MARKET</div>
         <div class="member-bio">Founded and exited a hospitality SaaS. Now runs go-to-market and franchise expansion across three European markets, focused on entering new markets and generating commercial traction for B2B AI products.</div>
       </div>
       <div class="member">
+        <div class="member-photo">
+          <span class="ph">Dylan</span>
+          <img src="" alt="Dylan, co-founder" />
+        </div>
         <div class="member-name">Dylan<span class="stop">.</span></div>
         <div class="member-role">HEAD OF REVENUE</div>
         <div class="member-bio">High-performance closer with a track record of exceeding targets across iGaming, fintech, SaaS, and hospitality. Specialises in high-value deals, negotiation, and converting pipeline into revenue.</div>
@@ -1944,80 +2009,12 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<!-- THE POINT · scroll-following mascot + breadcrumb trail -->
-<div class="vp-point-trail" id="vpPointTrail" aria-hidden="true"></div>
-<div class="vp-point" id="vpPoint" aria-hidden="true"></div>
-
-<script>
-(function() {
-  if (window.matchMedia('(max-width: 1100px)').matches) return;
-
-  const point = document.getElementById('vpPoint');
-  const trail = document.getElementById('vpPointTrail');
-  const sections = Array.from(document.querySelectorAll('section'));
-  if (!point || !trail || sections.length === 0) return;
-
-  // Place a breadcrumb dot in the trail for each section
-  const marks = sections.map((s) => {
-    const m = document.createElement('div');
-    m.className = 'vp-point-mark';
-    trail.appendChild(m);
-    return m;
-  });
-
-  let activeIdx = -1;
-  let raf = null;
-
-  function recompute() {
-    // Position each mark at its section's vertical anchor
-    sections.forEach((s, i) => {
-      const top = s.offsetTop + Math.min(120, s.offsetHeight * 0.15);
-      marks[i].style.top = top + 'px';
-    });
-  }
-
-  function update() {
-    raf = null;
-    const winH = window.innerHeight;
-    const scrollY = window.scrollY;
-
-    // Find which section is the current "active" one
-    let idx = 0;
-    for (let i = 0; i < sections.length; i++) {
-      const top = sections[i].offsetTop;
-      if (scrollY + winH * 0.45 >= top) idx = i;
-    }
-
-    if (idx !== activeIdx) {
-      activeIdx = idx;
-      // Light up all marks up to and including the active one
-      marks.forEach((m, i) => m.classList.toggle('placed', i <= idx));
-    }
-
-    // Where is the active mark on screen? Move the Point to track it.
-    const activeMarkTop = sections[idx].offsetTop + Math.min(120, sections[idx].offsetHeight * 0.15) - scrollY;
-    // Clamp to viewport with margins
-    const targetY = Math.max(96, Math.min(winH - 96, activeMarkTop));
-    point.style.top = targetY + 'px';
-
-    // Dock the Point at the active mark (slightly larger when "landed")
-    point.classList.toggle('docked', Math.abs(activeMarkTop - targetY) < 4);
-  }
-
-  function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
-
-  // Initial setup
-  recompute();
-  requestAnimationFrame(() => {
-    update();
-    point.classList.add('ready');
-  });
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => { recompute(); update(); });
-  // Recompute after fonts/images may have shifted layout
-  window.addEventListener('load', () => { recompute(); update(); });
-})();
-</script>
+<!-- Connecting ball · springs from the terracotta period at the end of each
+     <h1>/<h2> headline to the next as you scroll. Logic in app.js. -->
+<div class="scroll-dot" aria-hidden="true"></div>
+<div class="scroll-trail-dot" aria-hidden="true"></div>
+<div class="scroll-trail-dot" aria-hidden="true"></div>
+<div class="scroll-trail-dot" aria-hidden="true"></div>
 
 <script src="app.js" defer></script>
 

@@ -2232,6 +2232,33 @@
     opacity: 1;
   }
 
+  /* ───── Pinned state ─────
+     User clicked/tapped a city — it stays locked until they tap elsewhere or press Esc.
+     Cursor + bolder marker + a slow pulse so the affordance is obvious. */
+  .map-svg .marker { cursor: pointer; }
+  .map-stage.has-pin .marker.is-focus .marker-dot {
+    stroke: var(--vp-terracotta);
+    stroke-width: 8;
+    filter: drop-shadow(0 0 8px rgba(160, 64, 34, 0.6));
+  }
+  .map-stage.has-pin .marker.is-focus .marker-label {
+    fill: var(--vp-terracotta);
+    font-weight: 600;
+    opacity: 1;
+  }
+  .map-stage.has-pin .map-stage-meta::after {
+    content: "· PINNED · TAP TO RELEASE";
+    margin-left: 10px;
+    color: var(--vp-terracotta);
+    letter-spacing: 0.18em;
+  }
+  /* small ring that pulses on the pinned city */
+  .map-stage.has-pin .marker.is-focus .marker-ring,
+  .map-stage.has-pin .marker.is-focus .marker-ring.delay {
+    opacity: 0.5;
+    animation: vp-ring 1.8s ease-out infinite;
+  }
+
   /* Detail panel */
   .map-panel {
     background:
@@ -2273,7 +2300,7 @@
     font-weight: 600;
     font-size: clamp(34px, 3.4vw, 44px);
     letter-spacing: -0.03em;
-    line-height: 0.98;
+    line-height: 1.05;
     margin: 0;
     transition: opacity .25s ease;
   }
@@ -2283,7 +2310,7 @@
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.55);
-    margin-top: -8px;
+    margin-top: 10px;
   }
   .map-panel-clock {
     display: flex;
@@ -2429,6 +2456,70 @@
   .scroll-trail-dot:nth-of-type(2) { width: 6px; height: 6px; background: rgba(160,64,34,0.35); box-shadow: 0 0 8px rgba(160,64,34,0.22); }
   .scroll-trail-dot:nth-of-type(3) { width: 4px; height: 4px; background: rgba(160,64,34,0.22); box-shadow: 0 0 6px rgba(160,64,34,0.18); }
 
+  /* Cursor / touch follower · logo-style terracotta dot.
+     Desktop: trails the cursor with a smooth lerp.
+     Touch:   appears at the finger, lingers briefly after release.
+     Hidden under prefers-reduced-motion (gated in JS). */
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--vp-terracotta);
+    box-shadow:
+      0 0 0 3px rgba(160,64,34,0.14),
+      0 0 14px rgba(160,64,34,0.38),
+      0 0 28px rgba(160,64,34,0.18);
+    pointer-events: none;
+    z-index: 70;
+    opacity: 0;
+    transition:
+      opacity .35s ease,
+      width .25s cubic-bezier(.22,.61,.36,1),
+      height .25s cubic-bezier(.22,.61,.36,1),
+      box-shadow .25s ease,
+      background .25s ease;
+    will-change: transform, opacity;
+  }
+  .cursor-dot.show { opacity: 1; }
+  .cursor-dot.over {
+    width: 22px;
+    height: 22px;
+    background: rgba(160,64,34,0.92);
+    box-shadow:
+      0 0 0 6px rgba(160,64,34,0.16),
+      0 0 22px rgba(160,64,34,0.46),
+      0 0 44px rgba(160,64,34,0.24);
+  }
+  /* Touch mode · larger so it reads as a press indicator rather than a cursor.
+     `.tap` is briefly added on pointerdown for a quick swell, like a logo period
+     hitting the screen. */
+  .cursor-dot.touch {
+    width: 16px;
+    height: 16px;
+    box-shadow:
+      0 0 0 5px rgba(160,64,34,0.14),
+      0 0 18px rgba(160,64,34,0.40),
+      0 0 36px rgba(160,64,34,0.20);
+  }
+  .cursor-dot.touch.tap {
+    width: 32px;
+    height: 32px;
+    box-shadow:
+      0 0 0 10px rgba(160,64,34,0.12),
+      0 0 28px rgba(160,64,34,0.46),
+      0 0 56px rgba(160,64,34,0.22);
+  }
+  .cursor-dot.touch.over {
+    width: 28px;
+    height: 28px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor-dot { display: none; }
+  }
+
   /* Quiz dock · in-flow anchor where the ball lands & morphs into the pill.
      The dock itself is empty; the ball overlays it visually.
      On mobile (where the ball is hidden), the dock shows a static button. */
@@ -2478,13 +2569,10 @@
       0 0 0 8px rgba(160,64,34,0.20),
       0 18px 40px rgba(160,64,34,0.45);
   }
-  /* When the scroll-ball is alive (desktop only — ball is hidden on small
-     screens), hide the fallback button so the morphed ball renders the pill
-     in the same spot. On mobile the fallback stays visible because the ball
-     itself is hidden via the breakpoint below. */
-  @media (min-width: 1081px) {
-    body.ball-active .quiz-dock-fallback { opacity: 0; pointer-events: none; }
-  }
+  /* When the scroll-ball is alive (all viewports now — ball runs on mobile
+     too), hide the fallback button so the morphed ball renders the pill in
+     the same spot without a duplicate static CTA underneath. */
+  body.ball-active .quiz-dock-fallback { opacity: 0; pointer-events: none; }
 
   /* CTA morph — when near the booking form. Larger pill, stronger glow. */
   body.scroll-near-cta .scroll-dot {
@@ -2733,23 +2821,19 @@
     .map-canvas { grid-template-columns: 1fr; gap: 24px; }
     .map-stage { aspect-ratio: 4 / 3; }
     .map-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    .scroll-dot, .scroll-trail, .scroll-trail-dot { display: none; }
+    /* Scroll-following dot stays alive on tablet/mobile — slightly smaller
+       glow + thinner trail so it doesn't dominate a 375px viewport. */
+    .scroll-dot {
+      width: 12px;
+      height: 12px;
+      box-shadow:
+        0 0 0 2px rgba(160,64,34,0.16),
+        0 5px 14px rgba(160,64,34,0.32);
+    }
+    .scroll-trail-dot                   { width: 7px; height: 7px; }
+    .scroll-trail-dot:nth-of-type(2)    { width: 5px; height: 5px; }
+    .scroll-trail-dot:nth-of-type(3)    { width: 3px; height: 3px; }
     .foot-grid { grid-template-columns: 1fr 1fr; }
-
-    /* mobile/tablet · .stop pulses once when scrolled into view */
-    @keyframes vp-stop-pulse {
-      0%   { transform: scale(1);    text-shadow: 0 0 0 transparent; }
-      35%  { transform: scale(1.35); text-shadow: 0 0 14px rgba(160, 64, 34, 0.55); }
-      100% { transform: scale(1);    text-shadow: 0 0 0 transparent; }
-    }
-    .stop.vp-pulse {
-      display: inline-block;
-      transform-origin: center;
-      animation: vp-stop-pulse 0.7s ease-out;
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .stop.vp-pulse { animation: none; }
-    }
   }
 
   @media (max-width: 760px) {

@@ -11,7 +11,7 @@
   const trailEls = Array.from(document.querySelectorAll('.scroll-trail-dot'));
   const ctaSection = document.getElementById('book');
   const quizDock   = document.getElementById('quizDock');
-  const darkSelectors = ['#dashboard', '#process', '#markets'];
+  const darkSelectors = ['#dashboard', '#process', '#markets', '#principle', '#talk'];
 
   // Signal to CSS that the JS ball is alive — hides the static fallback
   // quiz button so the morphed ball is the only visible CTA on desktop.
@@ -35,9 +35,9 @@
   const ball = { x: 100, y: 100, vx: 0, vy: 0, size: 14, ts: 14, initialized: false };
   const trail = trailEls.map((_, i) => ({
     x: 100, y: 100, vx: 0, vy: 0,
-    // Slower trail too — calmer settle, longer connecting line.
-    k: [0.055, 0.035, 0.022][i] || 0.018,
-    d: [0.88, 0.90, 0.92][i]    || 0.93,
+    // Each trail dot is progressively softer, drawing a longer ribbon behind.
+    k: [0.025, 0.016, 0.011][i] || 0.009,
+    d: [0.92, 0.94, 0.95][i]    || 0.96,
   }));
   const target = { x: 100, y: 100, size: 14 };
   // Remember which stop we're currently "on" so we can add hysteresis to
@@ -46,12 +46,12 @@
   // multiple stops are visible at once.
   let currentStopEl = null;
   let nearCta = false;
-  // Gentler spring + higher damping → calmer, slower glide.
-  const SPRING  = 0.042;
-  const DAMPING = 0.90;
+  // Very gentle spring + heavy damping → slow, fluid drift instead of bouncy follow.
+  const SPRING  = 0.018;
+  const DAMPING = 0.94;
   // Hysteresis: a candidate stop must be at least N viewport-px closer to
-  // center than our current pick before we switch.
-  const SWITCH_THRESHOLD = 90;
+  // center than our current pick before we switch. Higher = more committed.
+  const SWITCH_THRESHOLD = 140;
 
   function pickTarget() {
     const vh = window.innerHeight || 1;
@@ -132,8 +132,8 @@
     ball.vy = ball.vy * DAMPING + (target.y - ball.y) * SPRING;
     ball.x += ball.vx;
     ball.y += ball.vy;
-    // Linear lerp — size (gentler so size feels as smooth as motion)
-    ball.size += (target.size - ball.size) * 0.05;
+    // Gentle lerp on size so the dot grows/shrinks at the same calm tempo as the motion.
+    ball.size += (target.size - ball.size) * 0.025;
 
     if (dotEl) {
       dotEl.style.left = ball.x + 'px';
@@ -216,22 +216,6 @@
     });
   }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(el => io.observe(el));
-
-  /* ───────── Mobile/tablet · pulse .stop dots on scroll-in ─────────
-     The desktop ball is hidden under 1080px (see style.css). To keep
-     the terracotta motion alive on phones, each .stop briefly pulses
-     once when it enters the viewport. CSS animation is gated to
-     <=1080px so this is a no-op on desktop. */
-  const pulseIo = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      const el = e.target;
-      el.classList.add('vp-pulse');
-      setTimeout(() => el.classList.remove('vp-pulse'), 800);
-      pulseIo.unobserve(el);
-    });
-  }, { threshold: 0.6 });
-  document.querySelectorAll('.stop').forEach(el => pulseIo.observe(el));
 
   /* ───────── Hero · live ops floor terminal ───────── */
   (function initFloor() {
@@ -489,17 +473,97 @@
       stage.classList.toggle('has-focus', key !== 'barcelona');
     }
 
-    /* Bind hover/focus on each marker */
+    /* ───── Interactive state ─────
+       pinnedKey   · a city locked by click/tap (null = unlocked)
+       lastTouchAt · last hover/focus/click timestamp; used to pause auto-cycle
+       cycleIdx    · current position in the auto-cycle rotation */
+    let pinnedKey = null;
+    let lastTouchAt = 0;
+    let cycleIdx = 0;
+    const HOVER_QUIET_MS = 1800;   // auto-cycle waits this long after last user action
+    const CYCLE_MS       = 3200;   // tick interval
+
+    const elHint = document.getElementById('mpHint');
+    function syncHint() {
+      if (!elHint) return;
+      elHint.textContent = pinnedKey
+        ? 'Pinned · click again to release'
+        : 'Click any marker to pin';
+    }
+    function unpin() {
+      pinnedKey = null;
+      stage.classList.remove('has-pin');
+      syncHint();
+    }
+    function pin(key) {
+      pinnedKey = key;
+      stage.classList.add('has-pin');
+      syncHint();
+    }
+
+    /* Bind hover / focus / click on each marker */
     stage.querySelectorAll('.marker').forEach(m => {
       const key = m.dataset.city;
-      m.addEventListener('pointerenter', () => setCity(key));
-      m.addEventListener('focusin', () => setCity(key));
+      m.addEventListener('pointerenter', () => {
+        lastTouchAt = Date.now();
+        if (!pinnedKey) {
+          setCity(key);
+          // keep the auto-cycle index in sync so it resumes near where the user was
+          const i = order.indexOf(key);
+          if (i >= 0) cycleIdx = i;
+        }
+      });
+      m.addEventListener('focusin', () => {
+        lastTouchAt = Date.now();
+        if (!pinnedKey) {
+          setCity(key);
+          const i = order.indexOf(key);
+          if (i >= 0) cycleIdx = i;
+        }
+      });
+      m.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lastTouchAt = Date.now();
+        if (pinnedKey === key) { unpin(); setCity('barcelona'); }
+        else                   { pin(key); setCity(key); }
+      });
+      m.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (pinnedKey === key) { unpin(); setCity('barcelona'); }
+          else                   { pin(key); setCity(key); }
+        }
+      });
       m.setAttribute('tabindex', '0');
       m.setAttribute('role', 'button');
       m.setAttribute('aria-label', (CITIES[key] && CITIES[key].name) || key);
     });
-    /* Leaving the stage returns to HQ */
-    stage.addEventListener('pointerleave', () => setCity('barcelona'));
+
+    /* Leaving the stage returns to HQ — but only if nothing is pinned */
+    stage.addEventListener('pointerleave', () => {
+      if (!pinnedKey) setCity('barcelona');
+    });
+
+    /* Click on empty stage area unpins */
+    stage.addEventListener('click', (e) => {
+      if (e.target.closest('.marker')) return; // marker clicks handled above
+      if (pinnedKey) { unpin(); setCity('barcelona'); }
+    });
+
+    /* Esc unpins from anywhere */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && pinnedKey) { unpin(); setCity('barcelona'); }
+    });
+
+    /* Auto-cycle when idle · the map feels alive even when no one's hovering.
+       Pauses when pinned, when user is interacting, or when stage isn't in view. */
+    setInterval(() => {
+      if (pinnedKey) return;
+      if (Date.now() - lastTouchAt < HOVER_QUIET_MS) return;
+      if (!stage.classList.contains('vp-in')) return;
+      cycleIdx = (cycleIdx + 1) % order.length;
+      setCity(order[cycleIdx]);
+    }, CYCLE_MS);
 
     /* Live-clock tick · refresh every second for current city */
     setInterval(() => {
@@ -667,4 +731,100 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && overlay.classList.contains('open')) closeQuiz();
   });
+})();
+
+/* ───────── Cursor / touch dot · the brand stop, following the pointer ─────────
+   Desktop: small terracotta circle trailing the cursor with a smooth lerp,
+   swelling when over interactive elements.
+   Touch:   same dot appears at the touch point, follows finger drag, fades
+   out shortly after release. Hidden under prefers-reduced-motion. */
+(function initCursorDot() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const isCoarse = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  if (isCoarse) dot.classList.add('touch');
+  dot.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(dot);
+
+  let mx = window.innerWidth / 2;
+  let my = window.innerHeight / 2;
+  let dx = mx, dy = my;        // current rendered position
+  let visible = false;
+  let overInteractive = false;
+  let fadeTimer = null;
+
+  function setOver(on) {
+    if (on === overInteractive) return;
+    overInteractive = on;
+    dot.classList.toggle('over', on);
+  }
+  function show() {
+    if (visible) return;
+    visible = true;
+    dot.classList.add('show');
+  }
+  function hide() {
+    visible = false;
+    dot.classList.remove('show');
+    dot.classList.remove('over');
+    overInteractive = false;
+  }
+  function scheduleHide(ms) {
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(hide, ms);
+  }
+
+  window.addEventListener('pointermove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    show();
+    const t = e.target;
+    const isClick = !!(t && t.closest && t.closest('a, button, [data-quiz], .marker, .quiz-opt, [role="button"]'));
+    setOver(isClick);
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      // On touch we only show while the finger is on screen — keep refreshing
+      // the auto-hide so a held drag stays visible.
+      scheduleHide(900);
+    }
+  }, { passive: true });
+
+  window.addEventListener('pointerdown', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    // snap when the touch starts so the dot doesn't fly in from offscreen
+    if (!visible) { dx = mx; dy = my; }
+    show();
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      dot.classList.add('tap');
+      setTimeout(() => dot.classList.remove('tap'), 280);
+    }
+  }, { passive: true });
+
+  window.addEventListener('pointerup', (e) => {
+    if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+      scheduleHide(600);
+    }
+  }, { passive: true });
+
+  window.addEventListener('pointercancel', () => scheduleHide(200), { passive: true });
+
+  // Mouse-only: hide when the cursor leaves the viewport.
+  document.addEventListener('mouseleave', () => {
+    if (!isCoarse) hide();
+  });
+
+  /* lerp factor — small = slower, more fluid lag behind pointer.
+     Touch wants a snappier follow so it doesn't trail behind a fast drag. */
+  const LERP = isCoarse ? 0.32 : 0.18;
+
+  function frame() {
+    dx += (mx - dx) * LERP;
+    dy += (my - dy) * LERP;
+    dot.style.transform = `translate3d(${dx}px, ${dy}px, 0) translate(-50%, -50%)`;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
