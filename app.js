@@ -129,8 +129,14 @@
     // Visually the period sits on the text baseline — biasing slightly toward
     // the bottom of the bounding rect lands the ball on the actual dot.
     target.y = r.top  + r.height * 0.72;
-    const fs = parseFloat(getComputedStyle(chosen).fontSize);
-    target.size = Math.max(10, Math.min(26, fs * 0.18));
+    // Touch: lock to a single calm size. Scaling per-heading made the ball
+    // pulse every time it moved, which read as nervous motion.
+    if (IS_TOUCH) {
+      target.size = 12;
+    } else {
+      const fs = parseFloat(getComputedStyle(chosen).fontSize);
+      target.size = Math.max(10, Math.min(26, fs * 0.18));
+    }
   }
 
   function tick() {
@@ -193,7 +199,20 @@
   }
 
   refreshStops();
-  window.addEventListener('scroll', pickTarget, { passive: true });
+  // Desktop: pick a new target on every scroll event so the ball follows live.
+  // Touch: debounce target picks until scrolling settles. While the finger is
+  // flinging the page, the ball stays put; once you stop, it gently glides to
+  // the new heading. Far less motion than chasing the scroll in real time.
+  if (IS_TOUCH) {
+    const SCROLL_QUIET_MS = 220;
+    let scrollTimer = null;
+    window.addEventListener('scroll', () => {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => { scrollTimer = null; pickTarget(); }, SCROLL_QUIET_MS);
+    }, { passive: true });
+  } else {
+    window.addEventListener('scroll', pickTarget, { passive: true });
+  }
   window.addEventListener('resize', () => { refreshStops(); pickTarget(); });
   // Re-collect after fonts load (font-size filter depends on layout)
   if (document.fonts && document.fonts.ready) {
