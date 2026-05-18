@@ -141,6 +141,67 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .link-cta:hover { color: var(--vp-terracotta); border-color: var(--vp-terracotta); }
 .link-cta:hover .arrow { transform: translateX(4px); }
 
+/* Hero primary CTA — the big terracotta "See if there's a fit" pill.
+   Bold brand color, generous padding, brand glow halo so it reads as the
+   primary action from across the viewport. */
+.btn-hero-cta {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 20px 34px; border-radius: 4px;
+  font-family: var(--vp-font-display); font-weight: 600;
+  font-size: 18px; letter-spacing: -0.01em;
+  color: var(--vp-warm-white);
+  background: var(--vp-terracotta);
+  border: 1px solid var(--vp-terracotta);
+  box-shadow:
+    0 0 0 4px rgba(160,64,34,0.14),
+    0 14px 32px rgba(160,64,34,0.34),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.25s ease,
+    transform 0.18s cubic-bezier(.22,.61,.36,1);
+}
+.btn-hero-cta .arrow { transition: transform 0.18s ease; }
+.btn-hero-cta:hover {
+  background: var(--vp-terracotta-hover);
+  border-color: var(--vp-terracotta-hover);
+  box-shadow:
+    0 0 0 6px rgba(160,64,34,0.22),
+    0 22px 48px rgba(160,64,34,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transform: translateY(-1px);
+}
+.btn-hero-cta:hover .arrow { transform: translateX(4px); }
+.btn-hero-cta:focus-visible {
+  outline: 2px solid var(--vp-terracotta);
+  outline-offset: 4px;
+}
+@media (max-width: 760px) {
+  .btn-hero-cta { padding: 18px 28px; font-size: 16px; width: 100%; justify-content: center; }
+}
+
+/* Nav "See if there's a fit" button — visible nudge with a soft halo, but
+   smaller than the hero CTA so it doesn't fight for attention. */
+.nav-cta-quiz {
+  box-shadow:
+    0 0 0 3px rgba(160,64,34,0.10),
+    0 6px 14px rgba(160,64,34,0.22);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.2s ease;
+}
+.nav-cta-quiz:hover {
+  box-shadow:
+    0 0 0 4px rgba(160,64,34,0.16),
+    0 10px 22px rgba(160,64,34,0.34);
+}
+@media (max-width: 760px) {
+  /* On phones the burger + big hero CTA take over — keep the nav clean. */
+  .nav-cta-quiz { display: none; }
+}
+
 .eyebrow {
   font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.18em;
   color: var(--vp-terracotta); text-transform: uppercase; font-weight: 500;
@@ -1110,7 +1171,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       <a href="#fit">Fit</a>
       <a href="#team">Team</a>
     </div>
-    <a href="#talk" class="btn btn-ghost">See if there's a fit</a>
+    <button type="button" class="btn btn-accent nav-cta-quiz" onclick="vpQuizOpen()">See if there's a fit</button>
   </div>
 </nav>
 
@@ -1118,7 +1179,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   <div class="wrap">
     <div class="eyebrow">SALES-AS-A-SERVICE</div>
     <h1>Your product is great. Your <span class="under">revenue</span> should be too<span class="stop">.</span></h1>
-    <a href="#talk" class="link-cta">See if there's a fit <span class="arrow">→</span></a>
+    <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
     <p class="hero-sub">For teams that want execution, not advice.</p>
   </div>
 </section>
