@@ -2818,8 +2818,22 @@
     .faq-row .a { grid-column: 1 / -1; padding-left: 50px; }
     .dash-grid { grid-template-columns: 1fr; }
     .map-hd { grid-template-columns: 1fr; gap: 16px; }
-    .map-canvas { grid-template-columns: 1fr; gap: 24px; }
-    .map-stage { aspect-ratio: 4 / 3; }
+    .map-canvas { grid-template-columns: 1fr; gap: 16px; }
+    /* Bigger map on tablet/mobile — square stage uses ~33% more height than 4:3
+       so the cities + arcs breathe at narrow widths. */
+    .map-stage { aspect-ratio: 1 / 1; }
+    /* Slim panel · the heavy detail rows (clock, specialty/engagements,
+       description, hint copy) hide on mobile so the panel becomes a compact
+       strip: city name, tier badge, CTA. */
+    .map-panel { padding: 18px 18px 16px; gap: 14px; }
+    .map-panel-head { padding-bottom: 12px; }
+    .map-panel-city { font-size: clamp(24px, 5vw, 30px); }
+    .map-panel-country { margin-top: 6px; font-size: 9px; }
+    .map-panel-clock,
+    .map-panel-meta,
+    .map-panel-desc,
+    .map-panel-cta #mpHint { display: none; }
+    .map-panel-cta { padding-top: 12px; justify-content: flex-end; }
     .map-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     /* Scroll-following dot stays alive on tablet/mobile — slightly smaller
        glow + thinner trail so it doesn't dominate a 375px viewport. */
@@ -2934,8 +2948,8 @@
     .map-sec { padding: 72px 0; }
     .map-stats { grid-template-columns: 1fr 1fr; gap: 20px; }
     .map-stat .n { font-size: 26px; }
-    .map-panel { padding: 22px 20px; }
-    .map-panel-clock .t { font-size: 30px; }
+    /* .map-panel slim rules live in the 1080px breakpoint above — clock/meta
+       /desc are display:none at that point so no further size tweaks needed. */
     .quiz-body { padding: 28px 22px; }
     .closing { padding: 80px 0; }
     .closing-grid { grid-template-columns: 1fr; gap: 40px; }
