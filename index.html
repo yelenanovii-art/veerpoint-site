@@ -182,6 +182,26 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (max-width: 760px) {
   .btn-hero-cta { padding: 18px 28px; font-size: 16px; width: 100%; justify-content: center; }
 }
+.hero-cta-row {
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+}
+.hero-cta-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--vp-font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--vp-ink-70);
+  border-bottom: 1px solid var(--vp-border-strong);
+  padding-bottom: 3px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.hero-cta-secondary:hover { color: var(--vp-terracotta); border-color: var(--vp-terracotta); }
+.hero-cta-secondary .arrow { color: var(--vp-terracotta); transition: transform 0.15s ease; }
+.hero-cta-secondary:hover .arrow { transform: translateX(3px); }
+@media (max-width: 760px) {
+  .hero-cta-row { gap: 18px; }
+  .hero-cta-secondary { font-size: 14px; }
+}
 
 /* Nav "See if there's a fit" button — visible nudge with a soft halo, but
    smaller than the hero CTA so it doesn't fight for attention. */
@@ -1232,7 +1252,22 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (max-width: 760px) {
   .tracker-cta { padding: 26px 22px; }
   .tracker-cta .btn-calc { width: 100%; justify-content: center; padding: 16px 22px; }
+  .tracker-cta-secondary { align-self: stretch; text-align: center; justify-content: center; }
 }
+.tracker-cta-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--vp-font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--vp-ink-70);
+  border-bottom: 1px solid var(--vp-border-strong);
+  padding-bottom: 3px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  align-self: flex-start;
+}
+.tracker-cta-secondary:hover { color: var(--vp-terracotta); border-color: var(--vp-terracotta); }
+.tracker-cta-secondary .arrow { color: var(--vp-terracotta); transition: transform 0.15s ease; }
+.tracker-cta-secondary:hover .arrow { transform: translateX(3px); }
 
 .final { padding: 140px 0; text-align: center; }
 .final .eyebrow { margin-bottom: 32px; justify-content: center; }
@@ -1299,7 +1334,10 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   <div class="wrap">
     <div class="eyebrow">SALES-AS-A-SERVICE</div>
     <h1>Your product is great. Your <span class="under">revenue</span> should be too<span class="stop">.</span></h1>
-    <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
+    <div class="hero-cta-row">
+      <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
+      <a class="hero-cta-secondary" href="#book">Or book a call <span class="arrow">→</span></a>
+    </div>
     <p class="hero-sub">For teams that want execution, not advice.</p>
   </div>
 </section>
@@ -1428,6 +1466,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           <span>avg. yr-1 saving</span>
         </div>
         <a href="calculator.html" class="btn-calc">See what you'd save <span class="arrow">→</span></a>
+        <a class="tracker-cta-secondary" href="#book">Or book a Discovery call <span class="arrow">→</span></a>
       </aside>
     </div>
   </div>
@@ -1954,7 +1993,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       <p class="map-panel-desc" id="mpDesc">Where every engagement starts. Discovery, strategy and the senior operators who close. Calls into your buyers' timezones, never ours.</p>
       <div class="map-panel-cta">
         <span id="mpHint">Click any marker to pin</span>
-        <a href="#talk">Book a call →</a>
+        <a href="#book">Book a call →</a>
       </div>
     </aside>
     </div>
@@ -2021,14 +2060,67 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="section dark final" id="talk">
-  <div class="wrap">
-    <div class="eyebrow">THE NEXT STEP</div>
-    <h2>What happens when sales becomes an engineered system<span class="stop">.</span></h2>
-    <div class="hero-ctas">
-      <a href="mailto:hello@veerpoint.io?subject=Discovery%20call" class="btn btn-accent">See if there's a fit →</a>
-      <a href="calculator.html" class="btn btn-ghost">Run the cost calculator</a>
+<section class="closing" id="book">
+  <div class="wrap closing-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span><span>Start here</span></div>
+      <h2>Two weeks from now,<br />you've either started a hiring search, or we've started a cycle<span class="stop">.</span></h2>
+      <p class="closing-sub">
+        30 minutes. No deck. Three questions, written read in 48 hours.
+      </p>
+      <ul class="closing-list">
+        <li><span class="n">01</span><span>You answer three questions. We listen, no pitch.</span><span class="arrow">→</span></li>
+        <li><span class="n">02</span><span>Written diagnostic in 48 hours. Yes / no / not yet.</span><span class="arrow">→</span></li>
+        <li><span class="n">03</span><span>If yes, Proposal in week 1, kickoff in week 2.</span><span class="arrow">→</span></li>
+      </ul>
+
+      <div class="quiz-dock-wrap">
+        <span class="quiz-dock-label">Or skip the form</span>
+        <div id="quizDock" class="quiz-dock">
+          <button type="button" class="quiz-dock-fallback" onclick="vpQuizOpen()" aria-label="Take the 60-second fit quiz">Take the fit quiz →</button>
+        </div>
+      </div>
     </div>
+
+    <aside class="form-card">
+      <div class="form-hd">Discovery form · 90 seconds</div>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" type="text" placeholder="Jordan Stevens" />
+      </div>
+      <div class="field">
+        <label for="f-email">Work email</label>
+        <input id="f-email" type="email" placeholder="jordan@yourcompany.com" />
+      </div>
+      <div class="field">
+        <label for="f-company">Company · stage</label>
+        <input id="f-company" type="text" placeholder="Lumen · Series A · B2B SaaS" />
+      </div>
+      <div class="field">
+        <label for="f-icp">Which profile fits you</label>
+        <select id="f-icp">
+          <option>A · First go-to-market (no sales function yet)</option>
+          <option>B · Expansion into new market / segment</option>
+          <option>Both / not sure yet</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-stage">Where revenue is stuck today</label>
+        <select id="f-stage">
+          <option>Founder-led, no AE in seat</option>
+          <option>1 AE ramping, pipeline thin</option>
+          <option>Sales team in place, capped by hiring</option>
+          <option>Entering a new market this quarter</option>
+          <option>Other / not sure</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-note">One sentence on what you'd want from 6 months with us</label>
+        <textarea id="f-note" placeholder="We've raised our seed, product is live with 8 paying customers, and we need a working outbound motion before Series A..."></textarea>
+      </div>
+      <a class="btn btn-accent" href="mailto:hello@veerpoint.io?subject=Discovery%20call%20%C2%B7%20Veerpoint">Send &amp; book Discovery <span class="arrow">→</span></a>
+      <div class="form-foot">Or email hello@veerpoint.io · We reply same day</div>
+    </aside>
   </div>
 </section>
 
