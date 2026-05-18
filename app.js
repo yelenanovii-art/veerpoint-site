@@ -17,6 +17,20 @@
   // quiz button so the morphed ball is the only visible CTA on desktop.
   if (dotEl) document.body.classList.add('ball-active');
 
+  // When the ball is morphed into the "Take the fit quiz" pill (body has
+  // `scroll-near-cta`), clicking it should actually open the quiz. The
+  // fallback button beneath has the right handler bound on each page
+  // (data-quiz handler on about/pricing/how-it-works, or onclick=vpQuizOpen
+  // on index.html), but it's set to pointer-events:none so the ball
+  // doesn't get double-clicks. Delegate the click programmatically.
+  if (dotEl) {
+    dotEl.addEventListener('click', () => {
+      if (!document.body.classList.contains('scroll-near-cta')) return;
+      const fallback = document.querySelector('.quiz-dock-fallback');
+      if (fallback) fallback.click();
+    });
+  }
+
   // Filter `.stop` elements down to ones inside true section headlines —
   // only stops nested inside an <h1> or <h2>. Skips card titles, founder
   // names, FAQ questions, stage names and any other smaller display text.
@@ -675,6 +689,10 @@
   const overlay = document.getElementById('quiz');
   const stage = document.getElementById('quiz-stage');
   const progress = document.querySelector('.quiz-progress');
+  // index.html ships its own quiz markup (#vpQuiz) wired with inline
+  // vpQuizOpen() and doesn't have this overlay — skip wiring to avoid a
+  // TypeError on overlay.addEventListener below.
+  if (!overlay || !stage || !progress) return;
   let state = { i: 0, scores: [] };
 
   function renderQuestion() {
