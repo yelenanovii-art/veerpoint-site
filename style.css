@@ -2820,8 +2820,16 @@
     .map-hd { grid-template-columns: 1fr; gap: 16px; }
     .map-canvas { grid-template-columns: 1fr; gap: 16px; }
     /* Bigger map on tablet/mobile — square stage uses ~33% more height than 4:3
-       so the cities + arcs breathe at narrow widths. */
-    .map-stage { aspect-ratio: 1 / 1; }
+       so the cities + arcs breathe at narrow widths. Break out of the .wrap
+       horizontal padding so the map runs edge-to-edge. */
+    .map-stage {
+      aspect-ratio: 1 / 1;
+      margin-left: calc(var(--vp-pad) * -1);
+      margin-right: calc(var(--vp-pad) * -1);
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
+    }
     /* Slim panel · the heavy detail rows (clock, specialty/engagements,
        description, hint copy) hide on mobile so the panel becomes a compact
        strip: city name, tier badge, CTA. */
