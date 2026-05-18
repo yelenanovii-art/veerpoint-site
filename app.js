@@ -39,16 +39,11 @@
   // Positions are in viewport pixels (because position: fixed)
   const ball = { x: 100, y: 100, vx: 0, vy: 0, size: 14, ts: 14, initialized: false };
   const trail = trailEls.map((_, i) => ({
-    x: 100, y: 100, vx: 0, vy: 0,
-    // Each trail dot is progressively softer, drawing a longer ribbon behind.
-    // On touch we cut the spring strength further so trail dots don't whip
-    // around during fling-scrolls.
-    k: IS_TOUCH
-      ? ([0.010, 0.007, 0.005][i] || 0.004)
-      : ([0.025, 0.016, 0.011][i] || 0.009),
-    d: IS_TOUCH
-      ? ([0.965, 0.972, 0.978][i] || 0.982)
-      : ([0.92,  0.94,  0.95][i]  || 0.96),
+    x: 100, y: 100,
+    // Each trail dot lerps toward the lead ball at a slower rate so they
+    // draw a short ribbon behind it. Decelerating lerp (no stored velocity)
+    // so trail dots also arrive cleanly without oscillating around the dot.
+    lerp: [0.085, 0.060, 0.040][i] || 0.030,
   }));
   const target = { x: 100, y: 100, size: 14 };
   // Remember which stop we're currently "on" so we can add hysteresis to
@@ -57,11 +52,11 @@
   // multiple stops are visible at once.
   let currentStopEl = null;
   let nearCta = false;
-  // Very gentle spring + heavy damping → slow, fluid drift instead of bouncy follow.
-  // Touch viewports get an even softer spring + stronger damping so the ball
-  // glides instead of chasing a fling.
-  const SPRING  = IS_TOUCH ? 0.007 : 0.018;
-  const DAMPING = IS_TOUCH ? 0.975 : 0.94;
+  // Decelerating lerp toward target. Replaces the previous spring/damping
+  // model which stored velocity and oscillated around the target before
+  // settling — that produced the "slowly bouncing around the arriving dot"
+  // feel. Lerp asymptotes into the target with no overshoot.
+  const POS_LERP  = IS_TOUCH ? 0.10 : 0.16;
   // Hysteresis: a candidate stop must be at least N viewport-px closer to
   // center than our current pick before we switch. Higher = more committed.
   // Touch flings scroll past multiple headings fast; raising the threshold
@@ -69,6 +64,9 @@
   const SWITCH_THRESHOLD = IS_TOUCH ? 240 : 140;
   // Size lerp tempo — slower on touch so the ball doesn't pulse when scrolling.
   const SIZE_LERP = IS_TOUCH ? 0.012 : 0.025;
+  // Snap-to-target threshold: once we're within this many pixels of the
+  // target, just lock to it. Kills the asymptotic crawl in the final pixel.
+  const SNAP_PX = 0.5;
 
   function pickTarget() {
     const vh = window.innerHeight || 1;
@@ -150,11 +148,17 @@
       trailEls.forEach(el => el.classList.add('ready'));
     }
 
-    // Spring physics — position
-    ball.vx = ball.vx * DAMPING + (target.x - ball.x) * SPRING;
-    ball.vy = ball.vy * DAMPING + (target.y - ball.y) * SPRING;
-    ball.x += ball.vx;
-    ball.y += ball.vy;
+    // Position lerp · no stored velocity, so the ball decelerates into the
+    // target and stops. Snap once we're inside SNAP_PX so we don't crawl
+    // the last fraction of a pixel forever.
+    const dx = target.x - ball.x;
+    const dy = target.y - ball.y;
+    if (Math.abs(dx) < SNAP_PX && Math.abs(dy) < SNAP_PX) {
+      ball.x = target.x; ball.y = target.y;
+    } else {
+      ball.x += dx * POS_LERP;
+      ball.y += dy * POS_LERP;
+    }
     // Gentle lerp on size so the dot grows/shrinks at the same calm tempo as the motion.
     ball.size += (target.size - ball.size) * SIZE_LERP;
 
@@ -171,14 +175,12 @@
       }
     }
 
-    // Trail — each dot lerps toward the ball with its own k/d
+    // Trail — each dot lerps toward the ball at its own rate.
     for (let i = 0; i < trail.length; i++) {
       const t = trail[i];
       const el = trailEls[i];
-      t.vx = t.vx * t.d + (ball.x - t.x) * t.k;
-      t.vy = t.vy * t.d + (ball.y - t.y) * t.k;
-      t.x += t.vx;
-      t.y += t.vy;
+      t.x += (ball.x - t.x) * t.lerp;
+      t.y += (ball.y - t.y) * t.lerp;
       if (el) {
         el.style.left = t.x + 'px';
         el.style.top  = t.y + 'px';
