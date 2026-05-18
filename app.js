@@ -31,13 +31,24 @@
     stops = Array.from(document.querySelectorAll('.stop')).filter(isTargetable);
   }
 
+  // Touch viewports fling-scroll much faster than mouse wheels, so the
+  // same spring values that feel fluid on desktop look frantic on mobile.
+  // Detect coarse pointers and run the ball noticeably calmer.
+  const IS_TOUCH = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
   // Positions are in viewport pixels (because position: fixed)
   const ball = { x: 100, y: 100, vx: 0, vy: 0, size: 14, ts: 14, initialized: false };
   const trail = trailEls.map((_, i) => ({
     x: 100, y: 100, vx: 0, vy: 0,
     // Each trail dot is progressively softer, drawing a longer ribbon behind.
-    k: [0.025, 0.016, 0.011][i] || 0.009,
-    d: [0.92, 0.94, 0.95][i]    || 0.96,
+    // On touch we cut the spring strength further so trail dots don't whip
+    // around during fling-scrolls.
+    k: IS_TOUCH
+      ? ([0.010, 0.007, 0.005][i] || 0.004)
+      : ([0.025, 0.016, 0.011][i] || 0.009),
+    d: IS_TOUCH
+      ? ([0.965, 0.972, 0.978][i] || 0.982)
+      : ([0.92,  0.94,  0.95][i]  || 0.96),
   }));
   const target = { x: 100, y: 100, size: 14 };
   // Remember which stop we're currently "on" so we can add hysteresis to
@@ -47,11 +58,17 @@
   let currentStopEl = null;
   let nearCta = false;
   // Very gentle spring + heavy damping → slow, fluid drift instead of bouncy follow.
-  const SPRING  = 0.018;
-  const DAMPING = 0.94;
+  // Touch viewports get an even softer spring + stronger damping so the ball
+  // glides instead of chasing a fling.
+  const SPRING  = IS_TOUCH ? 0.007 : 0.018;
+  const DAMPING = IS_TOUCH ? 0.975 : 0.94;
   // Hysteresis: a candidate stop must be at least N viewport-px closer to
   // center than our current pick before we switch. Higher = more committed.
-  const SWITCH_THRESHOLD = 140;
+  // Touch flings scroll past multiple headings fast; raising the threshold
+  // there keeps the ball from hopping between targets mid-fling.
+  const SWITCH_THRESHOLD = IS_TOUCH ? 240 : 140;
+  // Size lerp tempo — slower on touch so the ball doesn't pulse when scrolling.
+  const SIZE_LERP = IS_TOUCH ? 0.012 : 0.025;
 
   function pickTarget() {
     const vh = window.innerHeight || 1;
@@ -133,7 +150,7 @@
     ball.x += ball.vx;
     ball.y += ball.vy;
     // Gentle lerp on size so the dot grows/shrinks at the same calm tempo as the motion.
-    ball.size += (target.size - ball.size) * 0.025;
+    ball.size += (target.size - ball.size) * SIZE_LERP;
 
     if (dotEl) {
       dotEl.style.left = ball.x + 'px';
