@@ -389,8 +389,10 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .section.dark.final .wrap { position: relative; z-index: 1; }
 .section.dark .eyebrow { color: var(--vp-terracotta); }
 .section.dark .eyebrow::before { background: var(--vp-terracotta); }
-.section.dark.principle .eyebrow { color: var(--vp-ink); }
-.section.dark.principle .eyebrow::before { background: var(--vp-ink); }
+/* Brighter rust for the principle eyebrow — default --vp-terracotta sat
+   too close in luminance to the warm-dark section background to read. */
+.section.dark.principle .eyebrow { color: #E26937; }
+.section.dark.principle .eyebrow::before { background: #E26937; }
 
 .side-grid { display: grid; grid-template-columns: 260px 1fr; gap: 80px; align-items: start; }
 .side-grid .eyebrow.plain { margin-top: 8px; color: var(--vp-muted); }
