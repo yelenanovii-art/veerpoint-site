@@ -2819,17 +2819,28 @@
     .dash-grid { grid-template-columns: 1fr; }
     .map-hd { grid-template-columns: 1fr; gap: 16px; }
     .map-canvas { grid-template-columns: 1fr; gap: 16px; }
-    /* Bigger map on tablet/mobile — square stage uses ~33% more height than 4:3
-       so the cities + arcs breathe at narrow widths. Break out of the .wrap
-       horizontal padding so the map runs edge-to-edge. */
+    /* On tablet/mobile the SVG renders at ~0.49 of its viewBox (760->375),
+       so labels at 8.5 viewBox-px render as ~4 screen-px (unreadable) and
+       marker dots are ~2 screen-px. Bump labels + dots + rings via CSS so
+       the map is actually legible. Geometry (r) and font-size on SVG are
+       styleable in all modern browsers and override the SVG attributes. */
     .map-stage {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 19 / 15;
       margin-left: calc(var(--vp-pad) * -1);
       margin-right: calc(var(--vp-pad) * -1);
       border-left: none;
       border-right: none;
       border-radius: 0;
     }
+    .map-svg .marker-label {
+      font-size: 19px;
+      letter-spacing: 2.2px;
+    }
+    .map-svg .marker-dot                       { r: 8; }
+    .map-svg .marker[data-tier="hq"] .marker-dot { r: 11; }
+    .map-svg .marker-ring                      { r: 12; }
+    .map-svg .land-dot                         { r: 1.6; }
+    .map-svg .graticule line                   { stroke-width: 0.9; }
     /* Slim panel · the heavy detail rows (clock, specialty/engagements,
        description, hint copy) hide on mobile so the panel becomes a compact
        strip: city name, tier badge, CTA. */
