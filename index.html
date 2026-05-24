@@ -615,6 +615,36 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   box-shadow: 0 32px 80px rgba(28, 28, 30, 0.32);
 }
 .modal.open .modal-card { transform: translateY(0) scale(1); }
+
+/* Mobile: present the quiz as a bottom sheet instead of a centered card.
+   Anchors to the bottom edge, slides up, rounded only on the top corners,
+   fills the viewport width with a small safe-area inset. */
+@media (max-width: 760px) {
+  .modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal-card {
+    max-width: none;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+    padding: 28px 22px calc(24px + env(safe-area-inset-bottom));
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.22, 0.9, 0.32, 1);
+    box-shadow: 0 -16px 48px rgba(28, 28, 30, 0.28);
+  }
+  .modal.open .modal-card { transform: translateY(0); }
+  /* Drag-handle affordance at the top so it reads as a sheet */
+  .modal-card::before {
+    content: "";
+    display: block;
+    width: 40px; height: 4px;
+    border-radius: 4px;
+    background: var(--vp-border-strong);
+    margin: -6px auto 18px;
+  }
+}
 .modal-close {
   position: absolute;
   top: 18px; right: 20px;
