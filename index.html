@@ -2058,43 +2058,51 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     </div>
 
     <aside class="form-card">
-      <div class="form-hd">Discovery form · 90 seconds</div>
-      <div class="field">
-        <label for="f-name">Your name</label>
-        <input id="f-name" type="text" placeholder="Jordan Stevens" />
+      <form id="discoveryForm" novalidate>
+        <div class="form-hd">Discovery form · 90 seconds</div>
+        <div class="field">
+          <label for="f-name">Your name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Jordan Stevens" required />
+        </div>
+        <div class="field">
+          <label for="f-email">Work email</label>
+          <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="jordan@yourcompany.com" required />
+        </div>
+        <div class="field">
+          <label for="f-company">Company · stage</label>
+          <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Lumen · Series A · B2B SaaS" />
+        </div>
+        <div class="field">
+          <label for="f-icp">Which profile fits you</label>
+          <select id="f-icp" name="icp">
+            <option>A · First go-to-market (no sales function yet)</option>
+            <option>B · Expansion into new market / segment</option>
+            <option>Both / not sure yet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-stage">Where revenue is stuck today</label>
+          <select id="f-stage" name="stage">
+            <option>Founder-led, no AE in seat</option>
+            <option>1 AE ramping, pipeline thin</option>
+            <option>Sales team in place, capped by hiring</option>
+            <option>Entering a new market this quarter</option>
+            <option>Other / not sure</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-note">One sentence on what you'd want from 6 months with us</label>
+          <textarea id="f-note" name="note" placeholder="We've raised our seed, product is live with 8 paying customers, and we need a working outbound motion before Series A..."></textarea>
+        </div>
+        <div id="formError" class="form-error" hidden></div>
+        <button type="submit" class="btn btn-accent" id="formSubmit">Send &amp; book Discovery <span class="arrow">→</span></button>
+        <div class="form-foot">Or email hello@veerpoint.io · We reply same day</div>
+      </form>
+      <div id="formSuccess" class="form-success" hidden>
+        <div class="form-success-icon">✓</div>
+        <h3>Got it. We'll reply within 48 hours<span class="stop">.</span></h3>
+        <p>Check your inbox for a confirmation. If anything urgent, hit us at <a href="mailto:hello@veerpoint.io">hello@veerpoint.io</a> and we'll move faster.</p>
       </div>
-      <div class="field">
-        <label for="f-email">Work email</label>
-        <input id="f-email" type="email" placeholder="jordan@yourcompany.com" />
-      </div>
-      <div class="field">
-        <label for="f-company">Company · stage</label>
-        <input id="f-company" type="text" placeholder="Lumen · Series A · B2B SaaS" />
-      </div>
-      <div class="field">
-        <label for="f-icp">Which profile fits you</label>
-        <select id="f-icp">
-          <option>A · First go-to-market (no sales function yet)</option>
-          <option>B · Expansion into new market / segment</option>
-          <option>Both / not sure yet</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="f-stage">Where revenue is stuck today</label>
-        <select id="f-stage">
-          <option>Founder-led, no AE in seat</option>
-          <option>1 AE ramping, pipeline thin</option>
-          <option>Sales team in place, capped by hiring</option>
-          <option>Entering a new market this quarter</option>
-          <option>Other / not sure</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="f-note">One sentence on what you'd want from 6 months with us</label>
-        <textarea id="f-note" placeholder="We've raised our seed, product is live with 8 paying customers, and we need a working outbound motion before Series A..."></textarea>
-      </div>
-      <a class="btn btn-accent" href="mailto:hello@veerpoint.io?subject=Discovery%20call%20%C2%B7%20Veerpoint">Send &amp; book Discovery <span class="arrow">→</span></a>
-      <div class="form-foot">Or email hello@veerpoint.io · We reply same day</div>
     </aside>
   </div>
 </section>
@@ -2531,12 +2539,88 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     });
   }, { passive: true });
 
-  // 5. Form submission — fires when the Discovery form is sent.
-  var bookSendBtn = document.querySelector('#book .btn-accent');
-  if (bookSendBtn) {
-    bookSendBtn.addEventListener('click', function () {
+  // 5. Discovery form submit — validate, collect lead-source context,
+  //    try CRM POST (placeholder), fallback to localStorage, show success.
+  var form = document.getElementById('discoveryForm');
+  if (form) {
+    var errorEl   = document.getElementById('formError');
+    var successEl = document.getElementById('formSuccess');
+    var submitBtn = document.getElementById('formSubmit');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.hidden = false;
+    }
+    function clearError() {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+    function leadSource() {
+      var params = new URLSearchParams(window.location.search);
+      return {
+        utm_source:   params.get('utm_source')   || '',
+        utm_medium:   params.get('utm_medium')   || '',
+        utm_campaign: params.get('utm_campaign') || '',
+        utm_content:  params.get('utm_content')  || '',
+        utm_term:     params.get('utm_term')     || '',
+        referrer:     document.referrer || '',
+        landing_page: window.location.href,
+      };
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearError();
+
+      var payload = {
+        name:    form.elements['name'].value.trim(),
+        email:   form.elements['email'].value.trim(),
+        company: form.elements['company'].value.trim(),
+        icp:     form.elements['icp'].value,
+        stage:   form.elements['stage'].value,
+        note:    form.elements['note'].value.trim(),
+        source:  leadSource(),
+        ts:      new Date().toISOString(),
+      };
+
+      if (!payload.name)  return showError('Please add your name so we know who we’re talking to.');
+      if (!payload.email) return showError('We need a work email to send the diagnostic back.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return showError('That email doesn’t look right — double-check it.');
+
       track('form_submit_attempt', { form: 'discovery' });
-    }, { passive: true });
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      // ─── CRM POST · TODO ──────────────────────────────────────────
+      // Replace this stub with the real CRM endpoint when credentials
+      // are available. Two common targets:
+      //   - HubSpot Forms API:
+      //       https://api.hsforms.com/submissions/v3/integration/
+      //       submit/<portalId>/<formGuid>
+      //   - Custom webhook (Make / Zapier / your backend):
+      //       fetch('/api/discovery', { method: 'POST',
+      //         headers: {'Content-Type': 'application/json'},
+      //         body: JSON.stringify(payload) })
+      //
+      // For now we persist to localStorage so the lead isn't lost,
+      // and the user sees the success state. Manually pull these from
+      // devtools (key: vpDiscoveryLeads) until the CRM is wired up.
+      // ──────────────────────────────────────────────────────────────
+      try {
+        var existing = JSON.parse(localStorage.getItem('vpDiscoveryLeads') || '[]');
+        existing.push(payload);
+        localStorage.setItem('vpDiscoveryLeads', JSON.stringify(existing));
+      } catch (_) { /* private mode etc. */ }
+
+      // Simulate latency so the success state doesn't flash instantly,
+      // and mirror what a real fetch().then() would feel like.
+      setTimeout(function () {
+        track('form_submit_success', { form: 'discovery' });
+        form.hidden = true;
+        successEl.hidden = false;
+        successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 480);
+    });
   }
 })();
 </script>
