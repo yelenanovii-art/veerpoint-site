@@ -87,10 +87,11 @@
     const vw = window.innerWidth  || 1;
     const cy = vh / 2;
 
-    // CTA-mode override — when the dock anchor (after the closing-list) is
-    // in view, the ball morphs into the "Take the fit quiz" pill and lands
-    // ON the dock so it sits in the content flow, not floating above.
-    if (quizDock) {
+    // CTA-mode override — desktop only. When the dock anchor is in view the
+    // ball morphs into the "Take the fit quiz" pill at the dock. On touch
+    // the ball lives on the right edge as a scroll-guide indicator, so a
+    // 240px pill on the right would overflow off-screen.
+    if (quizDock && !IS_TOUCH) {
       const dr = quizDock.getBoundingClientRect();
       const inCta = dr.top < vh * 0.80 && dr.bottom > vh * 0.10;
       if (inCta !== nearCta) {
@@ -104,7 +105,7 @@
         return;
       }
     } else if (nearCta) {
-      // dock missing on this page — clear morph state
+      // dock missing on this page (or touch mode) — clear morph state
       nearCta = false;
       document.body.classList.remove('scroll-near-cta');
     }
@@ -137,15 +138,17 @@
     currentStopEl = chosen;
 
     const r = chosen.getBoundingClientRect();
-    target.x = r.left + r.width / 2;
     // Visually the period sits on the text baseline — biasing slightly toward
     // the bottom of the bounding rect lands the ball on the actual dot.
     target.y = r.top  + r.height * 0.72;
-    // Touch: lock to a single calm size. Scaling per-heading made the ball
-    // pulse every time it moved, which read as nervous motion.
     if (IS_TOUCH) {
+      // Touch: pin to the right edge as a scroll-guide indicator. Y still
+      // tracks the current section's headline so the dot drifts down the
+      // edge as the user moves through the page.
+      target.x = vw - 22;
       target.size = 12;
     } else {
+      target.x = r.left + r.width / 2;
       const fs = parseFloat(getComputedStyle(chosen).fontSize);
       target.size = Math.max(10, Math.min(26, fs * 0.18));
     }
