@@ -792,6 +792,20 @@
   });
 })();
 
+/* ───────── Mobile nav · auto-close burger drawer on link tap ─────────
+   The drawer is driven by a checkbox toggle. Without this, tapping a nav
+   link smooth-scrolls to the anchor but leaves the drawer covering the
+   page so the user has to manually close it. */
+(function initMobileNavAutoClose() {
+  const toggle = document.getElementById('nav-burger-toggle');
+  if (!toggle) return;
+  document.querySelectorAll('.nav-links a').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (toggle.checked) toggle.checked = false;
+    });
+  });
+})();
+
 /* ───────── Cursor / touch dot · the brand stop, following the pointer ─────────
    Desktop: small terracotta circle trailing the cursor with a smooth lerp,
    swelling when over interactive elements.

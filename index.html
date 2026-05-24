@@ -1317,7 +1317,8 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   :root { --vp-pad: 28px; }
   .section { padding: 80px 0; }
   .principle, .final { padding: 100px 0; }
-  .nav-links { display: none; }
+  /* Mobile nav drawer rules live in style.css at <=760px. Between 900-760px
+     the desktop layout still fits. */
   .top-strip span:nth-child(2) { display: none; }
   .side-grid { grid-template-columns: 1fr; gap: 24px; }
   .stage { grid-template-columns: 1fr; gap: 24px; padding: 32px 24px; }
@@ -1345,6 +1346,10 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 <nav class="nav">
   <div class="nav-inner">
     <a href="#top" class="wordmark">Veerpoint<span class="stop">.</span></a>
+    <input type="checkbox" id="nav-burger-toggle" class="nav-burger-toggle" />
+    <label for="nav-burger-toggle" class="nav-burger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </label>
     <div class="nav-links">
       <a href="#approach">How we work</a>
       <a href="#principle">Mission</a>
