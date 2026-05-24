@@ -1,0 +1,7 @@
+# IDE workspace files (local-only)
+new-aspire-web.code-workspace
+*.code-workspace
+
+# OS noise
+.DS_Store
+Thumbs.db
