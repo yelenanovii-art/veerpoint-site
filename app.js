@@ -7,8 +7,14 @@
      match each stop. Trail dots lag behind, drawing the "line"
      between consecutive stops. */
 
-  const dotEl    = document.querySelector('.scroll-dot');
-  const trailEls = Array.from(document.querySelectorAll('.scroll-trail-dot'));
+  // Mobile MVP: the scroll-following ball is desktop-only. Detect coarse
+  // pointers up front and bail before doing any DOM work or attaching the
+  // rAF loop — saves CPU on phones and removes the "bouncy" feel users
+  // reported. Cursor follower (further down the file) stays on desktop.
+  const IS_COARSE_POINTER = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  const dotEl    = IS_COARSE_POINTER ? null : document.querySelector('.scroll-dot');
+  const trailEls = IS_COARSE_POINTER ? [] : Array.from(document.querySelectorAll('.scroll-trail-dot'));
   const ctaSection = document.getElementById('book');
   const quizDock   = document.getElementById('quizDock');
   const darkSelectors = ['#dashboard', '#process', '#markets', '#principle', '#talk'];
@@ -217,28 +223,20 @@
     requestAnimationFrame(tick);
   }
 
-  refreshStops();
-  // Desktop: pick a new target on every scroll event so the ball follows live.
-  // Touch: debounce target picks until scrolling settles. While the finger is
-  // flinging the page, the ball stays put; once you stop, it gently glides to
-  // the new heading. Far less motion than chasing the scroll in real time.
-  if (IS_TOUCH) {
-    const SCROLL_QUIET_MS = 220;
-    let scrollTimer = null;
-    window.addEventListener('scroll', () => {
-      if (scrollTimer) clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => { scrollTimer = null; pickTarget(); }, SCROLL_QUIET_MS);
-    }, { passive: true });
-  } else {
+  // Skip the entire connecting-ball runtime on touch — no scroll listener,
+  // no rAF loop, no DOM writes. Frees CPU on phones and kills the bouncy
+  // feel users flagged. Desktop behavior unchanged.
+  if (!IS_COARSE_POINTER) {
+    refreshStops();
     window.addEventListener('scroll', pickTarget, { passive: true });
+    window.addEventListener('resize', () => { refreshStops(); pickTarget(); });
+    // Re-collect after fonts load (font-size filter depends on layout)
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { refreshStops(); pickTarget(); });
+    }
+    pickTarget();
+    tick();
   }
-  window.addEventListener('resize', () => { refreshStops(); pickTarget(); });
-  // Re-collect after fonts load (font-size filter depends on layout)
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => { refreshStops(); pickTarget(); });
-  }
-  pickTarget();
-  tick();
 
   /* ───────── Spotlight cards · cursor-tracking glow ─────────
      Pointer position written as --gx / --gy on each [data-glow] card.

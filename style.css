@@ -2902,17 +2902,9 @@
     .map-panel-cta #mpHint { display: none; }
     .map-panel-cta { padding-top: 12px; justify-content: flex-end; }
     .map-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
-    /* Scroll-following dot stays alive on tablet/mobile, but the trail of
-       three lagging dots was the busiest part of the animation — hide it on
-       touch so only the calm lead ball remains. */
-    .scroll-dot {
-      width: 12px;
-      height: 12px;
-      box-shadow:
-        0 0 0 2px rgba(160,64,34,0.16),
-        0 5px 14px rgba(160,64,34,0.32);
-    }
-    .scroll-trail-dot { display: none; }
+    /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
+       and CSS hides the markup defensively in case JS fails. */
+    .scroll-dot, .scroll-trail-dot { display: none; }
     .foot-grid { grid-template-columns: 1fr 1fr; }
   }
 
