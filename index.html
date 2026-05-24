@@ -492,11 +492,19 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
 }
 
-.principle { padding: 140px 0; text-align: center; }
-.principle .eyebrow { margin-bottom: 36px; justify-content: center; }
+/* Disclaimer banner · sits below founders. Tighter padding than a full
+   section so it reads as a banner punctuation, not a hero. */
+.principle { padding: 96px 0; text-align: center; }
+.principle .eyebrow { margin-bottom: 24px; justify-content: center; }
 .principle h2 {
-  font-size: clamp(40px, 6vw, 84px); line-height: 1.04;
-  letter-spacing: -0.04em; font-weight: 700; max-width: 18ch; margin: 0 auto;
+  font-size: clamp(34px, 5vw, 60px); line-height: 1.06;
+  letter-spacing: -0.035em; font-weight: 700; max-width: 22ch; margin: 0 auto 32px;
+}
+.principle-cta { margin-top: 32px; display: flex; justify-content: center; }
+.principle-cta .btn { padding: 16px 28px; font-size: 15px; font-weight: 600; }
+@media (max-width: 760px) {
+  .principle { padding: 72px 0; }
+  .principle-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 
 .fit-hd { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: end; gap: 40px; }
@@ -559,7 +567,50 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (max-width: 900px) { .authority-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 480px) { .authority-grid { grid-template-columns: repeat(2, 1fr); } }
 
-.team-hd { margin-bottom: 56px; max-width: 60ch; }
+/* Team section: tighter so the page doesn't run away. Founders' video sits
+   above the three-card grid and acts as the "founders' message" embed. */
+.team-section { padding: 96px 0; }
+@media (max-width: 760px) { .team-section { padding: 72px 0; } }
+.founders-video { margin: 0 auto 56px; max-width: 800px; }
+.video-placeholder {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(160, 64, 34, 0.18) 0%, transparent 65%),
+    linear-gradient(135deg, var(--vp-ink) 0%, var(--vp-ink-90) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.video-placeholder:hover { box-shadow: 0 0 0 6px rgba(160, 64, 34, 0.16), 0 22px 50px rgba(28, 28, 30, 0.32); transform: translateY(-2px); }
+.video-placeholder .vp-play {
+  font-family: var(--vp-font-display);
+  font-size: clamp(52px, 6vw, 76px);
+  color: var(--vp-terracotta);
+  opacity: 0.9;
+  margin-bottom: 6px;
+}
+.video-placeholder .vp-label {
+  color: var(--vp-warm-white);
+  font-family: var(--vp-font-display);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.video-placeholder .vp-sub {
+  color: var(--vp-muted-soft);
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.team-hd { margin-bottom: 40px; max-width: 60ch; }
 .team-hd h2 {
   font-family: var(--vp-font-display);
   font-size: clamp(28px, 3.2vw, 44px);
@@ -572,16 +623,17 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  gap: 36px;
 }
 .member {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 .member-photo {
   position: relative;
-  aspect-ratio: 1 / 1;
+  /* Portrait crop instead of square so the cards take less vertical space */
+  aspect-ratio: 4 / 5;
   background: linear-gradient(135deg, var(--vp-paper) 0%, var(--vp-paper-2) 100%);
   border: 1px solid var(--vp-border);
   border-radius: 4px;
@@ -1495,7 +1547,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
       <a class="hero-cta-secondary" href="#book">Or book a call <span class="arrow">→</span></a>
     </div>
-    <p class="hero-sub">For teams that want execution, not advice.</p>
+    <p class="hero-sub">Your competitors are already selling. Catch up before the quarter closes.</p>
   </div>
 </section>
 
@@ -1591,7 +1643,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 <section class="section atmos-cream" id="authority">
   <div class="wrap">
     <div class="eyebrow plain" style="text-align: center; justify-content: center; margin-bottom: 28px">CLIENTS &amp; TRUST</div>
-    <h2 style="text-align: center; max-width: 22ch; margin: 0 auto 56px; font-size: clamp(26px, 3vw, 38px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.1">The teams we run sales for<span class="stop">.</span></h2>
+    <h2 style="text-align: center; max-width: 28ch; margin: 0 auto 56px; font-size: clamp(26px, 3vw, 38px); font-weight: 600; letter-spacing: -0.025em; line-height: 1.1">While their competitors built decks, these teams shipped revenue<span class="stop">.</span></h2>
     <div class="authority-grid">
       <div class="authority-logo">Client 01</div>
       <div class="authority-logo">Client 02</div>
@@ -1604,13 +1656,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="section dark principle" id="principle">
-  <div class="wrap">
-    <div class="eyebrow">MISSION</div>
-    <h2>We don't advise on revenue.<br>We <span class="under">build and run it</span><span class="stop">.</span></h2>
-  </div>
-</section>
-
 <section class="map-sec" id="markets">
   <div class="wrap">
     <div class="map-hd">
@@ -1619,7 +1664,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <h2>Based in Barcelona. Closing across Europe<span class="stop">.</span></h2>
       </div>
       <p class="map-sub">
-        Western and Northern Europe, plus US calendars on demand. Hover any city for local time and specialty.
+        Ten active markets. Every notification below is revenue someone else is closing right now. Each one fires the country it touches.
       </p>
     </div>
 
@@ -1726,31 +1771,27 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           <circle class="land-dot" cx="665" cy="280" r="2.2"/>
         </g>
 
-        <!-- Arcs · HQ Barcelona (180, 455) → every city -->
+        <!-- Arcs · HQ Barcelona (180, 455) → every country pin -->
         <g id="arcs">
-          <path class="arc" data-city="lisbon"     d="M180,455 Q120,412 60,510"   style="--len: 250"/>
-          <path class="arc" data-city="madrid"    d="M180,455 Q150,398 120,480"  style="--len: 180"/>
-          <path class="arc" data-city="dublin"    d="M180,455 Q180,283 180,250"  style="--len: 280"/>
-          <path class="arc" data-city="london"    d="M180,455 Q215,300 250,285"  style="--len: 340"/>
-          <path class="arc" data-city="paris"     d="M180,455 Q243,325 305,335"  style="--len: 320"/>
-          <path class="arc" data-city="brussels"  d="M180,455 Q250,310 320,305"  style="--len: 360"/>
-          <path class="arc" data-city="amsterdam" d="M180,455 Q258,298 335,280"  style="--len: 380"/>
-          <path class="arc" data-city="copenhagen" d="M180,455 Q305,275 430,235" style="--len: 440"/>
-          <path class="arc" data-city="stockholm" d="M180,455 Q338,243 495,170"  style="--len: 500"/>
-          <path class="arc" data-city="berlin"    d="M180,455 Q313,303 445,290"  style="--len: 420"/>
-          <path class="arc" data-city="munich"    d="M180,455 Q310,333 440,350"  style="--len: 360"/>
-          <path class="arc" data-city="vienna"    d="M180,455 Q335,340 490,365"  style="--len: 380"/>
-          <path class="arc" data-city="milan"     d="M180,455 Q293,360 405,405"  style="--len: 290"/>
-          <path class="arc" data-city="rome"      d="M180,455 Q313,393 445,470"  style="--len: 320"/>
-          <path class="arc" data-city="warsaw"    d="M180,455 Q363,300 545,285"  style="--len: 500"/>
+          <path class="arc" data-city="madrid"    data-country="ES" d="M180,455 Q150,398 120,480"  style="--len: 180"/>
+          <path class="arc" data-city="dublin"    data-country="IE" d="M180,455 Q180,283 180,250"  style="--len: 280"/>
+          <path class="arc" data-city="london"    data-country="UK" d="M180,455 Q215,300 250,285"  style="--len: 340"/>
+          <path class="arc" data-city="paris"     data-country="FR" d="M180,455 Q243,325 305,335"  style="--len: 320"/>
+          <path class="arc" data-city="brussels"  data-country="BE" d="M180,455 Q250,310 320,305"  style="--len: 360"/>
+          <path class="arc" data-city="amsterdam" data-country="NL" d="M180,455 Q258,298 335,280"  style="--len: 380"/>
+          <path class="arc" data-city="milan"     data-country="IT" d="M180,455 Q293,360 405,405"  style="--len: 290"/>
+          <path class="arc" data-city="athens"    data-country="GR" d="M180,455 Q380,400 540,510"  style="--len: 480"/>
+          <path class="arc" data-city="nicosia"   data-country="CY" d="M180,455 Q420,420 620,545"  style="--len: 560"/>
         </g>
 
         <!-- HQ glow halo behind Barcelona -->
         <circle cx="180" cy="455" r="38" fill="url(#vp-hq-glow)" pointer-events="none"/>
 
-        <!-- Markers · grouped per city for hover handling -->
+        <!-- Markers · 10 country pins per May-20 spec. Each carries
+             data-country (ISO 3166 alpha-2) so the live notification feed
+             can highlight the matching pin in sync. -->
         <g id="markers">
-          <g class="marker" data-city="barcelona" data-tier="hq">
+          <g class="marker" data-city="barcelona" data-country="ES" data-tier="hq">
             <circle class="marker-ring" cx="180" cy="455" r="7"/>
             <circle class="marker-ring delay" cx="180" cy="455" r="7"/>
             <circle class="marker-dot" cx="180" cy="455" r="6.5"/>
@@ -1758,129 +1799,76 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
             <text class="marker-label" x="193" y="460">BARCELONA · HQ</text>
           </g>
 
-          <g class="marker" data-city="madrid" data-tier="mkt">
+          <g class="marker" data-city="madrid" data-country="ES" data-tier="mkt">
             <circle class="marker-dot" cx="120" cy="480" r="3.5"/>
             <circle class="marker-hit" cx="120" cy="480" r="14"/>
-            <text class="marker-label" x="70" y="498" text-anchor="start">MADRID</text>
+            <text class="marker-label" x="70" y="498" text-anchor="start">SPAIN</text>
           </g>
 
-          <g class="marker" data-city="lisbon" data-tier="mkt">
-            <circle class="marker-dot" cx="60" cy="510" r="3.5"/>
-            <circle class="marker-hit" cx="60" cy="510" r="14"/>
-            <text class="marker-label" x="22" y="525">LISBON</text>
-          </g>
-
-          <g class="marker" data-city="dublin" data-tier="mkt">
+          <g class="marker" data-city="dublin" data-country="IE" data-tier="mkt">
             <circle class="marker-dot" cx="180" cy="250" r="3.5"/>
             <circle class="marker-hit" cx="180" cy="250" r="14"/>
-            <text class="marker-label" x="138" y="247" text-anchor="start">DUBLIN</text>
+            <text class="marker-label" x="138" y="247" text-anchor="start">IRELAND</text>
           </g>
 
-          <g class="marker" data-city="london" data-tier="hub">
+          <g class="marker" data-city="london" data-country="UK" data-tier="hub">
             <circle class="marker-ring" cx="250" cy="285" r="6"/>
             <circle class="marker-dot" cx="250" cy="285" r="5"/>
             <circle class="marker-hit" cx="250" cy="285" r="16"/>
-            <text class="marker-label" x="262" y="282">LONDON</text>
+            <text class="marker-label" x="262" y="282">UK</text>
           </g>
 
-          <g class="marker" data-city="paris" data-tier="mkt">
+          <g class="marker" data-city="paris" data-country="FR" data-tier="mkt">
             <circle class="marker-dot" cx="305" cy="335" r="3.5"/>
             <circle class="marker-hit" cx="305" cy="335" r="14"/>
-            <text class="marker-label" x="313" y="348">PARIS</text>
+            <text class="marker-label" x="313" y="348">FRANCE</text>
           </g>
 
-          <g class="marker" data-city="brussels" data-tier="mkt">
+          <g class="marker" data-city="brussels" data-country="BE" data-tier="mkt">
             <circle class="marker-dot" cx="320" cy="305" r="3.5"/>
             <circle class="marker-hit" cx="320" cy="305" r="14"/>
             <text class="marker-label" x="305" y="295" text-anchor="end">BRUSSELS</text>
           </g>
 
-          <g class="marker" data-city="amsterdam" data-tier="mkt">
+          <g class="marker" data-city="amsterdam" data-country="NL" data-tier="mkt">
             <circle class="marker-dot" cx="335" cy="280" r="3.5"/>
             <circle class="marker-hit" cx="335" cy="280" r="14"/>
-            <text class="marker-label" x="347" y="277">AMSTERDAM</text>
+            <text class="marker-label" x="347" y="277">NETHERLANDS</text>
           </g>
 
-          <g class="marker" data-city="copenhagen" data-tier="mkt">
-            <circle class="marker-dot" cx="430" cy="235" r="3.5"/>
-            <circle class="marker-hit" cx="430" cy="235" r="14"/>
-            <text class="marker-label" x="442" y="232">COPENHAGEN</text>
-          </g>
-
-          <g class="marker" data-city="stockholm" data-tier="hub">
-            <circle class="marker-ring" cx="495" cy="170" r="6"/>
-            <circle class="marker-dot" cx="495" cy="170" r="5"/>
-            <circle class="marker-hit" cx="495" cy="170" r="16"/>
-            <text class="marker-label" x="507" y="167">STOCKHOLM</text>
-          </g>
-
-          <g class="marker" data-city="berlin" data-tier="hub">
-            <circle class="marker-ring" cx="445" cy="290" r="6"/>
-            <circle class="marker-dot" cx="445" cy="290" r="5"/>
-            <circle class="marker-hit" cx="445" cy="290" r="16"/>
-            <text class="marker-label" x="457" y="287">BERLIN</text>
-          </g>
-
-          <g class="marker" data-city="munich" data-tier="mkt">
-            <circle class="marker-dot" cx="440" cy="350" r="3.5"/>
-            <circle class="marker-hit" cx="440" cy="350" r="14"/>
-            <text class="marker-label" x="452" y="355">MUNICH</text>
-          </g>
-
-          <g class="marker" data-city="vienna" data-tier="mkt">
-            <circle class="marker-dot" cx="490" cy="365" r="3.5"/>
-            <circle class="marker-hit" cx="490" cy="365" r="14"/>
-            <text class="marker-label" x="502" y="370">VIENNA</text>
-          </g>
-
-          <g class="marker" data-city="milan" data-tier="mkt">
+          <g class="marker" data-city="milan" data-country="IT" data-tier="mkt">
             <circle class="marker-dot" cx="405" cy="405" r="3.5"/>
             <circle class="marker-hit" cx="405" cy="405" r="14"/>
-            <text class="marker-label" x="395" y="402" text-anchor="end">MILAN</text>
+            <text class="marker-label" x="395" y="402" text-anchor="end">ITALY</text>
           </g>
 
-          <g class="marker" data-city="rome" data-tier="mkt">
-            <circle class="marker-dot" cx="445" cy="470" r="3.5"/>
-            <circle class="marker-hit" cx="445" cy="470" r="14"/>
-            <text class="marker-label" x="457" y="475">ROME</text>
+          <g class="marker" data-city="athens" data-country="GR" data-tier="mkt">
+            <circle class="marker-dot" cx="540" cy="510" r="3.5"/>
+            <circle class="marker-hit" cx="540" cy="510" r="14"/>
+            <text class="marker-label" x="552" y="514">GREECE</text>
           </g>
 
-          <g class="marker" data-city="warsaw" data-tier="mkt">
-            <circle class="marker-dot" cx="545" cy="285" r="3.5"/>
-            <circle class="marker-hit" cx="545" cy="285" r="14"/>
-            <text class="marker-label" x="557" y="282">WARSAW</text>
+          <g class="marker" data-city="nicosia" data-country="CY" data-tier="mkt">
+            <circle class="marker-dot" cx="620" cy="545" r="3.5"/>
+            <circle class="marker-hit" cx="620" cy="545" r="14"/>
+            <text class="marker-label" x="632" y="549">CYPRUS</text>
           </g>
         </g>
       </svg>
     </div>
 
-    <aside class="map-panel" id="mapPanel" aria-live="polite">
+    <aside class="map-panel map-panel-feed" id="mapPanel" aria-live="polite">
       <header class="map-panel-head">
-        <span id="mpIndex">CITY · 01 / 16</span>
-        <span class="tier" id="mpTier">HQ</span>
+        <span><span class="feed-dot"></span><span id="mpFeedLabel">LIVE FEED</span></span>
+        <span class="tier" id="mpType">DEAL CLOSED</span>
       </header>
       <div>
-        <h3 class="map-panel-city" id="mpCity">Barcelona</h3>
-        <div class="map-panel-country" id="mpCountry">Spain · Operations HQ</div>
+        <h3 class="map-panel-city" id="mpCity">Madrid</h3>
+        <div class="map-panel-country" id="mpCountry">Spain</div>
       </div>
-      <div class="map-panel-clock">
-        <span class="t" id="mpTime">--:--</span>
-        <span class="z" id="mpZone">CET</span>
-        <span class="delta" id="mpDelta">LOCAL</span>
-      </div>
-      <dl class="map-panel-meta">
-        <div>
-          <dt>Specialty</dt>
-          <dd id="mpSpec">Full-cycle sales · founders' team</dd>
-        </div>
-        <div>
-          <dt>Active engagements</dt>
-          <dd id="mpEng">Live ops · all stages</dd>
-        </div>
-      </dl>
-      <p class="map-panel-desc" id="mpDesc">Where every engagement starts. Discovery, strategy and the senior operators who close. Calls into your buyers' timezones, never ours.</p>
+      <p class="map-panel-desc" id="mpDesc">Deal closed · €38k ARR · Series A SaaS</p>
       <div class="map-panel-cta">
-        <span id="mpHint">Click any marker to pin</span>
+        <span id="mpIndex">01 / 10</span>
         <a href="#book">Book a call →</a>
       </div>
     </aside>
@@ -1944,12 +1932,22 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<section class="section" id="team">
+<section class="section team-section" id="team">
   <div class="wrap">
-    <div class="eyebrow" style="margin-bottom: 28px">THE TEAM</div>
+    <div class="eyebrow" style="margin-bottom: 24px">THE TEAM</div>
     <div class="team-hd">
       <h2>Three operators. Fifteen years closing experience<span class="stop">.</span></h2>
       <p class="team-sub">Built by people who carried a number.</p>
+    </div>
+
+    <!-- Founders' message · embed slot. Replace .video-placeholder with the
+         real <iframe> or <video> when the recording is ready. -->
+    <div class="founders-video">
+      <div class="video-placeholder" role="img" aria-label="Founders' message · video placeholder">
+        <div class="vp-play">▶</div>
+        <div class="vp-label">Founders' message</div>
+        <div class="vp-sub">~90 seconds · self-recorded · embed slot ready</div>
+      </div>
     </div>
 
     <div class="team-grid">
@@ -1981,6 +1979,18 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <div class="member-role">HEAD OF REVENUE</div>
         <div class="member-bio">High-performance closer with a track record of exceeding targets across iGaming, fintech, SaaS, and hospitality. Specialises in high-value deals, negotiation, and converting pipeline into revenue.</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Disclaimer banner · sits directly below the founders' message per spec.
+     Restates the positioning and offers a single Book a Meeting CTA. -->
+<section class="section dark principle" id="principle">
+  <div class="wrap">
+    <div class="eyebrow">MISSION</div>
+    <h2>We don't advise on revenue.<br>We <span class="under">build and run it</span><span class="stop">.</span></h2>
+    <div class="principle-cta">
+      <a class="btn btn-accent" href="#book">Book a Meeting <span class="arrow">→</span></a>
     </div>
   </div>
 </section>

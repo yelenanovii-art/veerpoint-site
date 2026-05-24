@@ -2343,6 +2343,23 @@
     background: currentColor;
     border-radius: 50%;
   }
+  /* Live-feed pulsing dot in the "LIVE FEED" label */
+  .map-panel-head .feed-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--vp-terracotta);
+    box-shadow: 0 0 6px rgba(160,64,34,0.7);
+    margin-right: 8px;
+    vertical-align: 1px;
+    animation: vp-pulse 1.6s ease-in-out infinite;
+  }
+  /* Brief flash when a new notification paints into the panel */
+  @keyframes vp-panel-fresh {
+    0%   { box-shadow: 0 0 0 0 rgba(160,64,34,0.45); }
+    100% { box-shadow: 0 0 0 12px rgba(160,64,34,0); }
+  }
+  .map-panel-feed.is-fresh { animation: vp-panel-fresh 0.85s ease-out; }
   .map-panel-city {
     font-family: var(--vp-font-display);
     font-weight: 600;

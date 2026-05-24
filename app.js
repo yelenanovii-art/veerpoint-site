@@ -436,199 +436,97 @@
     requestAnimationFrame(() => { readPathLength(); compute(); });
   })();
 
-  /* ───────── Europe map · hover-driven side panel + live clocks ───────── */
-  (function initMap() {
-    const stage  = document.getElementById('mapStage');
-    const panel  = document.getElementById('mapPanel');
+  /* ───────── Europe map · live notification feed + country highlight ─────────
+     The map IS the live feed now. We cycle through a fixed list of
+     notifications (deal closed / pipeline updated / email campaign /
+     partnership / demo moved) every CYCLE_MS. On each tick we paint the
+     notification into the side panel AND fire the matching country
+     marker (.is-focus). Cadence is intentionally slow so a reader can
+     finish each line before it changes. */
+  (function initMapFeed() {
+    const stage = document.getElementById('mapStage');
+    const panel = document.getElementById('mapPanel');
     if (!stage || !panel) return;
 
-    const CITIES = {
-      barcelona:  { name: 'Barcelona',  country: 'Spain · Operations HQ',     tz: 'Europe/Madrid',     zone: 'CET',  tier: 'HQ',     specialty: 'Full-cycle sales · founders’ team', engagements: 'Live ops · all stages',          desc: 'Where every engagement starts. Discovery, strategy and the senior operators who close. Calls into your buyers’ timezones, never ours.' },
-      london:     { name: 'London',     country: 'United Kingdom · Hub',       tz: 'Europe/London',     zone: 'GMT',  tier: 'HUB',    specialty: 'Tech · SaaS · fintech buyers',                engagements: 'Senior ops on-call',              desc: 'Hub for UK and Ireland motions. English-language outbound, mid-market and enterprise SaaS, fintech ICPs covered weekly.' },
-      berlin:     { name: 'Berlin',     country: 'Germany · Hub',              tz: 'Europe/Berlin',     zone: 'CET',  tier: 'HUB',    specialty: 'DACH · deep-tech · industrial',              engagements: 'German + English motions',        desc: 'DACH hub. Local-language sequences for Germany, Austria and German-speaking Switzerland. Deep-tech and B2B SaaS.' },
-      stockholm:  { name: 'Stockholm',  country: 'Sweden · Hub',               tz: 'Europe/Stockholm',  zone: 'CET',  tier: 'HUB',    specialty: 'Nordic SaaS · hospitality · D2C',             engagements: 'Pan-Nordic outbound',             desc: 'Nordic hub. Stockholm, Oslo, Copenhagen, Helsinki coverage. SaaS, hospitality groups, premium D2C brands.' },
-      madrid:     { name: 'Madrid',     country: 'Spain',                      tz: 'Europe/Madrid',     zone: 'CET',  tier: 'MARKET', specialty: 'Spanish SMB · real estate',                  engagements: 'ES outbound · weekly',            desc: 'Iberia coverage out of HQ. Spanish-language sequences for property, hospitality and SMB SaaS.' },
-      lisbon:     { name: 'Lisbon',     country: 'Portugal',                   tz: 'Europe/Lisbon',     zone: 'WET',  tier: 'MARKET', specialty: 'PT · PALOP · startup founders',              engagements: 'EN + PT motions',                  desc: 'Founder-dense market. Portuguese-speaking sequences, plus English-first for startups.' },
-      dublin:     { name: 'Dublin',     country: 'Ireland',                    tz: 'Europe/Dublin',     zone: 'GMT',  tier: 'MARKET', specialty: 'EU HQ buyers · EMEA leaders',                  engagements: 'Cross-Atlantic prep',              desc: 'EU HQs for US-headquartered tech companies. EMEA expansion plays into and out of Dublin.' },
-      paris:      { name: 'Paris',      country: 'France',                     tz: 'Europe/Paris',      zone: 'CET',  tier: 'MARKET', specialty: 'FR · luxury · tech · hospitality',          engagements: 'French-language motions',          desc: 'Native French outbound. Luxury, hospitality, B2B SaaS, scaleups with French enterprise targets.' },
-      brussels:   { name: 'Brussels',   country: 'Belgium',                    tz: 'Europe/Brussels',   zone: 'CET',  tier: 'MARKET', specialty: 'BeNeLux SMB · EU institutions',               engagements: 'Bilingual FR/NL',                  desc: 'BeNeLux coverage. FR/NL bilingual sequences. Useful corner for EU institutions and policy buyers.' },
-      amsterdam:  { name: 'Amsterdam',  country: 'Netherlands',                tz: 'Europe/Amsterdam',  zone: 'CET',  tier: 'MARKET', specialty: 'NL tech · scale-ups · D2C',                  engagements: 'English-first NL motion',          desc: 'Dutch tech and scale-up market. English-first outbound, mid-market SaaS, premium D2C.' },
-      copenhagen: { name: 'Copenhagen', country: 'Denmark',                    tz: 'Europe/Copenhagen', zone: 'CET',  tier: 'MARKET', specialty: 'Nordic SaaS · climate-tech',                engagements: 'Nordic motion ext.',                desc: 'Climate-tech, B2B SaaS, design-led products. Covered as part of the Stockholm hub motion.' },
-      warsaw:     { name: 'Warsaw',     country: 'Poland',                     tz: 'Europe/Warsaw',     zone: 'CET',  tier: 'MARKET', specialty: 'CEE expansion · fintech',                    engagements: 'PL + EN motions',                  desc: 'Central-Eastern Europe entry market. Local-language and English-first outbound for fintech and SaaS.' },
-      munich:     { name: 'Munich',     country: 'Germany',                    tz: 'Europe/Berlin',     zone: 'CET',  tier: 'MARKET', specialty: 'Industrial · enterprise SaaS',              engagements: 'DACH motion ext.',                 desc: 'Bavarian industrial and enterprise SaaS buyers. Covered as part of the Berlin hub motion.' },
-      vienna:     { name: 'Vienna',     country: 'Austria',                    tz: 'Europe/Vienna',     zone: 'CET',  tier: 'MARKET', specialty: 'AT · CEE crossroads',                          engagements: 'DACH motion ext.',                 desc: 'Austria plus CEE crossroads. German-language outbound, mid-market SaaS, hospitality groups.' },
-      milan:      { name: 'Milan',      country: 'Italy',                      tz: 'Europe/Rome',       zone: 'CET',  tier: 'MARKET', specialty: 'IT SMB · fashion-adjacent SaaS',            engagements: 'IT motions · weekly',           desc: 'Italian SMB and mid-market. Local-language sequences, fashion-adjacent SaaS and premium D2C.' },
-      rome:       { name: 'Rome',       country: 'Italy',                      tz: 'Europe/Rome',       zone: 'CET',  tier: 'MARKET', specialty: 'IT enterprise · hospitality',                engagements: 'IT motion ext.',                  desc: 'Enterprise and hospitality coverage in central/southern Italy. Local-language outbound out of the Milan motion.' },
+    // type label · ISO country code · city · narrative · body line
+    const FEED = [
+      { type: 'DEAL CLOSED',       country: 'ES', city: 'Madrid',     body: '€38k ARR · Series A SaaS · 22 days from first touch' },
+      { type: 'PIPELINE UPDATED',  country: 'UK', city: 'London',     body: 'Skyfall Studios · €1.2M added on signed SOW' },
+      { type: 'EMAIL CAMPAIGN',    country: 'NL', city: 'Amsterdam',  body: 'Series B target list · 28 prospects · scaleup tier' },
+      { type: 'PARTNERSHIP',       country: 'FR', city: 'Paris',      body: 'Co-sell signed · French enterprise GTM partner' },
+      { type: 'DEMO MOVED',        country: 'IE', city: 'Dublin',     body: 'Rebooked Thursday 16:00 · EU HQ buyer' },
+      { type: 'DEAL CLOSED',       country: 'IT', city: 'Milan',      body: '€52k ARR · 18 days · fashion-adjacent SaaS' },
+      { type: 'EMAIL CAMPAIGN',    country: 'GR', city: 'Athens',     body: '42 prospects · Greek SMB · 14% reply rate' },
+      { type: 'PIPELINE UPDATED',  country: 'BE', city: 'Brussels',   body: '€380k added · BeNeLux mid-market' },
+      { type: 'DEMO MOVED',        country: 'CY', city: 'Nicosia',    body: 'Booked Wednesday 11:00 EET · fintech founder' },
+      { type: 'PARTNERSHIP',       country: 'ES', city: 'Barcelona',  body: 'Co-sell agreement · Iberian SaaS distributor' },
+    ];
+
+    const COUNTRY_NAMES = {
+      ES: 'Spain', UK: 'United Kingdom', BE: 'Belgium', IE: 'Ireland',
+      NL: 'Netherlands', FR: 'France', IT: 'Italy', GR: 'Greece', CY: 'Cyprus',
     };
 
-    const order = ['barcelona','london','berlin','stockholm','paris','amsterdam','dublin','copenhagen','milan','rome','vienna','munich','madrid','lisbon','brussels','warsaw'];
-
-    const elTime    = document.getElementById('mpTime');
-    const elZone    = document.getElementById('mpZone');
-    const elDelta   = document.getElementById('mpDelta');
+    const elType    = document.getElementById('mpType');
     const elCity    = document.getElementById('mpCity');
     const elCountry = document.getElementById('mpCountry');
-    const elTier    = document.getElementById('mpTier');
-    const elSpec    = document.getElementById('mpSpec');
-    const elEng     = document.getElementById('mpEng');
     const elDesc    = document.getElementById('mpDesc');
     const elIndex   = document.getElementById('mpIndex');
 
-    let currentKey = 'barcelona';
+    const markers = Array.from(stage.querySelectorAll('.marker'));
+    const arcs    = Array.from(stage.querySelectorAll('.arc'));
 
-    function localTime(tz) {
-      try {
-        return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
-      } catch (_) {
-        return '--:--';
-      }
-    }
-    function localHours(tz) {
-      try {
-        return parseInt(new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', hour12: false }).format(new Date()), 10);
-      } catch (_) {
-        return 12;
-      }
-    }
-    function tzDelta(tz) {
-      if (tz === 'Europe/Madrid') return 'LOCAL';
-      const here = localHours('Europe/Madrid');
-      const there = localHours(tz);
-      let diff = there - here;
-      if (diff > 12) diff -= 24;
-      if (diff < -12) diff += 24;
-      if (diff === 0) return '± 0H VS HQ';
-      const sign = diff > 0 ? '+' : '−';
-      return sign + Math.abs(diff) + 'H VS HQ';
-    }
+    // Cadence: slow enough to actually read each line.
+    const CYCLE_MS = 5500;
 
-    function setCity(key) {
-      const c = CITIES[key];
-      if (!c) return;
-      currentKey = key;
+    // Restore last idx across page refreshes so it doesn't always restart
+    // at notification 0 — same trick the deleted tracker used.
+    const STORE_KEY = 'vpMapFeedIdx';
+    let idx = 0;
+    try {
+      const saved = parseInt(sessionStorage.getItem(STORE_KEY), 10);
+      if (Number.isFinite(saved) && saved >= 0 && saved < FEED.length) idx = saved;
+    } catch (_) { /* sessionStorage may be unavailable */ }
 
-      const idx = order.indexOf(key);
-      elIndex.textContent = 'CITY · ' + String(idx + 1).padStart(2, '0') + ' / 16';
-      elTier.textContent = c.tier;
-      elCity.textContent = c.name;
-      elCountry.textContent = c.country;
-      elTime.textContent = localTime(c.tz);
-      elZone.textContent = c.zone;
-      elDelta.textContent = tzDelta(c.tz);
-      elSpec.textContent = c.specialty;
-      elEng.textContent = c.engagements;
-      elDesc.textContent = c.desc;
+    function paint(i) {
+      const n = FEED[i];
+      if (!n) return;
+      elType.textContent    = n.type;
+      elCity.textContent    = n.city;
+      elCountry.textContent = COUNTRY_NAMES[n.country] || n.country;
+      elDesc.textContent    = n.body;
+      elIndex.textContent   = String(i + 1).padStart(2, '0') + ' / ' + FEED.length;
 
-      const markers = stage.querySelectorAll('.marker');
-      const arcs = stage.querySelectorAll('.arc');
-      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.city === key));
-      arcs.forEach(a => a.classList.toggle('is-focus', a.dataset.city === key));
-      stage.classList.toggle('has-focus', key !== 'barcelona');
+      // Light up the matching country marker + its arc; dim everything else.
+      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === n.country));
+      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === n.country));
+      // Use has-focus on the stage so existing CSS dims non-focused markers
+      stage.classList.add('has-focus');
+
+      // Subtle panel pulse so each new notification reads as fresh.
+      panel.classList.remove('is-fresh');
+      void panel.offsetWidth;
+      panel.classList.add('is-fresh');
     }
 
-    /* ───── Interactive state ─────
-       pinnedKey   · a city locked by click/tap (null = unlocked)
-       lastTouchAt · last hover/focus/click timestamp; used to pause auto-cycle
-       cycleIdx    · current position in the auto-cycle rotation */
-    let pinnedKey = null;
-    let lastTouchAt = 0;
-    let cycleIdx = 0;
-    const HOVER_QUIET_MS = 1800;   // auto-cycle waits this long after last user action
-    const CYCLE_MS       = 3200;   // tick interval
-
-    const elHint = document.getElementById('mpHint');
-    function syncHint() {
-      if (!elHint) return;
-      elHint.textContent = pinnedKey
-        ? 'Pinned · click again to release'
-        : 'Click any marker to pin';
-    }
-    function unpin() {
-      pinnedKey = null;
-      stage.classList.remove('has-pin');
-      syncHint();
-    }
-    function pin(key) {
-      pinnedKey = key;
-      stage.classList.add('has-pin');
-      syncHint();
+    function tick() {
+      idx = (idx + 1) % FEED.length;
+      try { sessionStorage.setItem(STORE_KEY, String(idx)); } catch (_) {}
+      paint(idx);
     }
 
-    /* Bind hover / focus / click on each marker */
-    stage.querySelectorAll('.marker').forEach(m => {
-      const key = m.dataset.city;
-      m.addEventListener('pointerenter', () => {
-        lastTouchAt = Date.now();
-        if (!pinnedKey) {
-          setCity(key);
-          // keep the auto-cycle index in sync so it resumes near where the user was
-          const i = order.indexOf(key);
-          if (i >= 0) cycleIdx = i;
-        }
+    // Initial paint immediately so the panel isn't blank on load.
+    paint(idx);
+
+    // Only run while the map is in view (battery + perceived liveness).
+    let timer = null;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !timer) timer = setInterval(tick, CYCLE_MS);
+        else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
       });
-      m.addEventListener('focusin', () => {
-        lastTouchAt = Date.now();
-        if (!pinnedKey) {
-          setCity(key);
-          const i = order.indexOf(key);
-          if (i >= 0) cycleIdx = i;
-        }
-      });
-      m.addEventListener('click', (e) => {
-        e.stopPropagation();
-        lastTouchAt = Date.now();
-        if (pinnedKey === key) { unpin(); setCity('barcelona'); }
-        else                   { pin(key); setCity(key); }
-      });
-      m.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          if (pinnedKey === key) { unpin(); setCity('barcelona'); }
-          else                   { pin(key); setCity(key); }
-        }
-      });
-      m.setAttribute('tabindex', '0');
-      m.setAttribute('role', 'button');
-      m.setAttribute('aria-label', (CITIES[key] && CITIES[key].name) || key);
-    });
-
-    /* Leaving the stage returns to HQ — but only if nothing is pinned */
-    stage.addEventListener('pointerleave', () => {
-      if (!pinnedKey) setCity('barcelona');
-    });
-
-    /* Click on empty stage area unpins */
-    stage.addEventListener('click', (e) => {
-      if (e.target.closest('.marker')) return; // marker clicks handled above
-      if (pinnedKey) { unpin(); setCity('barcelona'); }
-    });
-
-    /* Esc unpins from anywhere */
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && pinnedKey) { unpin(); setCity('barcelona'); }
-    });
-
-    /* Auto-cycle when idle · the map feels alive even when no one's hovering.
-       Pauses when pinned, when user is interacting, or when stage isn't in view. */
-    setInterval(() => {
-      if (pinnedKey) return;
-      if (Date.now() - lastTouchAt < HOVER_QUIET_MS) return;
-      if (!stage.classList.contains('vp-in')) return;
-      cycleIdx = (cycleIdx + 1) % order.length;
-      setCity(order[cycleIdx]);
-    }, CYCLE_MS);
-
-    /* Live-clock tick · refresh every second for current city */
-    setInterval(() => {
-      const c = CITIES[currentKey];
-      if (!c) return;
-      elTime.textContent = localTime(c.tz);
-      elDelta.textContent = tzDelta(c.tz);
-    }, 1000);
-
-    /* Initial paint */
-    setCity('barcelona');
-    stage.classList.remove('has-focus');
+    }, { threshold: 0.25 });
+    io.observe(stage);
   })();
 
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */
