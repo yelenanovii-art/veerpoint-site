@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Veerpoint · Anti-Hiring Calculator</title>
-<meta name="description" content="Plug in four numbers. See the real cost of hiring a VP Sales vs. running a Veerpoint cycle." />
+<title>Veerpoint · Cost Comparison · 3 hires vs €4k/mo</title>
+<meta name="description" content="Run the math: hiring three sales reps for six months — salary, social security, holidays — vs running a Veerpoint cycle at €4,000 a month." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,6 +297,32 @@ h1 {
   color: var(--vp-muted);
   margin-top: 6px;
   font-style: italic;
+}
+.locked-row {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--vp-border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.locked-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.locked-l { color: var(--vp-muted); }
+.locked-v {
+  color: var(--vp-ink);
+  font-weight: 600;
+  font-family: var(--vp-font-display);
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  text-transform: none;
 }
 .input-prefix {
   position: relative;
@@ -671,7 +697,7 @@ footer {
       <a href="pricing.html" class="nav-dd-trigger active">Pricing <span class="caret">▾</span></a>
       <div class="nav-dd-menu">
         <a href="pricing.html">Plans &amp; pricing<span class="sub">Retainer + commission, fixed in writing</span></a>
-        <a href="calculator.html" class="active">Anti-Hiring Calculator<span class="sub">Hire vs. Veerpoint · live math</span></a>
+        <a href="calculator.html" class="active">Cost Comparison<span class="sub">3 hires vs €4k/mo Veerpoint</span></a>
       </div>
     </div>
     <a href="about.html">About</a>
@@ -681,57 +707,31 @@ footer {
 </nav>
 
 <section class="page-hero">
-  <div class="crumbs"><a href="index.html">Home</a> · <a href="pricing.html">Pricing</a> · Anti-Hiring Calculator</div>
-  <div class="eyebrow"><span class="dot"></span>ANTI-HIRING CALCULATOR · FREE</div>
-  <h1>Hiring a VP Sales costs<br>3x more than you think<span class="stop">.</span></h1>
-  <p class="lede">Plug in four numbers. We'll show you the loaded cost of hiring against the cost of running a Veerpoint cycle over the same nine-month window. No tricks. Math is in the footnote.</p>
+  <div class="crumbs"><a href="index.html">Home</a> · <a href="pricing.html">Pricing</a> · Cost Comparison</div>
+  <div class="eyebrow"><span class="dot"></span>COST COMPARISON · FREE</div>
+  <h1>Three salespeople, or one Veerpoint cycle<span class="stop">.</span></h1>
+  <p class="lede">Same six months. Run the math on hiring three sales reps — base salary, employer social security, holiday accrual — against running a Veerpoint cycle at €4,000 a month. The gap is bigger than founders expect.</p>
 </section>
 
 <section class="calc">
   <!-- INPUTS -->
   <aside class="inputs">
-    <div class="inputs-hd">YOUR NUMBERS</div>
-    <div class="inputs-title">Four inputs<span class="stop">.</span></div>
+    <div class="inputs-hd">YOUR NUMBER</div>
+    <div class="inputs-title">One input<span class="stop">.</span></div>
 
     <div class="field">
-      <label for="arr">Target ARR · next 12 months</label>
+      <label for="salary">Average annual base salary per rep</label>
       <div class="input-prefix">
         <span class="prefix">€</span>
-        <input id="arr" type="number" value="1500000" step="100000" />
+        <input id="salary" type="number" value="50000" step="5000" min="20000" max="150000" />
       </div>
-      <div class="field-help">Realistic, not the pitch-deck number.</div>
+      <div class="field-help">EU mid-market sales rep ~€45–60k base. Adjust for your geography.</div>
     </div>
 
-    <div class="field">
-      <label for="deal">Average deal size · annual contract value</label>
-      <div class="input-prefix">
-        <span class="prefix">€</span>
-        <input id="deal" type="number" value="35000" step="5000" />
-      </div>
-      <div class="field-help">First-year ACV, signed. SMB ~€5k, mid-market ~€25k, enterprise ~€75k+.</div>
-    </div>
-
-    <div class="field">
-      <label for="market">Primary market</label>
-      <select id="market">
-        <option value="EU">European Union</option>
-        <option value="UK">United Kingdom</option>
-        <option value="US">United States</option>
-        <option value="DACH">DACH (Germany, Austria, Switzerland)</option>
-        <option value="NORDIC">Nordics</option>
-      </select>
-      <div class="field-help">Used to load salary, on-cost, and ramp benchmarks.</div>
-    </div>
-
-    <div class="field">
-      <label for="team">Your sales team today</label>
-      <select id="team">
-        <option value="none">Founder-led · no AE in seat</option>
-        <option value="oneAE">One AE ramping · pipeline thin</option>
-        <option value="leader">Existing team · need expansion lead</option>
-        <option value="full">Full team · entering new market</option>
-      </select>
-      <div class="field-help">Determines which role(s) you'd realistically hire.</div>
+    <div class="locked-row">
+      <div class="locked-item"><span class="locked-l">Heads to hire</span><span class="locked-v">3</span></div>
+      <div class="locked-item"><span class="locked-l">Engagement window</span><span class="locked-v">6 months</span></div>
+      <div class="locked-item"><span class="locked-l">Veerpoint rate</span><span class="locked-v">€4,000 / mo</span></div>
     </div>
   </aside>
 
@@ -740,10 +740,10 @@ footer {
     <div class="compare">
       <!-- HIRE -->
       <div class="cost-card hire">
-        <div class="cost-tag">OPTION A · HIRE A SALES LEADER</div>
-        <div class="cost-name">VP Sales + 1 AE<span class="stop">.</span></div>
-        <div class="cost-total" id="hireTotal">€425,000<span class="stop">.</span></div>
-        <div class="cost-period">9-MONTH ALL-IN · M0 → M9</div>
+        <div class="cost-tag">OPTION A · HIRE 3 SALESPEOPLE</div>
+        <div class="cost-name">3 reps in seat, ramping<span class="stop">.</span></div>
+        <div class="cost-total" id="hireTotal">€101,250<span class="stop">.</span></div>
+        <div class="cost-period">6-MONTH ALL-IN</div>
         <div class="cost-breakdown" id="hireBreakdown">
           <!-- filled by JS -->
         </div>
@@ -752,8 +752,8 @@ footer {
       <!-- VEERPOINT -->
       <div class="cost-card veer">
         <div class="cost-tag">OPTION B · RUN A VEERPOINT CYCLE</div>
-        <div class="cost-name">3 senior closers, 6 months<span class="stop">.</span></div>
-        <div class="cost-total" id="veerTotal">€138,000<span class="stop">.</span></div>
+        <div class="cost-name">Senior operators, 6 months<span class="stop">.</span></div>
+        <div class="cost-total" id="veerTotal">€24,000<span class="stop">.</span></div>
         <div class="cost-period">6-MONTH ENGAGEMENT · KICKOFF DAY 14</div>
         <div class="cost-breakdown" id="veerBreakdown">
           <!-- filled by JS -->
@@ -764,12 +764,12 @@ footer {
     <!-- ROI -->
     <div class="roi">
       <div class="roi-left">
-        <div class="label">ROI DELTA</div>
-        <h3>Hiring costs you <span id="roiNarrative">3.1x</span> more<span class="stop">.</span></h3>
-        <p id="roiSavings">You save €287,000 in cash. Plus 90 days of ramp. Plus the risk of a wrong hire.</p>
+        <div class="label">SAVINGS DELTA</div>
+        <h3>Hiring costs you <span id="roiNarrative">4.2x</span> more<span class="stop">.</span></h3>
+        <p id="roiSavings">You save €77,250 in cash. Plus the 90 days of ramp. Plus the risk of a wrong hire (×3).</p>
       </div>
       <div>
-        <div class="roi-big" id="roiMultiple">3.1x<span class="stop">.</span></div>
+        <div class="roi-big" id="roiMultiple">4.2x<span class="stop">.</span></div>
         <div class="roi-big-sub">MORE EXPENSIVE</div>
       </div>
     </div>
@@ -792,7 +792,7 @@ footer {
 
     <!-- FOOTNOTE -->
     <div class="footnote">
-      <strong>METHODOLOGY ·</strong> Loaded VP Sales salary uses 2026 EU/UK/US comp benchmarks plus 35% on-cost (employer taxes, benefits, equity). AE compensation set at 60% of VP base. Ramp opportunity-cost models 4 months of missed pipeline at conversion rates published by RepVue and Pavilion. Founder management time priced at €150/hr. Risk premium applies the empirical 30% mis-hire rate to a €50k replacement cost. Veerpoint cycle uses indicative retainer of €12k/month plus a 10% commission on modeled closed revenue (target ARR × 0.25 capture rate in months 4-6).
+      <strong>METHODOLOGY ·</strong> Hire cost models three sales reps in seat for six months. Base salary × 0.5 (half-year), plus 30% employer social security &amp; benefits loading (typical EU mid-market), plus 5% accrued holiday and sick. Excludes tooling, recruiter fees, and the empirical 30% mis-hire rate against a €50k replacement cost. Veerpoint cycle priced at the standard €4,000 monthly retainer × 6 months — no commission, no ramp, off-ramp every 30 days. Compete on price.
     </div>
   </div>
 </section>
@@ -810,7 +810,7 @@ footer {
           <li><a href="index.html">Home</a></li>
           <li><a href="how-it-works.html">How it works</a></li>
           <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="calculator.html">Anti-Hiring Calculator</a></li>
+          <li><a href="calculator.html">Cost Comparison</a></li>
           <li><a href="about.html">About</a></li>
         </ul>
       </div>
@@ -841,110 +841,59 @@ footer {
 
 <script>
 // ============ MATH ============
-const MARKET_MULTIPLIER = {
-  EU: 1.0,
-  UK: 1.18,
-  US: 1.42,
-  DACH: 1.15,
-  NORDIC: 1.22,
-};
-const BASE_VP_SALARY = 110000;      // EU baseline VP Sales base · pre on-cost
-const BASE_AE_SALARY = 78000;       // ~70% of VP base
-const ON_COST_MULTIPLIER = 1.35;    // taxes, benefits, equity loading
-const RAMP_MONTHS = 4;              // expected pipeline gap
-const TOOLS_PER_MONTH = 500;
-const FOUNDER_HOURS_PER_WEEK = 5;
-const FOUNDER_HOUR_VALUE = 150;
-const MIS_HIRE_RATE = 0.30;
-const MIS_HIRE_COST = 50000;
-const ENGAGEMENT_WINDOW_MONTHS = 9;
-
-const VP_RETAINER_PER_MONTH = 12000;
-const VP_COMMISSION_RATE = 0.10;
-const VP_CAPTURE_RATE = 0.25;       // % of target ARR captured during engagement
-const VP_CYCLE_MONTHS = 6;
-
-const TEAM_CONFIGS = {
-  none:   { roles: 'VP Sales + 1 AE',          headcount: 1.5 },
-  oneAE:  { roles: 'VP Sales (AE in place)',   headcount: 1.0 },
-  leader: { roles: 'Senior expansion AE',      headcount: 1.0 },
-  full:   { roles: 'Country Lead + 1 AE',      headcount: 1.5 },
-};
+// Hard-coded per spec: 3 hires vs Veerpoint at €4k/mo, both running 6 months.
+const HEADS              = 3;
+const ENGAGEMENT_MONTHS  = 6;
+const SOCIAL_BENEFITS    = 0.30;  // employer social security + benefits loading
+const HOLIDAY_LOADING    = 0.05;  // accrued paid holiday + sick
+const VP_MONTHLY_RATE    = 4000;
 
 function fmtEur(n) {
   if (n >= 1000000) return '€' + (n/1000000).toFixed(2) + 'M';
   if (n >= 1000) return '€' + Math.round(n/1000) + 'k';
   return '€' + Math.round(n);
 }
-
 function fmtEurFull(n) {
   return '€' + Math.round(n).toLocaleString('en-US');
 }
 
 function calculate() {
-  const arr = +document.getElementById('arr').value || 0;
-  const deal = +document.getElementById('deal').value || 0;
-  const market = document.getElementById('market').value;
-  const team = document.getElementById('team').value;
+  const salary = +document.getElementById('salary').value || 0;
 
-  const mkt = MARKET_MULTIPLIER[market];
-  const cfg = TEAM_CONFIGS[team];
+  // ----- HIRE: 3 reps × base × half-year, plus loadings -----
+  const baseSixMo  = HEADS * salary * (ENGAGEMENT_MONTHS / 12);
+  const socialCost = baseSixMo * SOCIAL_BENEFITS;
+  const holiCost   = baseSixMo * HOLIDAY_LOADING;
+  const hireTotal  = baseSixMo + socialCost + holiCost;
 
-  // ----- HIRING COST -----
-  const monthsOf9 = ENGAGEMENT_WINDOW_MONTHS / 12;
+  // ----- VEERPOINT: flat retainer × 6 months -----
+  const veerTotal  = VP_MONTHLY_RATE * ENGAGEMENT_MONTHS;
 
-  const vpLoadedAnnual = BASE_VP_SALARY * mkt * ON_COST_MULTIPLIER;
-  const aeLoadedAnnual = BASE_AE_SALARY * mkt * ON_COST_MULTIPLIER;
-  // If headcount is 1.5, that's VP + 1 AE; if 1.0, just one role (VP or senior AE)
-  const aeCount = cfg.headcount === 1.5 ? 1 : 0;
-  const vpCount = cfg.headcount === 1.5 ? 1 : 1;
-  const salaries9mo = (vpLoadedAnnual * vpCount + aeLoadedAnnual * aeCount) * monthsOf9;
-
-  // Ramp opportunity cost: 4 months of missed pipeline = 4 × (ARR / 12) × 0.30 capture
-  const rampCost = RAMP_MONTHS * (arr / 12) * 0.30;
-
-  // Tools
-  const toolsCost = TOOLS_PER_MONTH * ENGAGEMENT_WINDOW_MONTHS * cfg.headcount;
-
-  // Founder management time
-  const founderMgmt = FOUNDER_HOURS_PER_WEEK * 4 * ENGAGEMENT_WINDOW_MONTHS * FOUNDER_HOUR_VALUE;
-
-  // Mis-hire risk
-  const misHireExp = MIS_HIRE_RATE * MIS_HIRE_COST;
-
-  const hireTotal = salaries9mo + rampCost + toolsCost + founderMgmt + misHireExp;
-
-  // ----- VEERPOINT COST -----
-  const retainer = VP_RETAINER_PER_MONTH * VP_CYCLE_MONTHS * mkt;
-  const capturedRevenue = arr * VP_CAPTURE_RATE;
-  const commission = capturedRevenue * VP_COMMISSION_RATE;
-  const veerTotal = retainer + commission;
-
-  // ----- ROI -----
+  // ----- COMPARISON -----
   const multiple = hireTotal / veerTotal;
-  const savings = hireTotal - veerTotal;
+  const savings  = hireTotal - veerTotal;
 
   // ----- RENDER -----
-  document.getElementById('hireTotal').innerHTML = fmtEur(hireTotal) + '<span class="stop">.</span>';
-  document.getElementById('veerTotal').innerHTML = fmtEur(veerTotal) + '<span class="stop">.</span>';
+  document.getElementById('hireTotal').innerHTML = fmtEurFull(hireTotal) + '<span class="stop">.</span>';
+  document.getElementById('veerTotal').innerHTML = fmtEurFull(veerTotal) + '<span class="stop">.</span>';
   document.getElementById('roiMultiple').innerHTML = multiple.toFixed(1) + 'x<span class="stop">.</span>';
   document.getElementById('roiNarrative').textContent = multiple.toFixed(1) + 'x';
   document.getElementById('roiSavings').textContent =
-    'You save ' + fmtEur(savings) + ' in cash. Plus 90 days of ramp. Plus the risk of a wrong hire.';
+    'You save ' + fmtEur(savings) + ' in cash. Plus the 90 days of ramp. Plus the risk of a wrong hire (×3).';
 
   document.getElementById('hireBreakdown').innerHTML =
-    line(cfg.roles + ' · loaded salary · 9 mo', salaries9mo) +
-    line('Ramp opportunity cost · 4 months', rampCost) +
-    line('Tools, CRM, sales engagement', toolsCost) +
-    line('Founder management hours', founderMgmt) +
-    line('Mis-hire risk premium', misHireExp);
+    line('Base salary · 3 reps × 6 mo', baseSixMo) +
+    line('Social security & benefits · 30%', socialCost) +
+    line('Holiday + sick accrual · 5%', holiCost) +
+    line('Recruiter fees, tooling', 0, 'NOT INCLUDED') +
+    line('Mis-hire risk · 30% × €50k × 3', 0, 'NOT INCLUDED');
 
   document.getElementById('veerBreakdown').innerHTML =
-    line('Retainer · 6 months', retainer) +
-    line('Commission · 10% of modeled closes', commission) +
+    line('Retainer · €4k × 6 months', veerTotal) +
     line('Ramp', 0, 'NONE · DAY 14') +
-    line('Founder management', 0, 'WEEKLY REVIEW ONLY') +
-    line('Mis-hire risk', 0, 'OFF-RAMP EVERY 30 DAYS');
+    line('Recruiter fees, tooling', 0, 'INCLUDED') +
+    line('Mis-hire risk', 0, 'OFF-RAMP EVERY 30 DAYS') +
+    line('Founder management', 0, 'WEEKLY REVIEW ONLY');
 }
 
 function line(lbl, val, override) {
@@ -952,7 +901,7 @@ function line(lbl, val, override) {
   return `<div class="cost-line"><span class="lbl">${lbl}</span>${right}</div>`;
 }
 
-document.querySelectorAll('#arr, #deal, #market, #team').forEach(el => {
+document.querySelectorAll('#salary').forEach(el => {
   el.addEventListener('input', calculate);
   el.addEventListener('change', calculate);
 });

@@ -664,6 +664,11 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   line-height: 1.1;
   margin-bottom: 12px;
 }
+.quiz-trigger-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 760px) {
+  .quiz-trigger-ctas { flex-direction: column; }
+  .quiz-trigger-ctas .btn { width: 100%; justify-content: center; }
+}
 .quiz-trigger-card p {
   color: var(--vp-ink-70);
   font-size: 15px;
@@ -1572,11 +1577,12 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <div class="quiz-trigger-card">
       <div>
         <div class="eyebrow">THE 60-SECOND READ</div>
-        <h3>Where are you on the curve<span class="stop">?</span></h3>
-        <p>Three questions. Plots your position on the growth graph. You'll get back a personalised six-month plan as a PDF: what stage we'd start at, what the cycle would look like, what to expect by month six.</p>
+        <h3>Two weeks from now you're either still planning, or already in the market with Veerpoint<span class="stop">.</span></h3>
+        <p>Five questions. Plots your position on the growth graph. You'll get back a personalised six-month plan as a PDF: what stage we'd start at, what the cycle would look like, what to expect by month six.</p>
       </div>
-      <div>
+      <div class="quiz-trigger-ctas">
         <button class="btn btn-accent" onclick="vpQuizOpen()" style="padding: 14px 22px; font-size: 14px">Take the fit quiz →</button>
+        <a class="btn btn-ghost" href="#book" style="padding: 14px 22px; font-size: 14px">Book a Meeting</a>
       </div>
     </div>
   </div>
@@ -2059,9 +2065,9 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <!-- QUESTIONS -->
     <div id="quizQuestion">
       <div class="modal-step">
-        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 3</span>
+        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 5</span>
         <span class="modal-step-bar" id="qStepBar">
-          <span class="done"></span><span></span><span></span>
+          <span class="done"></span><span></span><span></span><span></span><span></span>
         </span>
       </div>
       <h2 class="modal-q" id="quizQ">Where are you now?</h2>
@@ -2142,6 +2148,27 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         { k: 'B', t: "Conversion · qualified leads don't close" },
         { k: 'C', t: "Deal velocity · cycles too slow" },
         { k: 'D', t: "Scaling beyond the founders" },
+      ]
+    },
+    /* ── PLACEHOLDER QUESTIONS · swap copy through the back end ── */
+    {
+      q: "When do you need pipeline moving?",
+      sub: "Be honest about the timeline pressure.",
+      opts: [
+        { k: 'A', t: "This quarter",            s: "Board / runway pressure" },
+        { k: 'B', t: "Next 3–6 months",         s: "Planning ahead of a fundraise or push" },
+        { k: 'C', t: "End of the year",         s: "Building the foundation now" },
+        { k: 'D', t: "No real urgency",         s: "Exploring options" },
+      ]
+    },
+    {
+      q: "Where are competitors winning that you're not?",
+      sub: "What gets you out of bed at 3am.",
+      opts: [
+        { k: 'A', t: "Outbound · they're in every inbox first" },
+        { k: 'B', t: "Speed · they close in days, we take weeks" },
+        { k: 'C', t: "Pricing · they undercut and still land the deal" },
+        { k: 'D', t: "Brand · they get warm intros, we cold-pitch" },
       ]
     },
   ];
