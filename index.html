@@ -11,6 +11,71 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 
+<!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
+     Drop real measurement IDs into VP_TRACKING below and the snippets
+     wire themselves up. Leave anything blank to skip that pixel. -->
+<script>
+window.VP_TRACKING = {
+  GA4_ID:        '',  // e.g. 'G-XXXXXXXXXX' — Google Analytics 4
+  META_PIXEL_ID: '',  // e.g. '123456789012345' — Meta (Facebook) Pixel
+  HUBSPOT_ID:    '',  // e.g. '12345678' — HubSpot portal ID
+};
+
+// Google Analytics 4
+(function () {
+  var id = window.VP_TRACKING.GA4_ID;
+  if (!id) return;
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', id);
+})();
+
+// Meta Pixel
+(function () {
+  var id = window.VP_TRACKING.META_PIXEL_ID;
+  if (!id) return;
+  !function (f, b, e, v, n, t, s) {
+    if (f.fbq) return;
+    n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+    if (!f._fbq) f._fbq = n;
+    n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = [];
+    t = b.createElement(e); t.async = !0; t.src = v;
+    s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+  }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+  window.fbq('init', id);
+  window.fbq('track', 'PageView');
+})();
+
+// HubSpot tracking
+(function () {
+  var id = window.VP_TRACKING.HUBSPOT_ID;
+  if (!id) return;
+  var s = document.createElement('script');
+  s.async = true; s.defer = true; s.id = 'hs-script-loader';
+  s.src = 'https://js.hs-scripts.com/' + encodeURIComponent(id) + '.js';
+  document.head.appendChild(s);
+})();
+
+// Unified event helper. Call vpTrack('event_name', { prop: 'value' })
+// and it fans out to whichever pixels are configured. Safe to call even
+// when no pixels are set — silent no-op.
+window.vpTrack = function (name, props) {
+  props = props || {};
+  try {
+    if (window.gtag)  window.gtag('event', name, props);
+    if (window.fbq)   window.fbq('trackCustom', name, props);
+    if (window._hsq)  window._hsq.push(['trackEvent', { id: name, value: props }]);
+  } catch (_) { /* never let analytics break the page */ }
+};
+</script>
+<!-- ─────────── /ANALYTICS ─────────── -->
+
 <style>
 :root {
   /* Veerpoint House — canonical tokens (see brand kit v1.0) */
@@ -2412,6 +2477,69 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 <div class="scroll-trail-dot" aria-hidden="true"></div>
 <div class="scroll-trail-dot" aria-hidden="true"></div>
 <div class="scroll-trail-dot" aria-hidden="true"></div>
+
+<!-- Event instrumentation · fires vpTrack() at the moments the spec calls
+     out. Safe no-op when no pixels are configured. -->
+<script>
+(function () {
+  var track = window.vpTrack || function () {};
+
+  // 1. CTA clicks — any button/link with the data-track attribute, plus
+  //    common known CTAs by class/onclick pattern.
+  document.querySelectorAll('[onclick*="vpQuizOpen"], .btn-hero-cta, .nav-cta-quiz, .btn-calc, .hero-cta-secondary, .tracker-cta-secondary, .map-panel-cta a').forEach(function (el) {
+    el.addEventListener('click', function () {
+      track('cta_click', {
+        label: (el.textContent || '').trim().slice(0, 80),
+        location: el.closest('section') ? el.closest('section').id || el.closest('section').className.split(' ')[0] : 'unknown',
+      });
+    }, { passive: true });
+  });
+
+  // 2. Quiz interactions — open + per-pick + result reached.
+  var quizOpenOrig = window.vpQuizOpen;
+  if (typeof quizOpenOrig === 'function') {
+    window.vpQuizOpen = function () { track('quiz_open'); return quizOpenOrig.apply(this, arguments); };
+  }
+  var quizPickOrig = window.vpQuizPick;
+  if (typeof quizPickOrig === 'function') {
+    window.vpQuizPick = function (k) { track('quiz_answer', { key: k }); return quizPickOrig.apply(this, arguments); };
+  }
+
+  // 3. Video play — fires once when the video placeholder area is clicked
+  //    (real video embed will replace this and we can hook into its API).
+  var videoSection = document.getElementById('video');
+  if (videoSection) {
+    videoSection.addEventListener('click', function () { track('video_play_intent'); }, { once: true });
+  }
+
+  // 4. Scroll depth — fire at 25 / 50 / 75 / 100 once each.
+  var depthsHit = {};
+  function checkScrollDepth() {
+    var h = document.documentElement;
+    var pct = Math.round((h.scrollTop + window.innerHeight) / h.scrollHeight * 100);
+    [25, 50, 75, 100].forEach(function (mark) {
+      if (pct >= mark && !depthsHit[mark]) {
+        depthsHit[mark] = true;
+        track('scroll_depth', { pct: mark });
+      }
+    });
+  }
+  window.addEventListener('scroll', function () {
+    if (!window._vpDepthRaf) window._vpDepthRaf = requestAnimationFrame(function () {
+      window._vpDepthRaf = null;
+      checkScrollDepth();
+    });
+  }, { passive: true });
+
+  // 5. Form submission — fires when the Discovery form is sent.
+  var bookSendBtn = document.querySelector('#book .btn-accent');
+  if (bookSendBtn) {
+    bookSendBtn.addEventListener('click', function () {
+      track('form_submit_attempt', { form: 'discovery' });
+    }, { passive: true });
+  }
+})();
+</script>
 
 <script src="app.js" defer></script>
 
