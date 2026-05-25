@@ -320,11 +320,23 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   z-index: 0;
 }
 .hero > * { position: relative; z-index: 1; }
+/* 2-column hero on desktop: copy on the left, live ops card on the right.
+   Stacks vertically under 1080px so the card sits below the headline. */
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 56px;
+  align-items: center;
+}
+.hero-text { min-width: 0; }
+@media (max-width: 1080px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+}
 .hero .eyebrow { margin-bottom: 36px; }
 .hero h1 {
   font-family: var(--vp-font-display); font-weight: 700;
-  font-size: clamp(48px, 8vw, 124px); line-height: 0.96; letter-spacing: -0.045em;
-  max-width: 16ch; margin-bottom: 56px;
+  font-size: clamp(40px, 6.5vw, 104px); line-height: 0.98; letter-spacing: -0.045em;
+  max-width: 16ch; margin-bottom: 40px;
 }
 .hero h1 .stop { color: var(--vp-terracotta); }
 .hero-ctas { display: flex; gap: 24px; flex-wrap: wrap; align-items: center; }
@@ -1540,14 +1552,42 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 </nav>
 
 <section class="hero" id="top">
-  <div class="wrap">
-    <div class="eyebrow">SALES-AS-A-SERVICE</div>
-    <h1>Your product is great. Your <span class="under">revenue</span> should be too<span class="stop">.</span></h1>
-    <div class="hero-cta-row">
-      <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
-      <a class="hero-cta-secondary" href="#book">Or book a call <span class="arrow">→</span></a>
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <div class="eyebrow">SALES-AS-A-SERVICE</div>
+      <h1>Your product is great. Your <span class="under">revenue</span> should be too<span class="stop">.</span></h1>
+      <div class="hero-cta-row">
+        <button type="button" class="btn btn-hero-cta" onclick="vpQuizOpen()">See if there's a fit <span class="arrow">→</span></button>
+        <a class="hero-cta-secondary" href="#book">Or book a call <span class="arrow">→</span></a>
+      </div>
+      <p class="hero-sub">Your competitors are already selling. Catch up before the quarter closes.</p>
     </div>
-    <p class="hero-sub">Your competitors are already selling. Catch up before the quarter closes.</p>
+
+    <!-- Live ops floor · cycling feed of demos, closes, pipeline movements.
+         Driven by initFloor() in app.js. -->
+    <aside class="hero-card" id="heroFloor" data-glow>
+      <div class="hero-card-head">
+        <span class="title">FLOOR · LIVE</span>
+        <span class="clock" id="floorClock">--:--</span>
+      </div>
+      <div class="hero-card-feed">
+        <div class="hero-card-feed-list" id="floorFeed"></div>
+      </div>
+      <div class="hero-card-stats">
+        <div class="hero-card-stat">
+          <div class="l">PIPELINE</div>
+          <div class="n" id="floorPipe">€4.2M</div>
+        </div>
+        <div class="hero-card-stat">
+          <div class="l">DEMOS · 30D</div>
+          <div class="n" id="floorDemos">38</div>
+        </div>
+        <div class="hero-card-stat">
+          <div class="l">CLOSED · 30D</div>
+          <div class="n" id="floorClose">12<span class="stop">.</span></div>
+        </div>
+      </div>
+    </aside>
   </div>
 </section>
 
