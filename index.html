@@ -1071,9 +1071,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .dash-num {
   font-family: var(--vp-font-display);
   font-weight: 800;
-  font-size: clamp(64px, 10vw, 152px);
-  line-height: 0.9;
-  letter-spacing: -0.05em;
+  font-size: clamp(52px, 8vw, 120px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
   color: var(--vp-ink);
   margin-bottom: 4px;
 }
@@ -1153,7 +1153,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .dash-grid { grid-template-columns: 1fr; gap: 28px; }
   .dash-hd { flex-direction: column; align-items: flex-start; gap: 14px; padding-bottom: 18px; margin-bottom: 24px; }
   .dml-track { width: 160px; }
-  .dash-num { font-size: clamp(56px, 16vw, 96px); margin-bottom: 6px; }
+  .dash-num { font-size: clamp(44px, 12vw, 76px); margin-bottom: 6px; }
   .dash-stagename { font-size: clamp(22px, 6vw, 30px); margin-bottom: 18px; }
   .dash-body { font-size: 15px; line-height: 1.5; margin-bottom: 20px; max-width: none; }
   .dash-kpis { gap: 10px; }
@@ -2257,13 +2257,13 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   // so the scroll-scrub flows quicker — two stops fewer to traverse. Each
   // entry uses the end-of-stage values so the curve still climbs naturally.
   const months = [
-    { num: 1, label: 'Months 1–2', stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', mLabel: 'M2',
+    { num: 1, label: 'Months 1 – 2', stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', mLabel: 'M2',
       calls: 14, pipe: 180, close:   0, mrr:  0,
       body: 'we sharpen positioning, build outbound systems, launch cold outreach across two sequences. ICP calibrated from real reply data. early discovery calls landing, pipeline moving.' },
-    { num: 3, label: 'Months 3–4', stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', mLabel: 'M4',
+    { num: 3, label: 'Months 3 – 4', stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', mLabel: 'M4',
       calls: 26, pipe: 620, close: 112, mrr: 12,
       body: 'discovery calls, demos, negotiations. a second motion is firing. legal patterns understood. first repeatable close cycles between 18–26 days.' },
-    { num: 5, label: 'Months 5–6', stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', mLabel: 'M6',
+    { num: 5, label: 'Months 5 – 6', stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', mLabel: 'M6',
       calls: 30, pipe:1200, close: 480, mrr: 38,
       body: 'we close deals at volume, scale what works, stabilise the revenue engine. handover playbook drafted. you can hire against a working motion, not a guess.' },
   ];
