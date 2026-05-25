@@ -2906,18 +2906,10 @@
     .map-svg .marker-ring                      { r: 12; }
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
-    /* Slim panel · the heavy detail rows (clock, specialty/engagements,
-       description, hint copy) hide on mobile so the panel becomes a compact
-       strip: city name, tier badge, CTA. */
-    .map-panel { padding: 18px 18px 16px; gap: 14px; }
-    .map-panel-head { padding-bottom: 12px; }
-    .map-panel-city { font-size: clamp(24px, 5vw, 30px); }
-    .map-panel-country { margin-top: 6px; font-size: 9px; }
-    .map-panel-clock,
-    .map-panel-meta,
-    .map-panel-desc,
-    .map-panel-cta #mpHint { display: none; }
-    .map-panel-cta { padding-top: 12px; justify-content: flex-end; }
+    /* Live-feed panel: desktop-only. The country marker still pulses on
+       each feed tick on mobile (markup + JS still run), the side panel
+       just doesn't render — keeps the map breathing on small screens. */
+    .map-panel { display: none; }
     .map-stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
        and CSS hides the markup defensively in case JS fails. */
