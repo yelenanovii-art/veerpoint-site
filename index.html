@@ -2257,13 +2257,13 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   // so the scroll-scrub flows quicker — two stops fewer to traverse. Each
   // entry uses the end-of-stage values so the curve still climbs naturally.
   const months = [
-    { num: 1, label: 'Months 1 – 2', stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', mLabel: 'M2',
+    { num: 1, label: 'Months<br>1 – 2', stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', mLabel: 'M2',
       calls: 14, pipe: 180, close:   0, mrr:  0,
       body: 'we sharpen positioning, build outbound systems, launch cold outreach across two sequences. ICP calibrated from real reply data. early discovery calls landing, pipeline moving.' },
-    { num: 3, label: 'Months 3 – 4', stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', mLabel: 'M4',
+    { num: 3, label: 'Months<br>3 – 4', stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', mLabel: 'M4',
       calls: 26, pipe: 620, close: 112, mrr: 12,
       body: 'discovery calls, demos, negotiations. a second motion is firing. legal patterns understood. first repeatable close cycles between 18–26 days.' },
-    { num: 5, label: 'Months 5 – 6', stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', mLabel: 'M6',
+    { num: 5, label: 'Months<br>5 – 6', stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', mLabel: 'M6',
       calls: 30, pipe:1200, close: 480, mrr: 38,
       body: 'we close deals at volume, scale what works, stabilise the revenue engine. handover playbook drafted. you can hire against a working motion, not a guess.' },
   ];
@@ -2309,7 +2309,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     // Stage labels snap to discrete stops (3 stages now, was 6 months)
     const mIdx = Math.min(months.length - 1, Math.round(progress * (months.length - 1)));
     const m = months[mIdx];
-    $('dmNum').textContent   = m.label;
+    $('dmNum').innerHTML     = m.label;
     $('dmStage').innerHTML   = m.stage.replace('.', '<span class="stop">.</span>');
     $('dmLbl').textContent   = m.sLbl;
     $('dmBody').textContent  = m.body;
