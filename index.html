@@ -974,9 +974,10 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 /* 6-MONTH SCROLL DASHBOARD */
 .dash-section { background: var(--vp-warm-white); }
 .dash-stage {
-  /* MVP: cut scroll commitment ~50% so users move through the 6 months in
-     ~3 viewports of scroll, not 6+. Each month is tighter, less invasive. */
-  height: 200vh;
+  /* Collapsed to 3 stages (Foundations / Execution / Scale) so the scroll
+     commitment drops accordingly. 2 viewports of scroll is enough to move
+     through three stops with comfortable spacing between each one. */
+  height: 160vh;
   position: relative;
 }
 .dash-sticky {
@@ -1143,7 +1144,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 
 /* Scroll-scrub dashboard, mobile-adapted (keeps sticky + scroll progression on phones) */
 @media (max-width: 1000px) {
-  .dash-stage { height: 180vh; }
+  .dash-stage { height: 140vh; }
   /* dvh keeps sticky stable when mobile Safari's URL bar resizes; vh is fallback */
   .dash-sticky { position: sticky; top: 0; height: 100vh; height: 100dvh; padding: 0; align-items: center; }
   .dash-sticky::before { background:
@@ -1162,7 +1163,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   #dashChart { height: 88px; }
 }
 @media (max-width: 760px) {
-  .dash-stage { height: 150vh; }
+  .dash-stage { height: 120vh; }
   .dash-hd h2 { font-size: clamp(24px, 6.5vw, 36px); }
   .dash-timeline { font-size: 9.5px; gap: 10px; }
   .dml-track { width: 120px; }
@@ -2252,19 +2253,19 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   const stage = document.querySelector('.dash-stage');
   if (!stage) return;
 
+  // Collapsed from 6 monthly snapshots to 3 stage snapshots (1+2 / 3+4 / 5+6)
+  // so the scroll-scrub flows quicker — two stops fewer to traverse. Each
+  // entry uses the end-of-stage values so the curve still climbs naturally.
   const months = [
-    { num: 1, stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', calls: 6,  pipe:  40, close:   0,  mrr:  0,
-      body: 'we sharpen positioning, build outbound systems, launch cold outreach, deploy first campaigns. pipeline starts moving.' },
-    { num: 2, stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', calls: 14, pipe: 180, close:   0,  mrr:  0,
-      body: 'outbound is live across two sequences. ICP calibrated from real reply data. early discovery calls landing.' },
-    { num: 3, stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', calls: 22, pipe: 380, close:  38,  mrr:  4,
-      body: 'we run discovery calls, demos, negotiations, optimise ad creatives. real conversations recorded, analysed, fed back.' },
-    { num: 4, stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', calls: 26, pipe: 620, close: 112,  mrr: 12,
-      body: 'a second motion is firing. legal patterns understood. first repeatable close cycles between 18-26 days.' },
-    { num: 5, stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', calls: 28, pipe: 920, close: 240,  mrr: 24,
-      body: 'we close deals, scale what works, stabilise repeatable revenue engine. predictable growth.' },
-    { num: 6, stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', calls: 30, pipe:1200, close: 480,  mrr: 38,
-      body: 'engine self-sustaining. handover playbook drafted. you can hire against a working motion, not a guess.' },
+    { num: 1, label: 'Months 1–2', stage: 'Foundations.', sLbl: 'STAGE 1 OF 3', mLabel: 'M2',
+      calls: 14, pipe: 180, close:   0, mrr:  0,
+      body: 'we sharpen positioning, build outbound systems, launch cold outreach across two sequences. ICP calibrated from real reply data. early discovery calls landing, pipeline moving.' },
+    { num: 3, label: 'Months 3–4', stage: 'Execution.',   sLbl: 'STAGE 2 OF 3', mLabel: 'M4',
+      calls: 26, pipe: 620, close: 112, mrr: 12,
+      body: 'discovery calls, demos, negotiations. a second motion is firing. legal patterns understood. first repeatable close cycles between 18–26 days.' },
+    { num: 5, label: 'Months 5–6', stage: 'Scale.',       sLbl: 'STAGE 3 OF 3', mLabel: 'M6',
+      calls: 30, pipe:1200, close: 480, mrr: 38,
+      body: 'we close deals at volume, scale what works, stabilise the revenue engine. handover playbook drafted. you can hire against a working motion, not a guess.' },
   ];
 
   const $ = (id) => document.getElementById(id);
@@ -2305,14 +2306,14 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     $('dkClose').textContent = fmtClose(close);
     $('dkMrr').textContent   = mrr === 0 ? '€0' : fmtEur(mrr);
 
-    // Month/stage labels snap to discrete months (clearer than fractional)
-    const mIdx = Math.min(5, Math.round(progress * 5));
+    // Stage labels snap to discrete stops (3 stages now, was 6 months)
+    const mIdx = Math.min(months.length - 1, Math.round(progress * (months.length - 1)));
     const m = months[mIdx];
-    $('dmNum').textContent   = 'Month ' + m.num;
+    $('dmNum').textContent   = m.label;
     $('dmStage').innerHTML   = m.stage.replace('.', '<span class="stop">.</span>');
     $('dmLbl').textContent   = m.sLbl;
     $('dmBody').textContent  = m.body;
-    $('dchLabel').textContent = 'M' + m.num;
+    $('dchLabel').textContent = m.mLabel;
 
     // Timeline fill + marker
     $('dmlFill').style.width = (progress * 100) + '%';
