@@ -2029,17 +2029,32 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       </svg>
     </div>
 
-    <aside class="map-panel map-panel-feed" id="mapPanel" aria-live="polite">
-      <header class="map-panel-head">
-        <span><span class="feed-dot"></span><span id="mpFeedLabel">LIVE FEED</span></span>
-        <span class="tier" id="mpType">DEAL CLOSED</span>
-      </header>
-      <div>
-        <h3 class="map-panel-city" id="mpCity">Madrid</h3>
-        <div class="map-panel-country" id="mpCountry">Spain</div>
+    <!-- Map-side live notifications · iOS push-notification look.
+         JS rewrites #mpType / #mpCity / #mpCountry / #mpDesc / #mpIndex
+         and pulses the matching country marker every 5.5s. Stack of two
+         dim backdrops behind the active card sells the "feed" idea. -->
+    <aside class="map-panel" id="mapPanel" aria-live="polite">
+      <div class="map-notif-stack">
+        <div class="tracker-notif-bg b2"></div>
+        <div class="tracker-notif-bg b1"></div>
+        <div class="tracker-notif">
+          <div class="tracker-app-icon"></div>
+          <div class="tracker-content">
+            <div class="tracker-meta">
+              <span class="tracker-app-name">Veerpoint</span>
+              <span class="tracker-time-wrap">
+                <span class="tracker-live-dot" aria-label="Live"></span>
+                <span class="tracker-time" id="mpType">DEAL CLOSED</span>
+              </span>
+            </div>
+            <div class="tracker-title" id="mpDesc">Deal closed · €38k ARR · Series A SaaS</div>
+            <div class="tracker-body">
+              <span id="mpCity">Madrid</span>, <span id="mpCountry">Spain</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <p class="map-panel-desc" id="mpDesc">Deal closed · €38k ARR · Series A SaaS</p>
-      <div class="map-panel-cta">
+      <div class="map-notif-cta">
         <span id="mpIndex">01 / 10</span>
         <a href="#book">Book a call →</a>
       </div>

@@ -448,18 +448,19 @@
     const panel = document.getElementById('mapPanel');
     if (!stage || !panel) return;
 
-    // type label · ISO country code · city · narrative · body line
+    // Each entry becomes one iOS-style push notification: title (the
+    // sales action), body (city + country + context), time (relative).
     const FEED = [
-      { type: 'DEAL CLOSED',       country: 'ES', city: 'Madrid',     body: '€38k ARR · Series A SaaS · 22 days from first touch' },
-      { type: 'PIPELINE UPDATED',  country: 'UK', city: 'London',     body: 'Skyfall Studios · €1.2M added on signed SOW' },
-      { type: 'EMAIL CAMPAIGN',    country: 'NL', city: 'Amsterdam',  body: 'Series B target list · 28 prospects · scaleup tier' },
-      { type: 'PARTNERSHIP',       country: 'FR', city: 'Paris',      body: 'Co-sell signed · French enterprise GTM partner' },
-      { type: 'DEMO MOVED',        country: 'IE', city: 'Dublin',     body: 'Rebooked Thursday 16:00 · EU HQ buyer' },
-      { type: 'DEAL CLOSED',       country: 'IT', city: 'Milan',      body: '€52k ARR · 18 days · fashion-adjacent SaaS' },
-      { type: 'EMAIL CAMPAIGN',    country: 'GR', city: 'Athens',     body: '42 prospects · Greek SMB · 14% reply rate' },
-      { type: 'PIPELINE UPDATED',  country: 'BE', city: 'Brussels',   body: '€380k added · BeNeLux mid-market' },
-      { type: 'DEMO MOVED',        country: 'CY', city: 'Nicosia',    body: 'Booked Wednesday 11:00 EET · fintech founder' },
-      { type: 'PARTNERSHIP',       country: 'ES', city: 'Barcelona',  body: 'Co-sell agreement · Iberian SaaS distributor' },
+      { country: 'ES', city: 'Madrid',     title: 'Deal closed · €38k ARR',          body: 'Series A SaaS · 22 days from first touch', time: 'now' },
+      { country: 'UK', city: 'London',     title: 'Pipeline updated · €1.2M',        body: 'Skyfall Studios · SOW signed',              time: '2m'  },
+      { country: 'NL', city: 'Amsterdam',  title: 'Sequence sent · 28 prospects',    body: 'Series B target list · scaleup tier',       time: '5m'  },
+      { country: 'FR', city: 'Paris',      title: 'Partnership signed',              body: 'French enterprise GTM co-sell',             time: '12m' },
+      { country: 'IE', city: 'Dublin',     title: 'Demo moved · Thursday 16:00',     body: 'EU HQ buyer · enterprise SaaS',             time: '24m' },
+      { country: 'IT', city: 'Milan',      title: 'Deal closed · €52k ARR',          body: 'Fashion-adjacent SaaS · 18 days',           time: '38m' },
+      { country: 'GR', city: 'Athens',     title: 'Sequence sent · 42 prospects',    body: 'Greek SMB · 14% reply rate',                time: '1h'  },
+      { country: 'BE', city: 'Brussels',   title: 'Pipeline updated · €380k added',  body: 'BeNeLux mid-market',                        time: '1h'  },
+      { country: 'CY', city: 'Nicosia',    title: 'Demo booked · Wed 11:00 EET',     body: 'Fintech founder · pre-Series A',            time: '2h'  },
+      { country: 'ES', city: 'Barcelona',  title: 'Partnership signed',              body: 'Iberian SaaS distributor · co-sell',        time: '2h'  },
     ];
 
     const COUNTRY_NAMES = {
@@ -467,11 +468,11 @@
       NL: 'Netherlands', FR: 'France', IT: 'Italy', GR: 'Greece', CY: 'Cyprus',
     };
 
-    const elType    = document.getElementById('mpType');
-    const elCity    = document.getElementById('mpCity');
-    const elCountry = document.getElementById('mpCountry');
-    const elDesc    = document.getElementById('mpDesc');
-    const elIndex   = document.getElementById('mpIndex');
+    const elTime  = document.getElementById('mpType');   // timestamp slot (kept id for back-compat)
+    const elTitle = document.getElementById('mpDesc');   // notif title (bold)
+    const elCity  = document.getElementById('mpCity');   // body · city
+    const elCountry = document.getElementById('mpCountry'); // body · country
+    const elIndex = document.getElementById('mpIndex');
 
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));
@@ -491,10 +492,10 @@
     function paint(i) {
       const n = FEED[i];
       if (!n) return;
-      elType.textContent    = n.type;
+      elTime.textContent    = n.time;
+      elTitle.textContent   = n.title;
       elCity.textContent    = n.city;
       elCountry.textContent = COUNTRY_NAMES[n.country] || n.country;
-      elDesc.textContent    = n.body;
       elIndex.textContent   = String(i + 1).padStart(2, '0') + ' / ' + FEED.length;
 
       // Light up the matching country marker + its arc; dim everything else.
@@ -503,10 +504,13 @@
       // Use has-focus on the stage so existing CSS dims non-focused markers
       stage.classList.add('has-focus');
 
-      // Subtle panel pulse so each new notification reads as fresh.
-      panel.classList.remove('is-fresh');
-      void panel.offsetWidth;
-      panel.classList.add('is-fresh');
+      // Re-trigger the iOS-style slide+fade-in on the active notif card.
+      const notif = panel.querySelector('.tracker-notif');
+      if (notif) {
+        notif.classList.remove('is-fresh');
+        void notif.offsetWidth;
+        notif.classList.add('is-fresh');
+      }
     }
 
     function tick() {

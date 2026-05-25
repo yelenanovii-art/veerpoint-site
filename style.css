@@ -2308,17 +2308,80 @@
   }
 
   /* Detail panel */
+  /* Panel beside the map now hosts an iOS-style push-notification card
+     (reuses .tracker-notif from the deleted homepage tracker block).
+     The panel itself is transparent — the notif card carries the visual. */
   .map-panel {
-    background:
-      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.005));
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 4px;
-    padding: 28px 28px 24px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 24px 4px 4px;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 18px;
     position: relative;
   }
+  /* Stack wrapper — holds two faded backdrop cards (b1/b2) behind the
+     active notif so it reads as a feed, not a single floating chip. */
+  .map-notif-stack {
+    position: relative;
+    padding-bottom: 28px; /* room for the backdrop cards peeking out */
+    isolation: isolate;
+  }
+  .map-notif-stack .tracker-notif-bg.b1,
+  .map-notif-stack .tracker-notif-bg.b2 {
+    /* Override the homepage-tracker defaults (which assumed a fixed parent
+       width) so the backdrops sit cleanly under the active notif. */
+    top: auto; bottom: 16px;
+    left: 16px; right: 16px;
+    height: 26px;
+  }
+  .map-notif-stack .tracker-notif-bg.b2 {
+    bottom: 4px;
+    left: 32px; right: 32px;
+    opacity: 0.55;
+  }
+  .map-notif-stack .tracker-notif {
+    position: relative;
+    z-index: 3;
+  }
+  /* Slide+fade-in on each tick so a new event reads as freshly arrived. */
+  @keyframes vp-notif-in {
+    0%   { transform: translateY(-12px); opacity: 0; }
+    60%  { opacity: 1; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  .map-notif-stack .tracker-notif.is-fresh {
+    animation: vp-notif-in 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Time chip in the notif meta row now holds the action label
+     (DEAL CLOSED / SEQUENCE SENT etc.) — keep it terracotta + bold. */
+  .map-panel .tracker-time {
+    font-family: var(--vp-font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--vp-muted);
+    text-transform: lowercase;
+  }
+  /* Footer row under the notification stack · index + CTA */
+  .map-notif-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--vp-font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .map-notif-cta a {
+    color: var(--vp-terracotta);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+  .map-notif-cta a:hover { color: var(--vp-warm-white); }
   .map-panel-head {
     display: flex;
     justify-content: space-between;
