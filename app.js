@@ -473,6 +473,11 @@
     const elCity  = document.getElementById('mpCity');   // body · city
     const elCountry = document.getElementById('mpCountry'); // body · country
     const elIndex = document.getElementById('mpIndex');
+    // about.html still ships the old click-to-pin panel structure (no
+    // mpType element). Bail cleanly there instead of throwing on the
+    // first paint(). Updating about.html to the new iOS-notif panel can
+    // come later — for now this stops the page crashing the console.
+    if (!elTime || !elTitle || !elCity || !elCountry || !elIndex) return;
 
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));

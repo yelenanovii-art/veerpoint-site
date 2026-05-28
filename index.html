@@ -629,66 +629,6 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .principle-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 
-.fit-hd { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: end; gap: 40px; }
-.fit-hd h2 { max-width: 22ch; }
-.fit-counts { font-family: var(--vp-font-mono); font-size: 13px; letter-spacing: 0.06em; color: var(--vp-muted); white-space: nowrap; }
-.fit-counts .fit { color: var(--vp-terracotta); font-weight: 500; }
-.fit-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; border-top: 1px solid var(--vp-border); padding-top: 32px; }
-.fit-col-hd {
-  display: flex; align-items: baseline; gap: 10px;
-  font-family: var(--vp-font-mono); font-size: 11px; letter-spacing: 0.22em;
-  text-transform: uppercase; font-weight: 500;
-  margin-bottom: 20px;
-}
-.fit-col-hd .fit-col-label { font-size: 13px; }
-.fit-col.is-fit  .fit-col-hd { color: var(--vp-terracotta); }
-.fit-col.is-pass .fit-col-hd { color: var(--vp-muted); }
-.fit-col-hd .fit-col-count { color: var(--vp-muted); }
-.fit-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
-.fit-col li {
-  display: grid; grid-template-columns: 18px 1fr; gap: 12px; align-items: baseline;
-  padding: 12px 0;
-  font-size: 16px; line-height: 1.45; color: var(--vp-ink);
-  border-bottom: 1px solid var(--vp-border);
-}
-.fit-col li:last-child { border-bottom: none; }
-.fit-col li::before {
-  content: ""; width: 8px; height: 8px; border-radius: 50%;
-  transform: translateY(6px);
-}
-.fit-col.is-fit  li::before { background: var(--vp-terracotta); box-shadow: 0 0 0 3px rgba(160,64,34,0.14); }
-.fit-col.is-pass li::before { background: transparent; border: 1.5px solid var(--vp-muted); }
-.fit-foot { margin-top: 32px; font-size: 15px; color: var(--vp-muted); font-style: italic; }
-@media (max-width: 760px) {
-  .fit-cols { grid-template-columns: 1fr; gap: 32px; padding-top: 24px; }
-  .fit-col li { font-size: 15px; padding: 10px 0; }
-}
-
-/* Authority / clients · placeholder grid until real logos drop in */
-.authority-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 1px;
-  background: var(--vp-border);
-  border: 1px solid var(--vp-border);
-  border-radius: 4px;
-  overflow: hidden;
-  max-width: 1080px;
-  margin: 0 auto;
-}
-.authority-logo {
-  background: var(--vp-warm-white);
-  display: flex; align-items: center; justify-content: center;
-  aspect-ratio: 5 / 3;
-  font-family: var(--vp-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--vp-muted);
-}
-@media (max-width: 900px) { .authority-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 480px) { .authority-grid { grid-template-columns: repeat(2, 1fr); } }
-
 /* Team section: tighter so the page doesn't run away. Founders' video sits
    above the three-card grid and acts as the "founders' message" embed. */
 .team-section { padding: 96px 0; }
