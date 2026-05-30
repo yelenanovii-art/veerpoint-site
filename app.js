@@ -495,10 +495,20 @@
       return el;
     }
 
-    /* Country highlight syncs to whatever's at the top of the stack. */
+    /* Country highlight syncs to whatever's at the top of the stack.
+       We clear is-focus from everything first, force a layout reflow,
+       then re-apply — that way the CSS pulse animation re-triggers
+       every tick, even if the same country lights up twice in a row. */
     function highlightCountry(code) {
-      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === code));
-      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === code));
+      markers.forEach(m => m.classList.remove('is-focus'));
+      arcs.forEach(a    => a.classList.remove('is-focus'));
+      void stage.offsetWidth;  // reflow forces the animation to restart
+      markers.forEach(m => {
+        if (m.dataset.country === code) m.classList.add('is-focus');
+      });
+      arcs.forEach(a => {
+        if (a.dataset.country === code) a.classList.add('is-focus');
+      });
       stage.classList.add('has-focus');
     }
     function refreshActive() {
@@ -564,12 +574,8 @@
         setTimeout(() => toRemove.remove(), 320);
         break;
       }
-      // Country highlight on the marker stays in sync
-      const markers2 = stage.querySelectorAll('.marker');
-      const arcs2    = stage.querySelectorAll('.arc');
-      markers2.forEach(m => m.classList.toggle('is-focus', m.dataset.country === n.country));
-      arcs2.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === n.country));
-      stage.classList.add('has-focus');
+      // Pulse the matching country marker + arc on the map
+      highlightCountry(n.country);
     }
 
     /* Push to the iPhone-card stack (desktop). FLIP-based slide-down. */

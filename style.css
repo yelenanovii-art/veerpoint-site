@@ -2267,8 +2267,9 @@
   .map-stage.has-focus .arc:not(.is-focus) { opacity: 0.12; }
   .map-svg .marker.is-focus .marker-dot {
     fill: var(--vp-terracotta);
-    stroke: rgba(160,64,34,0.22);
-    stroke-width: 6;
+    stroke: var(--vp-terracotta);
+    stroke-width: 2;
+    animation: vp-marker-pulse 1.4s cubic-bezier(.22, 1, .36, 1);
   }
   .map-svg .marker.is-focus .marker-label {
     opacity: 1;
@@ -2278,6 +2279,22 @@
     stroke: var(--vp-terracotta);
     stroke-width: 1.6;
     opacity: 1;
+    animation: vp-arc-flash 1.2s cubic-bezier(.22, 1, .36, 1);
+  }
+  /* Pulse · stroke expands outward and fades each time .is-focus lands
+     on a marker, mimicking an iOS Maps "ping". JS forces a reflow so
+     the animation re-triggers even when the same country lights up twice
+     in a row. */
+  @keyframes vp-marker-pulse {
+    0%   { stroke-width: 2;  stroke-opacity: 0.6; }
+    70%  { stroke-width: 18; stroke-opacity: 0;   }
+    100% { stroke-width: 2;  stroke-opacity: 0;   }
+  }
+  /* Arc draws bright + thick on focus then settles to the resting style */
+  @keyframes vp-arc-flash {
+    0%   { stroke-width: 3.2; opacity: 0.5; }
+    50%  { stroke-width: 2;   opacity: 1;   }
+    100% { stroke-width: 1.6; opacity: 1;   }
   }
 
   /* ───── Pinned state ─────
