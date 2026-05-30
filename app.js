@@ -456,7 +456,7 @@
     if (initialNotifs.length === 0) return;
 
     const CYCLE_MS = 5500;
-    const VISIBLE  = 5;     // how many notifs stay in the stack
+    const VISIBLE  = 3;     // keeps the stack short — matches the map height
     const EASE     = 'cubic-bezier(.22, 1, .36, 1)';     // smooth shift-down
     const POP      = 'cubic-bezier(.34, 1.56, .64, 1)';  // bouncy pop-in
 
