@@ -1022,59 +1022,71 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .founder-bio p:last-child { margin-bottom: 0; }
 
-/* Operator credit strip · subdued mention of the rest of the team */
+/* Operator credit strip · sits inside .founder-content under Pablo's bio,
+   so the right column fills the height of the photo. Vertical stack of
+   compact rows: name + role chip on one line, body line below. */
 .team-credit {
-  padding-top: 40px;
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid var(--vp-border);
 }
 .team-credit-label {
   font-family: var(--vp-font-mono);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--vp-muted);
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 .team-credit-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 .team-credit-item {
-  border-top: 1px solid var(--vp-border-strong);
-  padding-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--vp-border);
+}
+.team-credit-item:first-child { padding-top: 0; border-top: none; }
+.tc-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
 }
 .tc-name {
   font-family: var(--vp-font-display);
   font-weight: 600;
-  font-size: 22px;
+  font-size: 19px;
   letter-spacing: -0.02em;
   color: var(--vp-ink);
-  margin-bottom: 4px;
 }
 .tc-name .stop { color: var(--vp-terracotta); }
 .tc-role {
   font-family: var(--vp-font-mono);
   font-size: 10px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--vp-terracotta);
-  margin-bottom: 10px;
 }
 .tc-line {
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--vp-ink-70);
 }
 
 @media (max-width: 900px) {
   .founder-feature { grid-template-columns: 1fr; gap: 36px; }
   .founder-photo { aspect-ratio: 1 / 1; max-width: 420px; }
-  .team-credit-list { grid-template-columns: 1fr; gap: 24px; }
 }
 @media (max-width: 760px) {
   .founder-feature { margin-bottom: 48px; }
   .founder-linkedin { width: 40px; height: 40px; bottom: 12px; right: 12px; }
+  .tc-head { gap: 10px; }
 }
 .team-grid {
   display: grid;
@@ -2393,29 +2405,35 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           <p>Founded and exited a hospitality SaaS. Now runs go-to-market and franchise expansion across three European markets, focused on entering new markets and generating commercial traction for B2B AI products.</p>
           <p>Veerpoint exists because we kept watching strong products fail to land — not because they were wrong, but because translation was harder than it looked. So we built the system we wished we'd had.</p>
         </div>
-      </div>
-    </div>
 
-    <!-- The rest of the operator team · subdued credit strip below the
-         founder feature. Currently three — Anton, Dylan, + one more
-         operator (placeholder, drop name + role in when confirmed). -->
-    <div class="team-credit">
-      <div class="team-credit-label">And the operators with him</div>
-      <div class="team-credit-list">
-        <div class="team-credit-item">
-          <div class="tc-name">Anton<span class="stop">.</span></div>
-          <div class="tc-role">Revenue infrastructure</div>
-          <div class="tc-line">Ex-Revolut · Ex-Google Cloud · founded and grew his own startup before joining.</div>
-        </div>
-        <div class="team-credit-item">
-          <div class="tc-name">Dylan<span class="stop">.</span></div>
-          <div class="tc-role">Head of revenue</div>
-          <div class="tc-line">Senior closer across iGaming, fintech, SaaS, hospitality. Specialises in high-value deals.</div>
-        </div>
-        <div class="team-credit-item">
-          <div class="tc-name">Elena<span class="stop">.</span></div>
-          <div class="tc-role">Head of marketing</div>
-          <div class="tc-line">Runs brand, demand, and the campaigns that fill the pipeline before the closers ever pick up the phone.</div>
+        <!-- Operator credit list · sits directly under Pablo's bio so the
+             right column fills out next to the photo. Each operator: name +
+             role chip on one line, descriptive line below. -->
+        <div class="team-credit">
+          <div class="team-credit-label">And the operators with him</div>
+          <ul class="team-credit-list">
+            <li class="team-credit-item">
+              <div class="tc-head">
+                <span class="tc-name">Anton<span class="stop">.</span></span>
+                <span class="tc-role">Revenue infrastructure</span>
+              </div>
+              <div class="tc-line">Ex-Revolut · Ex-Google Cloud · founded and grew his own startup before joining.</div>
+            </li>
+            <li class="team-credit-item">
+              <div class="tc-head">
+                <span class="tc-name">Dylan<span class="stop">.</span></span>
+                <span class="tc-role">Head of revenue</span>
+              </div>
+              <div class="tc-line">Senior closer across iGaming, fintech, SaaS, hospitality. Specialises in high-value deals.</div>
+            </li>
+            <li class="team-credit-item">
+              <div class="tc-head">
+                <span class="tc-name">Elena<span class="stop">.</span></span>
+                <span class="tc-role">Head of marketing</span>
+              </div>
+              <div class="tc-line">Runs brand, demand, and the campaigns that fill the pipeline before the closers ever pick up the phone.</div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
