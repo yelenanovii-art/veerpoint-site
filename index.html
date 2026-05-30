@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053003">
+<link rel="stylesheet" href="style.css?v=2026053004">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -334,261 +334,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
    Two cards side-by-side: hire vs Veerpoint. Below them, a single
    savings line. Below that, the CTA. No bullet lists, no overflow. */
 
-/* ─────────── iPhone-style Lock-Screen rebuild ───────────
-   Sits inside the map's right column. Full iOS UX:
-     · phone bezel (rounded body) with a wallpaper layer underneath
-     · status bar with time left + signal/wifi/battery right
-     · Dynamic Island notch between
-     · big lock-screen clock + date
-     · frosted glass notification stack
-     · home-indicator bar at the bottom
-
-   The .map-panel wrapper is transparent — phone-stage IS the visual. */
-/* Phone-feel stage · no device chrome. Status bar + clock + notification
-   stack float on a soft warm wallpaper glow that fades at the edges. */
-.phone-stage {
-  width: 100%;
-  max-width: 340px;
-  margin: 0 auto;
-  padding: 0 4px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Ambient wallpaper · soft terracotta halos behind the content with no
-   hard rectangle frame. Edges blur out into the section background so
-   the notifications feel like they're floating, not contained. */
-.phone-wallpaper {
-  position: absolute;
-  inset: -24px -16px;
-  background:
-    radial-gradient(ellipse 55% 38% at 28% 30%, rgba(160, 64, 34, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 48% at 78% 74%, rgba(160, 64, 34, 0.15) 0%, transparent 65%);
-  filter: blur(6px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Status bar · time on left, signal/wifi/battery on right.
-   Dark on the warm wallpaper. No notch to clear anymore so the top
-   padding comes back down to a regular gutter. */
-.phone-statusbar {
-  position: relative;
-  z-index: 4;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 18px;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
-  color: var(--vp-ink);
-}
-.ph-time-mini {
-  font-size: 14px; font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
-}
-.ph-signals { display: inline-flex; align-items: center; gap: 5px; }
-.ph-bars {
-  width: 17px; height: 10px;
-  background:
-    linear-gradient(180deg, transparent 65%, var(--vp-ink) 65%) 0    bottom / 3px 4px no-repeat,
-    linear-gradient(180deg, transparent 50%, var(--vp-ink) 50%) 4.5px bottom / 3px 6px no-repeat,
-    linear-gradient(180deg, transparent 30%, var(--vp-ink) 30%) 9px  bottom / 3px 8px no-repeat,
-    linear-gradient(180deg, transparent 0%,  var(--vp-ink) 0%)  13.5px bottom / 3px 10px no-repeat;
-}
-.ph-wifi { display: inline-flex; align-items: center; color: var(--vp-ink); }
-.ph-battery {
-  position: relative;
-  width: 24px; height: 11px;
-  border: 1px solid rgba(28, 28, 30, 0.55);
-  border-radius: 3px;
-  padding: 1px;
-}
-.ph-battery::after {
-  content: '';
-  position: absolute;
-  right: -3px; top: 50%;
-  transform: translateY(-50%);
-  width: 2px; height: 5px;
-  background: rgba(28, 28, 30, 0.5);
-  border-radius: 0 1px 1px 0;
-}
-.ph-battery-fill {
-  display: block;
-  height: 100%; width: 78%;
-  background: var(--vp-ink);
-  border-radius: 1px;
-}
-
-/* Clock + date · ink on warm wallpaper */
-.phone-lockscreen {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 8px 0 14px;
-}
-.ph-date {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: rgba(28, 28, 30, 0.78);
-  margin-bottom: 2px;
-}
-.ph-clock {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter Tight", "Inter", sans-serif;
-  font-size: clamp(54px, 7vw, 78px);
-  font-weight: 200;
-  letter-spacing: -0.05em;
-  line-height: 0.95;
-  color: var(--vp-ink);
-  font-variant-numeric: tabular-nums;
-  text-shadow: 0 2px 12px rgba(255, 255, 255, 0.45);
-}
-
-/* Notification stack */
-.phone-stack {
-  position: relative; z-index: 1;
-  display: flex; flex-direction: column;
-  gap: 8px;
-  padding: 18px 12px 0;
-  margin-top: auto; /* push toward bottom so clock has breathing room */
-}
-
-/* Beige glass notification card · matches the original tracker treatment.
-   Cream translucent body, brand-paper undertones bleeding through the
-   warm wallpaper blur, specular sheen across the top, terracotta corner
-   glow on the focus card. */
-.phone-notif {
-  display: grid;
-  grid-template-columns: 38px 1fr;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: 18px;
-  background:
-    /* top specular wash */
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 50%),
-    /* warm cream tint over the wallpaper blur */
-    linear-gradient(180deg, rgba(250, 250, 249, 0.55) 0%, rgba(244, 242, 238, 0.45) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    0 0 0 0.5px rgba(28, 28, 30, 0.05),
-    0 12px 30px -10px rgba(28, 28, 30, 0.18),
-    0 6px 16px -6px rgba(160, 64, 34, 0.18);
-  backdrop-filter: blur(24px) saturate(220%);
-  -webkit-backdrop-filter: blur(24px) saturate(220%);
-  position: relative;
-  overflow: hidden;
-  /* Start hidden + slightly above + scaled down — JS adds .in to pop
-     them in via the --i stagger delay. Bouncy cubic-bezier gives the
-     overshoot that real iOS notifications have when they arrive. */
-  opacity: 0;
-  transform: translateY(-32px) scale(0.9);
-  transition:
-    opacity .42s ease-out,
-    transform .58s cubic-bezier(.34, 1.56, .64, 1),
-    box-shadow .28s ease,
-    border-color .28s ease;
-  transition-delay: calc(var(--i, 0) * 0.16s);
-}
-.phone-notif.in { transform: translateY(0) scale(1); opacity: 1; }
-.phone-notif::before {
-  /* Top-edge specular line · what catches light on real iOS glass */
-  content: '';
-  position: absolute;
-  top: 0; left: 10%; right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
-  border-radius: 1px;
-  pointer-events: none;
-  z-index: 2;
-}
-.phone-notif::after {
-  /* Warm terracotta glow leaking from the corner — same trick the
-     original tracker used to make the glass read as warm, not white */
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 60% 90% at 110% 110%,
-    rgba(160, 64, 34, 0.14) 0%,
-    rgba(160, 64, 34, 0) 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-.phone-notif > * { position: relative; z-index: 1; }
-.phone-notif.is-active {
-  border-color: rgba(160, 64, 34, 0.4);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    0 0 0 1px rgba(160, 64, 34, 0.22),
-    0 14px 32px -10px rgba(28, 28, 30, 0.22),
-    0 10px 24px -6px rgba(160, 64, 34, 0.35);
-}
-.phone-notif-icon {
-  width: 38px; height: 38px;
-  border-radius: 9px;
-  /* Dark ink icon with a terracotta wash — matches the brand mark
-     against the cream notif body */
-  background:
-    radial-gradient(ellipse 100% 100% at 30% 30%, rgba(160, 64, 34, 0.4) 0%, rgba(160, 64, 34, 0) 70%),
-    linear-gradient(135deg, var(--vp-ink) 0%, var(--vp-ink-90) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 0 0 1px rgba(160, 64, 34, 0.22),
-    0 2px 6px rgba(28, 28, 30, 0.22),
-    0 0 14px rgba(160, 64, 34, 0.25);
-  position: relative;
-}
-.phone-notif-icon::before {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--vp-terracotta);
-  box-shadow: 0 0 6px rgba(160, 64, 34, 0.6);
-}
-.phone-notif-body { min-width: 0; }
-.phone-notif-meta {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 10px;
-  margin-bottom: 2px;
-}
-.phone-notif-app {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-weight: 600;
-  color: var(--vp-ink-90);
-  font-size: 13px;
-  letter-spacing: -0.005em;
-}
-.phone-notif-time {
-  color: var(--vp-muted);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: 12px;
-}
-.phone-notif-title {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-weight: 600;
-  font-size: 13.5px;
-  color: var(--vp-ink);
-  margin-bottom: 1px;
-  letter-spacing: -0.005em;
-  line-height: 1.25;
-}
-.phone-notif-sub {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-  font-size: 13px;
-  color: var(--vp-ink-70);
-  line-height: 1.32;
-}
-
-/* Home indicator · gone with the rest of the device chrome */
-.phone-home-bar { display: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .phone-notif { transition: none; opacity: 1; transform: none; }
-}
+/* iPhone-style Lock-Screen UI removed — the FLOOR · LIVE terminal
+   feed (.map-floor in style.css) is now the only feed on every viewport. */
+/* phone-stage CSS removed · was here */
 
 .showdown {
   padding: 88px 0;
@@ -2183,76 +1931,10 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
          sales activity. JS triggers stagger-in on view (IntersectionObserver)
          and cycles the .is-fresh / country-highlight pulse every 5.5s. -->
     <aside class="map-panel" id="mapPanel" aria-live="polite">
-      <div class="phone-stage" id="phoneStage">
-        <!-- Wallpaper · blurred warm gradient that shows through the
-             frosted notifications. Real iOS uses a photo wallpaper;
-             we simulate that depth with two soft terracotta blobs. -->
-        <div class="phone-wallpaper" aria-hidden="true"></div>
-
-        <!-- Status bar · time on the left, signal/wifi/battery on the right,
-             with the dynamic-island notch sitting between them. -->
-        <div class="phone-statusbar">
-          <span class="ph-time-mini" id="phoneTimeMini">14:35</span>
-          <span class="ph-signals" aria-hidden="true">
-            <span class="ph-bars"></span>
-            <span class="ph-wifi">
-              <svg viewBox="0 0 16 12" width="14" height="11"><path d="M8 11.5a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4zM3.1 5.7a7 7 0 019.8 0l-1.2 1.2a5.3 5.3 0 00-7.4 0L3.1 5.7zM.7 3.3a10.5 10.5 0 0114.6 0l-1.2 1.2a8.8 8.8 0 00-12.2 0L.7 3.3z" fill="currentColor"/></svg>
-            </span>
-            <span class="ph-battery"><span class="ph-battery-fill"></span></span>
-          </span>
-        </div>
-
-        <!-- Lock-screen clock + date · big SF-style time, mono-cap date above. -->
-        <div class="phone-lockscreen">
-          <div class="ph-date" id="phoneDate">FRIDAY, MAY 30</div>
-          <div class="ph-clock" id="phoneClockBig">14:35</div>
-        </div>
-
-        <div class="phone-stack" id="phoneStack">
-          <div class="phone-notif" style="--i: 0" data-country="ES">
-            <div class="phone-notif-icon"></div>
-            <div class="phone-notif-body">
-              <div class="phone-notif-meta">
-                <span class="phone-notif-app">Veerpoint</span>
-                <span class="phone-notif-time">now</span>
-              </div>
-              <div class="phone-notif-title">M6 · Engine self-sustaining</div>
-              <div class="phone-notif-sub">€1.2M pipeline · MRR €38k · ready for an in-house hire</div>
-            </div>
-          </div>
-          <div class="phone-notif" style="--i: 1" data-country="ES">
-            <div class="phone-notif-icon"></div>
-            <div class="phone-notif-body">
-              <div class="phone-notif-meta">
-                <span class="phone-notif-app">Veerpoint</span>
-                <span class="phone-notif-time">3m</span>
-              </div>
-              <div class="phone-notif-title">Deal closed · €38k ARR</div>
-              <div class="phone-notif-sub">Madrid, Spain · Series A SaaS · 22 days from first touch</div>
-            </div>
-          </div>
-          <div class="phone-notif" style="--i: 2" data-country="IT">
-            <div class="phone-notif-icon"></div>
-            <div class="phone-notif-body">
-              <div class="phone-notif-meta">
-                <span class="phone-notif-app">Veerpoint</span>
-                <span class="phone-notif-time">42m</span>
-              </div>
-              <div class="phone-notif-title">M3 · First repeatable closes</div>
-              <div class="phone-notif-sub">€112k won · 18–26 day cycles · second motion firing</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Home indicator bar at the very bottom — iOS swipe affordance -->
-        <div class="phone-home-bar" aria-hidden="true"></div>
-      </div>
-
-      <!-- Mobile-only · terminal-style live floor feed.
-           Replaces the iPhone-notification card under the map on touch
-           viewports. Max 4 rows visible; JS prepends new rows on each
-           feed tick, oldest drops off the bottom. -->
-      <div class="map-floor" id="mapFloor" aria-hidden="true">
+      <!-- Terminal-style FLOOR · LIVE feed. Max 4 rows, new rows fade-
+           slide in at the top every 5.5s, oldest drops off the bottom.
+           Country highlight on the map pulses in sync with each tick. -->
+      <div class="map-floor" id="mapFloor">
         <div class="map-floor-head">
           <span class="title">FLOOR · LIVE</span>
           <span class="clock" id="mapFloorClock">--:--</span>
@@ -2874,7 +2556,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<script src="app.js" defer></script>
+<script src="app.js?v=2026053004" defer></script>
 
 </body>
 </html>

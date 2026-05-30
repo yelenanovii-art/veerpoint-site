@@ -436,108 +436,61 @@
     requestAnimationFrame(() => { readPathLength(); compute(); });
   })();
 
-  /* ───────── Europe map · phone-screen notif stack + country highlight ─────────
-     The map's right column now hosts a phone-screen lock-screen view with
-     5 stacked iOS-style notifications. JS does two things:
-       1. Stagger the 5 cards in (add .in) when the map scrolls into view.
-       2. Cycle through them every CYCLE_MS — the active card glows
-          (.is-active) and its data-country marker on the map pulses
-          (.is-focus). Country read straight off each .phone-notif's
-          data-country attribute, so the stack and the map can never
-          drift out of sync. */
+  /* ───────── Europe map · FLOOR · LIVE ticker + country highlight ─────────
+     Right column of the map hosts a terminal-style ticker. Each tick
+     prepends a fresh row, trims the oldest past FLOOR_MAX, and pulses
+     the country marker for that row's data-country. Paused via
+     IntersectionObserver when the map is off-screen. */
   (function initMapFeed() {
-    const stage = document.getElementById('mapStage');
-    const stack = document.getElementById('phoneStack');
-    if (!stage || !stack) return;
+    const stage     = document.getElementById('mapStage');
+    const floorList = document.getElementById('mapFloorList');
+    if (!stage || !floorList) return;
 
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));
-    const initialNotifs = Array.from(stack.querySelectorAll('.phone-notif'));
-    if (initialNotifs.length === 0) return;
 
-    const CYCLE_MS = 5500;
-    const VISIBLE  = 3;     // keeps the stack short — matches the map height
-    const EASE     = 'cubic-bezier(.22, 1, .36, 1)';     // smooth shift-down
-    const POP      = 'cubic-bezier(.34, 1.56, .64, 1)';  // bouncy pop-in
+    const CYCLE_MS  = 5500;
+    const FLOOR_MAX = 4;     // max rows visible in the ticker
 
     /* Rotation pool · mix of progression milestones and live sales events.
-       The cycler picks each in turn and prepends as a fresh notification. */
+       The cycler picks each in turn and prepends as a fresh row. */
     const FEED = [
-      { country: 'ES', city: 'Madrid',     title: 'Deal closed · €38k ARR',          sub: 'Series A SaaS · 22 days from first touch', time: 'now' },
-      { country: 'UK', city: 'London',     title: 'Pipeline updated · €1.2M added',  sub: 'Skyfall Studios · SOW signed',              time: '2m'  },
-      { country: 'NL', city: 'Amsterdam',  title: 'Sequence sent · 28 prospects',    sub: 'Series B target list · scaleup tier',       time: '5m'  },
-      { country: 'IT', city: 'Milan',      title: 'M3 · First repeatable closes',    sub: '€112k won · 18–26 day cycles',              time: '12m' },
-      { country: 'FR', city: 'Paris',      title: 'Partnership signed',              sub: 'French enterprise GTM co-sell',             time: '24m' },
-      { country: 'IE', city: 'Dublin',     title: 'Demo moved · Thursday 16:00',     sub: 'EU HQ buyer · enterprise SaaS',             time: '38m' },
-      { country: 'ES', city: 'Madrid',     title: 'M6 · Engine self-sustaining',     sub: '€1.2M pipeline · MRR €38k',                 time: '1h'  },
-      { country: 'GR', city: 'Athens',     title: 'Sequence sent · 42 prospects',    sub: 'Greek SMB · 14% reply rate',                time: '1h'  },
-      { country: 'BE', city: 'Brussels',   title: 'Pipeline updated · €380k added',  sub: 'BeNeLux mid-market',                        time: '1h'  },
-      { country: 'CY', city: 'Nicosia',    title: 'Demo booked · Wed 11:00 EET',     sub: 'Fintech founder · pre-Series A',            time: '2h'  },
-      { country: 'UK', city: 'London',     title: 'M1 · Foundations live',           sub: 'Positioning sharpened · ICP calibrated',    time: '2h'  },
-      { country: 'ES', city: 'Barcelona',  title: 'Partnership signed',              sub: 'Iberian SaaS distributor · co-sell',        time: '3h'  },
+      { country: 'ES', city: 'Madrid',     title: 'Deal closed · €38k ARR',          time: 'now' },
+      { country: 'UK', city: 'London',     title: 'Pipeline updated · €1.2M added',  time: '2m'  },
+      { country: 'NL', city: 'Amsterdam',  title: 'Sequence sent · 28 prospects',    time: '5m'  },
+      { country: 'IT', city: 'Milan',      title: 'M3 · First repeatable closes',    time: '12m' },
+      { country: 'FR', city: 'Paris',      title: 'Partnership signed',              time: '24m' },
+      { country: 'IE', city: 'Dublin',     title: 'Demo moved · Thursday 16:00',     time: '38m' },
+      { country: 'ES', city: 'Madrid',     title: 'M6 · Engine self-sustaining',     time: '1h'  },
+      { country: 'GR', city: 'Athens',     title: 'Sequence sent · 42 prospects',    time: '1h'  },
+      { country: 'BE', city: 'Brussels',   title: 'Pipeline updated · €380k added',  time: '1h'  },
+      { country: 'CY', city: 'Nicosia',    title: 'Demo booked · Wed 11:00 EET',     time: '2h'  },
+      { country: 'UK', city: 'London',     title: 'M1 · Foundations live',           time: '2h'  },
+      { country: 'ES', city: 'Barcelona',  title: 'Partnership signed',              time: '3h'  },
     ];
 
-    /* Build a fresh .phone-notif element from a FEED entry */
-    function makeNotif(n) {
-      const el = document.createElement('div');
-      el.className = 'phone-notif in';
-      el.dataset.country = n.country;
-      el.innerHTML = `
-        <div class="phone-notif-icon"></div>
-        <div class="phone-notif-body">
-          <div class="phone-notif-meta">
-            <span class="phone-notif-app">Veerpoint</span>
-            <span class="phone-notif-time">${n.time}</span>
-          </div>
-          <div class="phone-notif-title">${n.title}</div>
-          <div class="phone-notif-sub">${n.sub}</div>
-        </div>`;
-      return el;
-    }
-
-    /* Country highlight syncs to whatever's at the top of the stack.
-       We clear is-focus from everything first, force a layout reflow,
-       then re-apply — that way the CSS pulse animation re-triggers
-       every tick, even if the same country lights up twice in a row. */
-    function highlightCountry(code) {
-      markers.forEach(m => m.classList.remove('is-focus'));
-      arcs.forEach(a    => a.classList.remove('is-focus'));
-      void stage.offsetWidth;  // reflow forces the animation to restart
-      markers.forEach(m => {
-        if (m.dataset.country === code) m.classList.add('is-focus');
-      });
-      arcs.forEach(a => {
-        if (a.dataset.country === code) a.classList.add('is-focus');
-      });
-      stage.classList.add('has-focus');
-    }
-    function refreshActive() {
-      const cards = stack.querySelectorAll('.phone-notif');
-      cards.forEach((c, i) => c.classList.toggle('is-active', i === 0));
-      const top = cards[0];
-      if (top) highlightCountry(top.dataset.country);
-    }
-
-    /* Push a new notification at the top. On desktop we use the FLIP
-       technique so the existing cards visibly slide down. On touch the
-       cards are CSS-grid stacked behind each other — their nth-child
-       positions change automatically when we prepend, so the CSS
-       transitions handle the shift without any FLIP gymnastics. */
-    const mqTouch = window.matchMedia('(max-width: 1080px)');
-    const FLOOR_MAX = 4;
-    const floorList = document.getElementById('mapFloorList');
-
-    /* City code mapping for the terminal-style floor (3-letter IATA-ish
-       codes the old hero floor used). Same set the FEED city/country
-       values fall into. */
+    /* City → 3-letter code used in the right column of each ticker row */
     const CITY_CODES = {
       Madrid: 'MAD', Barcelona: 'BCN', London: 'LDN', Amsterdam: 'AMS',
       Paris: 'PAR', Dublin: 'DUB', Milan: 'MIL', Athens: 'ATH',
       Brussels: 'BRU', Nicosia: 'NIC',
     };
 
-    /* Floor row builder · terminal style, 3-col grid (time / event / city) */
-    function makeFloorRow(n) {
+    /* Country highlight syncs to whichever row is at the top. Clearing
+       is-focus then forcing a reflow guarantees the CSS pulse animation
+       re-triggers every tick, even if the same country lights up twice
+       in a row. */
+    function highlightCountry(code) {
+      markers.forEach(m => m.classList.remove('is-focus'));
+      arcs.forEach(a    => a.classList.remove('is-focus'));
+      void stage.offsetWidth;
+      markers.forEach(m => { if (m.dataset.country === code) m.classList.add('is-focus'); });
+      arcs.forEach(a    => { if (a.dataset.country === code) a.classList.add('is-focus'); });
+      stage.classList.add('has-focus');
+    }
+
+    /* Build one ticker row · 3-col grid (time / event / city · country) */
+    function makeRow(n) {
       const row = document.createElement('div');
       row.className = 'feed-row is-new';
       row.dataset.country = n.country;
@@ -550,14 +503,15 @@
       return row;
     }
 
-    /* Push to the terminal-style floor feed (mobile). Prepend at top,
-       fade-in, drop the oldest if over FLOOR_MAX. */
-    function pushFloorRow(n) {
-      if (!floorList) return;
-      const row = makeFloorRow(n);
+    /* Prepend the new row, trim the oldest if we're over FLOOR_MAX, and
+       pulse the matching country marker. */
+    let feedIdx = 0;
+    function pushRow() {
+      const n = FEED[feedIdx % FEED.length];
+      feedIdx++;
+      const row = makeRow(n);
       floorList.insertBefore(row, floorList.firstChild);
-      // Trim down to FLOOR_MAX with a quick fade-out on the dropped row
-      while (floorList.children.length > FLOOR_MAX) {
+      if (floorList.children.length > FLOOR_MAX) {
         const last = floorList.lastElementChild;
         last.style.transition = 'opacity 0.25s ease, max-height 0.32s ease, padding 0.32s ease';
         last.style.maxHeight = last.getBoundingClientRect().height + 'px';
@@ -568,151 +522,38 @@
           last.style.paddingTop = '0';
           last.style.paddingBottom = '0';
         });
-        // We have to commit removal synchronously to keep the count right,
-        // so detach now and rely on the inline transition to mask the gap.
-        const toRemove = last;
-        setTimeout(() => toRemove.remove(), 320);
-        break;
+        setTimeout(() => last.remove(), 320);
       }
-      // Pulse the matching country marker + arc on the map
       highlightCountry(n.country);
     }
 
-    /* Push to the iPhone-card stack (desktop). FLIP-based slide-down. */
-    function pushPhoneStack(n) {
-      const existing = Array.from(stack.children);
-      const fresh = makeNotif(n);
-      fresh.classList.remove('in');
-      fresh.style.opacity = '0';
-      fresh.style.transform = 'translateY(-48px) scale(0.85)';
-      fresh.style.transition = 'none';
-      stack.insertBefore(fresh, stack.firstChild);
-
-      const sample = stack.querySelector('.phone-notif');
-      const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
-      const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
-      existing.forEach(el => {
-        el.style.transition = 'none';
-        el.style.transform = `translateY(-${shift}px)`;
-      });
-
-      void stack.offsetWidth;
-      requestAnimationFrame(() => {
-        existing.forEach(el => {
-          el.style.transition = `transform 0.5s ${EASE}`;
-          el.style.transform = '';
-        });
-        fresh.style.transition =
-          `opacity 0.36s ease-out, transform 0.62s ${POP}, box-shadow 0.42s ease`;
-        fresh.style.opacity = '1';
-        fresh.style.transform = '';
-        fresh.style.boxShadow =
-          'inset 0 1px 0 rgba(255, 255, 255, 0.95), ' +
-          '0 0 0 1px rgba(160, 64, 34, 0.22), ' +
-          '0 22px 38px -12px rgba(28, 28, 30, 0.28), ' +
-          '0 14px 26px -8px rgba(160, 64, 34, 0.32)';
-      });
-
-      setTimeout(() => {
-        existing.forEach(el => { el.style.transition = ''; el.style.transform = ''; });
-        fresh.style.transition = '';
-        fresh.style.opacity = '';
-        fresh.style.transform = '';
-        fresh.classList.add('in');
-        fresh.style.boxShadow = '';
-        refreshActive();
-      }, 640);
-
-      const total = stack.children.length;
-      if (total > VISIBLE) {
-        const oldest = stack.lastElementChild;
-        oldest.style.transition =
-          `opacity 0.32s ease-out, transform 0.42s ${EASE}, ` +
-          `max-height 0.42s ${EASE}, margin 0.42s ${EASE}, padding 0.42s ${EASE}`;
-        oldest.style.maxHeight = (oldest.getBoundingClientRect().height) + 'px';
-        void oldest.offsetWidth;
-        requestAnimationFrame(() => {
-          oldest.style.opacity = '0';
-          oldest.style.transform = 'translateY(18px) scale(0.92)';
-          oldest.style.maxHeight = '0';
-          oldest.style.marginTop = '0';
-          oldest.style.paddingTop = '0';
-          oldest.style.paddingBottom = '0';
-        });
-        setTimeout(() => oldest.remove(), 440);
-      }
-    }
-
-    let feedIdx = 0;
-    function pushNew() {
-      const n = FEED[feedIdx % FEED.length];
-      feedIdx++;
-      if (mqTouch.matches) pushFloorRow(n);
-      else                 pushPhoneStack(n);
-    }
-
     let timer = null;
-    function startCycle() {
-      if (timer) return;
-      timer = setInterval(pushNew, CYCLE_MS);
-    }
-    function stopCycle() {
-      if (!timer) return;
-      clearInterval(timer);
-      timer = null;
-    }
+    function startCycle() { if (!timer) timer = setInterval(pushRow, CYCLE_MS); }
+    function stopCycle()  { if (timer) { clearInterval(timer); timer = null; } }
 
-    /* Observer 1 · stagger-in for the initial 5 cards, then mark the
-       top one active and start the live push cycle. */
-    const ioStagger = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        initialNotifs.forEach(el => el.classList.add('in'));
-        refreshActive();
-        ioStagger.unobserve(e.target);
-        // Wait for the stagger cascade to finish before starting the cycle.
-        // 5 cards × 0.16s delay + ~0.5s transition = ~1.3s
-        setTimeout(startCycle, 1400);
-      });
-    }, { threshold: 0.35 });
-    ioStagger.observe(stack);
-
-    /* Observer 2 · pause the cycle when the map scrolls off-screen.
-       Battery friendly and avoids stacking 50 unseen ticks. */
+    /* Pause the cycle when the map scrolls off-screen — battery friendly
+       and avoids 50 unseen ticks queuing up. */
     const ioCycle = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          // Only start if the stagger has already happened
-          if (initialNotifs[0] && initialNotifs[0].classList.contains('in')) startCycle();
-        } else {
-          stopCycle();
-        }
-      });
+      entries.forEach(e => e.isIntersecting ? startCycle() : stopCycle());
     }, { threshold: 0.15 });
     ioCycle.observe(stage);
 
-    /* Make the phone's status-bar time, big clock, and date track the
-       user's local time. Updates every 30s so the minute rollover is
-       caught within ~half a tick. */
-    const elClockMini  = document.getElementById('phoneTimeMini');
-    const elClockBig   = document.getElementById('phoneClockBig');
-    const elDate       = document.getElementById('phoneDate');
+    // Initial paint · highlight whatever country is at the top of the
+    // pre-rendered ticker so the map matches on first view.
+    const firstRow = floorList.querySelector('.feed-row');
+    if (firstRow) highlightCountry(firstRow.dataset.country);
+
+    /* Live clock for the FLOOR header */
     const elFloorClock = document.getElementById('mapFloorClock');
-    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const pad = (n) => String(n).padStart(2, '0');
-    const fmtTime = (d) => pad(d.getHours()) + ':' + pad(d.getMinutes());
-    function paintClock() {
-      const d = new Date();
-      const t = fmtTime(d);
-      if (elClockMini)  elClockMini.textContent  = t;
-      if (elClockBig)   elClockBig.textContent   = t;
-      if (elFloorClock) elFloorClock.textContent = t;
-      if (elDate) elDate.textContent =
-        (dayNames[d.getDay()] + ', ' + monthNames[d.getMonth()] + ' ' + d.getDate()).toUpperCase();
+    if (elFloorClock) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const paintClock = () => {
+        const d = new Date();
+        elFloorClock.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+      };
+      paintClock();
+      setInterval(paintClock, 30000);
     }
-    paintClock();
-    setInterval(paintClock, 30000);
   })();
 
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */
