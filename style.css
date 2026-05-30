@@ -3124,7 +3124,10 @@
        /desc are display:none at that point so no further size tweaks needed. */
     .quiz-body { padding: 28px 22px; }
     .closing { padding: 80px 0; }
+    /* Mobile: drop the left intro column ("Start here" + headline +
+       3-step list) so the section opens straight on the discovery form. */
     .closing-grid { grid-template-columns: 1fr; gap: 40px; }
+    .closing-grid .closing-intro { display: none; }
     .foot-grid { grid-template-columns: 1fr; gap: 32px; }
     .foot-bottom { flex-direction: column; gap: 12px; }
   }
