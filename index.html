@@ -870,7 +870,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .principle-cta { margin-top: 32px; display: flex; justify-content: center; }
 .principle-cta .btn { padding: 16px 28px; font-size: 15px; font-weight: 600; }
 @media (max-width: 760px) {
-  .principle { padding: 72px 0; }
+  /* Disclaimer banner sits right before the form section now (intro
+     column was removed). Cut the bottom padding so the two sit close. */
+  .principle { padding: 64px 0 48px; }
   .principle-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 

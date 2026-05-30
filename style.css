@@ -3123,12 +3123,11 @@
     /* .map-panel slim rules live in the 1080px breakpoint above — clock/meta
        /desc are display:none at that point so no further size tweaks needed. */
     .quiz-body { padding: 28px 22px; }
-    .closing { padding: 80px 0; }
-    /* Mobile: drop the left intro column ("Start here" + headline +
-       3-step list) so the section opens straight on the discovery form.
-       !important guards against any inline-style or higher-specificity
-       rule sneaking it back in. */
-    .closing-grid { grid-template-columns: 1fr; gap: 40px; }
+    /* With the .closing-intro hidden, the section is just the discovery
+       form — keep its padding tight so we don't leave dead air around
+       a small form between the disclaimer banner and the footer. */
+    .closing { padding: 32px 0 48px; }
+    .closing-grid { grid-template-columns: 1fr; gap: 0; }
     .closing-grid .closing-intro,
     .closing .closing-intro { display: none !important; }
     .foot-grid { grid-template-columns: 1fr; gap: 32px; }
