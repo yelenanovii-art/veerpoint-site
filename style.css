@@ -2979,9 +2979,13 @@
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
     /* Map · 1-column stack. Phone-stage hidden on touch; map-floor
-       (terminal-style ticker) takes over. */
+       (terminal-style ticker) takes over.
+       !important here because the base .phone-stage rule lives in
+       index.html's inline <style>, which loads after style.css with the
+       same specificity and was winning the cascade. */
     .map-canvas { grid-template-columns: 1fr; gap: 16px; }
-    .phone-stage { display: none; }
+    .map-panel .phone-stage { display: none !important; }
+    .map-panel .map-floor   { display: block !important; }
 
     /* Mobile FLOOR · LIVE feed — dense terminal-style ticker that sits
        directly under the map. Max 4 rows, new rows fade in at top, old
