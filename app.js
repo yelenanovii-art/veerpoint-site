@@ -496,6 +496,28 @@
       });
     }, { threshold: 0.25 });
     ioCycle.observe(stage);
+
+    /* Make the phone's status-bar time, big clock, and date track the
+       user's local time. Updates every 30s so the minute rollover is
+       caught within ~half a tick. */
+    const elClockMini = document.getElementById('phoneTimeMini');
+    const elClockBig  = document.getElementById('phoneClockBig');
+    const elDate      = document.getElementById('phoneDate');
+    if (elClockMini && elClockBig && elDate) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const fmtTime = (d) => pad(d.getHours()) + ':' + pad(d.getMinutes());
+      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      function paintClock() {
+        const d = new Date();
+        const t = fmtTime(d);
+        elClockMini.textContent = t;
+        elClockBig.textContent  = t;
+        elDate.textContent = (dayNames[d.getDay()] + ', ' + monthNames[d.getMonth()] + ' ' + d.getDate()).toUpperCase();
+      }
+      paintClock();
+      setInterval(paintClock, 30000);
+    }
   })();
 
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */

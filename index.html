@@ -334,112 +334,219 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
    Two cards side-by-side: hire vs Veerpoint. Below them, a single
    savings line. Below that, the CTA. No bullet lists, no overflow. */
 
-/* ─────────── PROGRESS FEED · iOS notification stack ───────────
-   Replaces the old scroll-scrub dashboard. Notifications stagger into
-   a phone-screen frame on scroll-into-view. */
-/* Phone screen now sits inside the map's right column (.map-canvas grid).
-   Fills its column, dark Lock-Screen body, status bar at top, glass notifs.
-   The .map-panel wrapper is transparent — the phone-stage IS the visual. */
+/* ─────────── iPhone-style Lock-Screen rebuild ───────────
+   Sits inside the map's right column. Full iOS UX:
+     · phone bezel (rounded body) with a wallpaper layer underneath
+     · status bar with time left + signal/wifi/battery right
+     · Dynamic Island notch between
+     · big lock-screen clock + date
+     · frosted glass notification stack
+     · home-indicator bar at the bottom
+
+   The .map-panel wrapper is transparent — phone-stage IS the visual. */
 .phone-stage {
   width: 100%;
-  padding: 22px 16px 18px;
-  background:
-    radial-gradient(ellipse 90% 55% at 50% 0%, rgba(160, 64, 34, 0.16) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(160, 64, 34, 0.08) 0%, transparent 55%),
-    linear-gradient(180deg, #181820 0%, #0c0c0f 100%);
-  border-radius: 36px;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 0;
+  background: #050508;
+  border-radius: 44px;
+  /* Two stacked rings simulate the iPhone titanium/stainless bezel */
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 0 0 6px rgba(255, 255, 255, 0.02) inset,
-    0 28px 60px -22px rgba(0, 0, 0, 0.7);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    inset 0 0 0 6px #0a0a0d,
+    0 38px 70px -28px rgba(0, 0, 0, 0.75),
+    0 6px 20px -8px rgba(0, 0, 0, 0.5);
   position: relative;
   overflow: hidden;
+  aspect-ratio: 9 / 19.5;
+  display: flex;
+  flex-direction: column;
 }
-.phone-stage::before {
-  /* iPhone-style top notch / Dynamic Island */
+/* Side-button cosmetic bumps — silent toggle + volume + power on the right */
+.phone-stage::after {
   content: '';
   position: absolute;
-  top: 8px; left: 50%;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 14%, rgba(255,255,255,0.04) 14%, rgba(255,255,255,0.04) 17%, transparent 17%) 0 0 / 2px 100% no-repeat,
+    linear-gradient(180deg, transparent 25%, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.04) 30%, transparent 30%) 0 0 / 2px 100% no-repeat,
+    linear-gradient(180deg, transparent 32%, rgba(255,255,255,0.04) 32%, rgba(255,255,255,0.04) 37%, transparent 37%) calc(100% - 0px) 0 / 2px 100% no-repeat,
+    linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 28%, transparent 28%) calc(100% - 0px) 0 / 2px 100% no-repeat;
+}
+
+/* Wallpaper layer · sits behind everything so the frosted notifs have
+   something colorful to blur through. Soft warm gradient with two
+   ambient blobs — feels like an iOS Lock Screen photo wallpaper. */
+.phone-wallpaper {
+  position: absolute;
+  inset: 6px;
+  border-radius: 38px;
+  background:
+    radial-gradient(ellipse 70% 50% at 25% 18%, rgba(160, 64, 34, 0.55) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 75% 85%, rgba(206, 86, 50, 0.40) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 60%, rgba(80, 30, 20, 0.55) 0%, transparent 60%),
+    linear-gradient(180deg, #1a1014 0%, #0c0709 100%);
+  z-index: 0;
+}
+
+/* Dynamic Island notch */
+.phone-stage::before {
+  content: '';
+  position: absolute;
+  top: 12px; left: 50%;
   transform: translateX(-50%);
-  width: 88px; height: 22px;
+  width: 86px; height: 24px;
   border-radius: 999px;
   background: #050507;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
 }
-.phone-status {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  font-family: var(--vp-font-mono);
-  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 38px 8px 18px;
-  position: relative; z-index: 1;
+
+/* Status bar · time on left, signal/wifi/battery on right.
+   Sits behind the notch (notch covers the middle gap). */
+.phone-statusbar {
+  position: relative;
+  z-index: 4;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 24px 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  color: #fff;
 }
-.phone-time { font-weight: 600; color: rgba(255, 255, 255, 0.8); font-variant-numeric: tabular-nums; }
-.phone-status-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+.ph-time-mini {
+  font-size: 14px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.ph-signals { display: inline-flex; align-items: center; gap: 5px; }
+.ph-bars {
+  width: 17px; height: 10px;
+  background:
+    linear-gradient(180deg, transparent 65%, #fff 65%) 0    bottom / 3px 4px no-repeat,
+    linear-gradient(180deg, transparent 50%, #fff 50%) 4.5px bottom / 3px 6px no-repeat,
+    linear-gradient(180deg, transparent 30%, #fff 30%) 9px  bottom / 3px 8px no-repeat,
+    linear-gradient(180deg, transparent 0%,  #fff 0%)  13.5px bottom / 3px 10px no-repeat;
+}
+.ph-wifi { display: inline-flex; align-items: center; color: #fff; }
+.ph-battery {
+  position: relative;
+  width: 24px; height: 11px;
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 3px;
+  padding: 1px;
+}
+.ph-battery::after {
+  content: '';
+  position: absolute;
+  right: -3px; top: 50%;
+  transform: translateY(-50%);
+  width: 2px; height: 5px;
+  background: rgba(255,255,255,0.55);
+  border-radius: 0 1px 1px 0;
+}
+.ph-battery-fill {
+  display: block;
+  height: 100%; width: 78%;
+  background: #fff;
+  border-radius: 1px;
+}
+
+/* Lock-screen clock + date · big SF-style time, mono-cap date above */
+.phone-lockscreen {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 14px 0 8px;
+}
+.ph-date {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 2px;
+}
+.ph-clock {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter Tight", "Inter", sans-serif;
+  font-size: clamp(54px, 7vw, 78px);
+  font-weight: 200;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Notification stack */
 .phone-stack {
+  position: relative; z-index: 1;
   display: flex; flex-direction: column;
   gap: 8px;
-  position: relative; z-index: 1;
+  padding: 18px 12px 0;
+  margin-top: auto; /* push toward bottom so clock has breathing room */
 }
-/* iOS Lock-Screen-style frosted glass card */
+
+/* Frosted glass notification card · iOS Lock-Screen style */
 .phone-notif {
   display: grid;
   grid-template-columns: 38px 1fr;
   gap: 12px;
-  padding: 12px 14px;
-  border-radius: 16px;
+  padding: 11px 14px;
+  border-radius: 18px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 100%),
-    rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 100%),
+    rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 6px 16px -6px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 6px 14px -6px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
   position: relative;
-  /* Start hidden — JS adds .in to stagger them in via the --i var. */
+  /* Start hidden — JS adds .in to stagger them in via the --i var */
   opacity: 0;
   transform: translateY(-14px);
   transition:
     opacity .48s cubic-bezier(.22, 1, .36, 1),
     transform .48s cubic-bezier(.22, 1, .36, 1),
-    box-shadow .28s ease;
+    box-shadow .28s ease,
+    border-color .28s ease;
   transition-delay: calc(var(--i, 0) * 0.16s);
 }
 .phone-notif::before {
-  /* Subtle top-edge highlight — what catches light on real iOS glass */
+  /* Top-edge specular highlight · what catches light on real iOS glass */
   content: '';
   position: absolute;
-  top: 0; left: 12%; right: 12%;
+  top: 0; left: 10%; right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   border-radius: 1px;
   pointer-events: none;
 }
 .phone-notif.in { opacity: 1; transform: translateY(0); }
-/* When this notif's country is the active feed tick, give the card a
-   warm pulse — sells the live-feed link to the map markers. */
 .phone-notif.is-active {
+  border-color: rgba(255, 200, 170, 0.45);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 0 0 1px rgba(160, 64, 34, 0.28),
-    0 0 0 1px rgba(160, 64, 34, 0.22),
-    0 8px 22px -6px rgba(160, 64, 34, 0.38);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 200, 170, 0.18),
+    0 10px 24px -6px rgba(160, 64, 34, 0.4);
 }
 .phone-notif-icon {
   width: 38px; height: 38px;
-  border-radius: 10px;
+  border-radius: 9px;
   background:
-    radial-gradient(ellipse 100% 100% at 30% 30%, rgba(160, 64, 34, 0.4) 0%, rgba(160, 64, 34, 0) 70%),
-    linear-gradient(135deg, var(--vp-ink) 0%, #2a2a2c 100%);
+    radial-gradient(ellipse 100% 100% at 30% 30%, rgba(160, 64, 34, 0.45) 0%, rgba(160, 64, 34, 0) 70%),
+    linear-gradient(135deg, #1a1a1c 0%, #2c2c30 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 0 0 1px rgba(160, 64, 34, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 0 0 1px rgba(160, 64, 34, 0.25),
     0 0 12px rgba(160, 64, 34, 0.22);
   position: relative;
 }
@@ -457,32 +564,47 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .phone-notif-meta {
   display: flex; justify-content: space-between; align-items: baseline;
   gap: 10px;
-  font-size: 11px;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 .phone-notif-app {
-  font-weight: 600; color: rgba(255, 255, 255, 0.85);
-  letter-spacing: 0.04em; text-transform: uppercase;
-  font-family: var(--vp-font-mono); font-size: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 13px;
+  letter-spacing: -0.005em;
 }
 .phone-notif-time {
-  color: rgba(255, 255, 255, 0.5);
-  font-family: var(--vp-font-mono); font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+  font-size: 12px;
 }
 .phone-notif-title {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-weight: 600;
-  font-size: 14px;
-  color: var(--vp-warm-white);
-  margin-bottom: 2px;
+  font-size: 13.5px;
+  color: #fff;
+  margin-bottom: 1px;
   letter-spacing: -0.005em;
+  line-height: 1.25;
 }
 .phone-notif-sub {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.62);
-  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.32;
 }
+
+/* Home indicator bar · the swipe affordance at the bottom */
+.phone-home-bar {
+  position: relative;
+  z-index: 1;
+  width: 38%;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  margin: 14px auto 8px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .phone-notif { transition: none; opacity: 1; transform: none; }
 }
@@ -1923,11 +2045,30 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
          and cycles the .is-fresh / country-highlight pulse every 5.5s. -->
     <aside class="map-panel" id="mapPanel" aria-live="polite">
       <div class="phone-stage" id="phoneStage">
-        <div class="phone-status">
-          <span class="phone-time">14:35</span>
-          <span class="phone-status-dot"></span>
-          <span class="phone-day">Friday, May 30</span>
+        <!-- Wallpaper · blurred warm gradient that shows through the
+             frosted notifications. Real iOS uses a photo wallpaper;
+             we simulate that depth with two soft terracotta blobs. -->
+        <div class="phone-wallpaper" aria-hidden="true"></div>
+
+        <!-- Status bar · time on the left, signal/wifi/battery on the right,
+             with the dynamic-island notch sitting between them. -->
+        <div class="phone-statusbar">
+          <span class="ph-time-mini" id="phoneTimeMini">14:35</span>
+          <span class="ph-signals" aria-hidden="true">
+            <span class="ph-bars"></span>
+            <span class="ph-wifi">
+              <svg viewBox="0 0 16 12" width="14" height="11"><path d="M8 11.5a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4zM3.1 5.7a7 7 0 019.8 0l-1.2 1.2a5.3 5.3 0 00-7.4 0L3.1 5.7zM.7 3.3a10.5 10.5 0 0114.6 0l-1.2 1.2a8.8 8.8 0 00-12.2 0L.7 3.3z" fill="currentColor"/></svg>
+            </span>
+            <span class="ph-battery"><span class="ph-battery-fill"></span></span>
+          </span>
         </div>
+
+        <!-- Lock-screen clock + date · big SF-style time, mono-cap date above. -->
+        <div class="phone-lockscreen">
+          <div class="ph-date" id="phoneDate">FRIDAY, MAY 30</div>
+          <div class="ph-clock" id="phoneClockBig">14:35</div>
+        </div>
+
         <div class="phone-stack" id="phoneStack">
           <div class="phone-notif" style="--i: 0" data-country="ES">
             <div class="phone-notif-icon"></div>
@@ -1985,6 +2126,9 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
             </div>
           </div>
         </div>
+
+        <!-- Home indicator bar at the very bottom — iOS swipe affordance -->
+        <div class="phone-home-bar" aria-hidden="true"></div>
       </div>
     </aside>
     </div>

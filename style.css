@@ -2969,21 +2969,14 @@
     .map-svg .marker-ring                      { r: 12; }
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
-    /* Phone-screen panel · on mobile the map's 2-col grid collapses to
-       a single column (map on top, phone-screen below). Tighten phone
-       padding so it doesn't dominate vertically. */
+    /* iPhone-screen panel · map grid collapses to 1 column under 1080px
+       (map on top, phone-screen below). Cap phone width so it doesn't
+       look like a tablet on tablet viewports. */
     .map-canvas { grid-template-columns: 1fr; gap: 24px; }
     .phone-stage {
-      max-width: 420px;
+      max-width: 320px;
       margin: 0 auto;
-      padding: 18px 14px 16px;
-      border-radius: 30px;
     }
-    .phone-stage::before { width: 80px; height: 20px; top: 6px; }
-    .phone-status { padding: 32px 8px 14px; }
-    .phone-notif { padding: 11px 12px; }
-    .phone-notif-title { font-size: 13px; }
-    .phone-notif-sub { font-size: 12px; }
     /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
        and CSS hides the markup defensively in case JS fails. */
     .scroll-dot, .scroll-trail-dot { display: none; }
