@@ -629,48 +629,9 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .principle-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 
-/* Team section: tighter so the page doesn't run away. Founders' video sits
-   above the three-card grid and acts as the "founders' message" embed. */
+/* Team section · tightened so the page doesn't run away. */
 .team-section { padding: 96px 0; }
 @media (max-width: 760px) { .team-section { padding: 72px 0; } }
-.founders-video { margin: 0 auto 56px; max-width: 800px; }
-.video-placeholder {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  background:
-    radial-gradient(ellipse 60% 80% at 50% 50%, rgba(160, 64, 34, 0.18) 0%, transparent 65%),
-    linear-gradient(135deg, var(--vp-ink) 0%, var(--vp-ink-90) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 6px;
-  text-align: center;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
-}
-.video-placeholder:hover { box-shadow: 0 0 0 6px rgba(160, 64, 34, 0.16), 0 22px 50px rgba(28, 28, 30, 0.32); transform: translateY(-2px); }
-.video-placeholder .vp-play {
-  font-family: var(--vp-font-display);
-  font-size: clamp(52px, 6vw, 76px);
-  color: var(--vp-terracotta);
-  opacity: 0.9;
-  margin-bottom: 6px;
-}
-.video-placeholder .vp-label {
-  color: var(--vp-warm-white);
-  font-family: var(--vp-font-display);
-  font-size: clamp(18px, 2vw, 24px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.video-placeholder .vp-sub {
-  color: var(--vp-muted-soft);
-  font-family: var(--vp-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
 
 .team-hd { margin-bottom: 40px; max-width: 60ch; }
 .team-hd h2 {
@@ -2028,16 +1989,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <div class="team-hd">
       <h2>The closers your competitors wish they'd hired first<span class="stop">.</span></h2>
       <p class="team-sub">Carried a number. Hit it. Now they're hitting yours instead of your competitors'.</p>
-    </div>
-
-    <!-- Founders' message · embed slot. Replace .video-placeholder with the
-         real <iframe> or <video> when the recording is ready. -->
-    <div class="founders-video">
-      <div class="video-placeholder" role="img" aria-label="Founders' message · video placeholder">
-        <div class="vp-play">▶</div>
-        <div class="vp-label">Founders' message</div>
-        <div class="vp-sub">~90 seconds · self-recorded · embed slot ready</div>
-      </div>
     </div>
 
     <div class="team-grid">
