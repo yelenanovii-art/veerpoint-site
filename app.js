@@ -457,7 +457,8 @@
 
     const CYCLE_MS = 5500;
     const VISIBLE  = 5;     // how many notifs stay in the stack
-    const EASE     = 'cubic-bezier(.22, 1, .36, 1)';
+    const EASE     = 'cubic-bezier(.22, 1, .36, 1)';     // smooth shift-down
+    const POP      = 'cubic-bezier(.34, 1.56, .64, 1)';  // bouncy pop-in
 
     /* Rotation pool · mix of progression milestones and live sales events.
        The cycler picks each in turn and prepends as a fresh notification. */
@@ -522,11 +523,13 @@
       // Existing children that will move down
       const existing = Array.from(stack.children);
 
-      // Build + prepend the new card (already in final position in flow)
+      // Build + prepend the new card. Start state: well above its
+      // resting position, faded, scaled down — sets up the dramatic pop.
       const fresh = makeNotif(n);
-      // Pre-state: above its final spot, faded, slightly smaller
+      // Drop the .in class so we control the entrance manually here
+      fresh.classList.remove('in');
       fresh.style.opacity = '0';
-      fresh.style.transform = 'translateY(-28px) scale(0.96)';
+      fresh.style.transform = 'translateY(-48px) scale(0.85)';
       fresh.style.transition = 'none';
       stack.insertBefore(fresh, stack.firstChild);
 
@@ -536,43 +539,66 @@
         el.style.transform = `translateY(-${shift}px)`;
       });
 
-      // Force layout, then play all the animations forward to identity
+      // Force layout, then play all the animations forward to identity.
+      // Existing cards use the smooth EASE (they're just being pushed
+      // down). The new card uses POP — bouncy overshoot, like a real
+      // iOS push notification landing on the lock screen.
       void stack.offsetWidth;
       requestAnimationFrame(() => {
         existing.forEach(el => {
           el.style.transition = `transform 0.5s ${EASE}`;
           el.style.transform = '';
         });
-        fresh.style.transition = `opacity 0.5s ease-out, transform 0.5s ${EASE}`;
+        fresh.style.transition =
+          `opacity 0.36s ease-out, ` +
+          `transform 0.62s ${POP}, ` +
+          `box-shadow 0.42s ease`;
         fresh.style.opacity = '1';
         fresh.style.transform = '';
+        // Brief shadow lift on arrival so the card "thuds" into place
+        fresh.style.boxShadow =
+          'inset 0 1px 0 rgba(255, 255, 255, 0.95), ' +
+          '0 0 0 1px rgba(160, 64, 34, 0.22), ' +
+          '0 22px 38px -12px rgba(28, 28, 30, 0.28), ' +
+          '0 14px 26px -8px rgba(160, 64, 34, 0.32)';
       });
 
       // Clean up inline styles after the animation settles so .is-active
-      // and country highlight can take over without conflicts
+      // and country highlight can take over without conflicts.
       setTimeout(() => {
         existing.forEach(el => { el.style.transition = ''; el.style.transform = ''; });
-        fresh.style.transition = ''; fresh.style.opacity = ''; fresh.style.transform = '';
+        fresh.style.transition = '';
+        fresh.style.opacity = '';
+        fresh.style.transform = '';
+        fresh.classList.add('in');           // keeps the rest state stable
+        // Hand off the shadow to .is-active via refreshActive()
+        fresh.style.boxShadow = '';
         refreshActive();
-      }, 520);
+      }, 640);
 
-      // If we now have more than VISIBLE cards, gracefully retire the oldest
+      // If we now have more than VISIBLE cards, retire the oldest with
+      // a slightly more decisive fall-off so it matches the pop-in energy
       const total = stack.children.length;
       if (total > VISIBLE) {
         const oldest = stack.lastElementChild;
-        oldest.style.transition = `opacity 0.4s ease, transform 0.4s ease, max-height 0.5s ${EASE}, margin 0.5s ${EASE}, padding 0.5s ${EASE}`;
+        oldest.style.transition =
+          `opacity 0.32s ease-out, ` +
+          `transform 0.42s ${EASE}, ` +
+          `max-height 0.42s ${EASE}, ` +
+          `margin 0.42s ${EASE}, ` +
+          `padding 0.42s ${EASE}`;
         oldest.style.maxHeight = (oldest.getBoundingClientRect().height) + 'px';
-        // Force layout, then collapse to 0 height + fade out
+        // Force layout, then collapse to 0 height + drop away
         void oldest.offsetWidth;
         requestAnimationFrame(() => {
           oldest.style.opacity = '0';
-          oldest.style.transform = 'translateY(8px) scale(0.96)';
+          oldest.style.transform = 'translateY(18px) scale(0.92)';
           oldest.style.maxHeight = '0';
           oldest.style.marginTop = '0';
           oldest.style.paddingTop = '0';
           oldest.style.paddingBottom = '0';
         });
-        setTimeout(() => oldest.remove(), 500);
+        setTimeout(() => oldest.remove(), 440);
       }
     }
 

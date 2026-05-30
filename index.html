@@ -479,16 +479,19 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   -webkit-backdrop-filter: blur(24px) saturate(220%);
   position: relative;
   overflow: hidden;
-  /* Start hidden — JS adds .in to stagger them in via the --i var */
+  /* Start hidden + slightly above + scaled down — JS adds .in to pop
+     them in via the --i stagger delay. Bouncy cubic-bezier gives the
+     overshoot that real iOS notifications have when they arrive. */
   opacity: 0;
-  transform: translateY(-14px);
+  transform: translateY(-32px) scale(0.9);
   transition:
-    opacity .48s cubic-bezier(.22, 1, .36, 1),
-    transform .48s cubic-bezier(.22, 1, .36, 1),
+    opacity .42s ease-out,
+    transform .58s cubic-bezier(.34, 1.56, .64, 1),
     box-shadow .28s ease,
     border-color .28s ease;
   transition-delay: calc(var(--i, 0) * 0.16s);
 }
+.phone-notif.in { transform: translateY(0) scale(1); opacity: 1; }
 .phone-notif::before {
   /* Top-edge specular line · what catches light on real iOS glass */
   content: '';
@@ -513,7 +516,6 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   z-index: 0;
 }
 .phone-notif > * { position: relative; z-index: 1; }
-.phone-notif.in { opacity: 1; transform: translateY(0); }
 .phone-notif.is-active {
   border-color: rgba(160, 64, 34, 0.4);
   box-shadow:
