@@ -2969,20 +2969,19 @@
     .map-svg .marker-ring                      { r: 12; }
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
-    /* iPhone-screen panel · map grid collapses to 1 column under 1080px.
-       Phone-screen capped narrower and clipped to roughly the top half
-       (status bar + clock + 2-3 notifs) with a soft fade-out so the
-       cut feels intentional rather than abrupt. Home indicator hidden
-       since it's below the fade. */
+    /* Phone-feel panel · map grid collapses to 1 column under 1080px.
+       Stage narrowed and clipped (max-height) to show only the top half:
+       status bar + clock + ~2 notifs. Soft fade-out at the bottom so
+       the cut reads as intentional. */
     .map-canvas { grid-template-columns: 1fr; gap: 24px; }
     .phone-stage {
       max-width: 300px;
+      max-height: 360px;
+      overflow: hidden;
       margin: 0 auto;
-      aspect-ratio: 9 / 11;
-      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);
-              mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 76%, transparent 100%);
+              mask-image: linear-gradient(180deg, #000 0%, #000 76%, transparent 100%);
     }
-    .phone-stage .phone-home-bar { display: none; }
     /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
        and CSS hides the markup defensively in case JS fails. */
     .scroll-dot, .scroll-trail-dot { display: none; }

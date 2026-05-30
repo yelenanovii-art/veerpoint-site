@@ -344,78 +344,40 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
      · home-indicator bar at the bottom
 
    The .map-panel wrapper is transparent — phone-stage IS the visual. */
+/* Phone-feel stage · no device chrome. Status bar + clock + notification
+   stack float on a soft warm wallpaper glow that fades at the edges. */
 .phone-stage {
   width: 100%;
   max-width: 340px;
   margin: 0 auto;
-  padding: 0;
-  background: #050508;
-  border-radius: 44px;
-  /* Two stacked rings simulate the iPhone titanium/stainless bezel */
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-    inset 0 0 0 6px #0a0a0d,
-    0 38px 70px -28px rgba(0, 0, 0, 0.7),
-    0 6px 20px -8px rgba(0, 0, 0, 0.45);
+  padding: 0 4px;
   position: relative;
-  overflow: hidden;
-  /* Tightened from 9:19.5 (full iPhone) to 9:16 — phone still reads as
-     a phone but takes a third less vertical space. */
-  aspect-ratio: 9 / 16;
   display: flex;
   flex-direction: column;
 }
-/* Side-button cosmetic bumps — silent toggle + volume + power on the right */
-.phone-stage::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, transparent 14%, rgba(255,255,255,0.04) 14%, rgba(255,255,255,0.04) 17%, transparent 17%) 0 0 / 2px 100% no-repeat,
-    linear-gradient(180deg, transparent 25%, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.04) 30%, transparent 30%) 0 0 / 2px 100% no-repeat,
-    linear-gradient(180deg, transparent 32%, rgba(255,255,255,0.04) 32%, rgba(255,255,255,0.04) 37%, transparent 37%) calc(100% - 0px) 0 / 2px 100% no-repeat,
-    linear-gradient(180deg, transparent 20%, rgba(255,255,255,0.04) 20%, rgba(255,255,255,0.04) 28%, transparent 28%) calc(100% - 0px) 0 / 2px 100% no-repeat;
-}
 
-/* Wallpaper layer · dialed-down warm beige Lock Screen. Restrained
-   halos and a deeper paper base so the phone reads as a quieter
-   accent next to the map instead of stealing attention from it. */
+/* Ambient wallpaper · soft terracotta halos behind the content with no
+   hard rectangle frame. Edges blur out into the section background so
+   the notifications feel like they're floating, not contained. */
 .phone-wallpaper {
   position: absolute;
-  inset: 6px;
-  border-radius: 38px;
+  inset: -24px -16px;
   background:
-    radial-gradient(ellipse 60% 40% at 28% 22%, rgba(160, 64, 34, 0.28) 0%, transparent 60%),
-    radial-gradient(ellipse 65% 50% at 78% 82%, rgba(160, 64, 34, 0.18) 0%, transparent 60%),
-    linear-gradient(180deg, var(--vp-paper) 0%, var(--vp-paper-2) 100%);
+    radial-gradient(ellipse 55% 38% at 28% 30%, rgba(160, 64, 34, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 48% at 78% 74%, rgba(160, 64, 34, 0.15) 0%, transparent 65%);
+  filter: blur(6px);
+  pointer-events: none;
   z-index: 0;
 }
 
-/* Dynamic Island notch */
-.phone-stage::before {
-  content: '';
-  position: absolute;
-  top: 12px; left: 50%;
-  transform: translateX(-50%);
-  width: 86px; height: 24px;
-  border-radius: 999px;
-  background: #050507;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 0 1px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-  z-index: 5;
-}
-
 /* Status bar · time on left, signal/wifi/battery on right.
-   Dark on the warm cream wallpaper — like iOS light mode. */
+   Dark on the warm wallpaper. No notch to clear anymore so the top
+   padding comes back down to a regular gutter. */
 .phone-statusbar {
   position: relative;
   z-index: 4;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 24px 8px;
+  padding: 8px 18px;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
   color: var(--vp-ink);
 }
@@ -457,12 +419,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   border-radius: 1px;
 }
 
-/* Lock-screen clock + date · ink on warm cream wallpaper */
+/* Clock + date · ink on warm wallpaper */
 .phone-lockscreen {
   position: relative;
   z-index: 1;
   text-align: center;
-  padding: 14px 0 8px;
+  padding: 8px 0 14px;
 }
 .ph-date {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
@@ -619,16 +581,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   line-height: 1.32;
 }
 
-/* Home indicator bar · dark pill on the light wallpaper */
-.phone-home-bar {
-  position: relative;
-  z-index: 1;
-  width: 38%;
-  height: 4px;
-  border-radius: 4px;
-  background: rgba(28, 28, 30, 0.5);
-  margin: 14px auto 8px;
-}
+/* Home indicator · gone with the rest of the device chrome */
+.phone-home-bar { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .phone-notif { transition: none; opacity: 1; transform: none; }
