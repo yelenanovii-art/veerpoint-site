@@ -932,6 +932,150 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   margin: 0;
 }
 .team-sub { margin-top: 14px; font-size: 17px; color: var(--vp-ink-70); max-width: 56ch; }
+
+/* ─────────── Founder feature · Pablo spotlight ───────────
+   2-col grid on desktop (photo left, content right). Stacks on mobile. */
+.founder-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 56px;
+  align-items: center;
+  margin-bottom: 64px;
+}
+.founder-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, var(--vp-paper) 0%, var(--vp-paper-2) 100%);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.founder-photo .ph {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--vp-font-mono);
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(28, 28, 30, 0.32);
+  z-index: 0;
+}
+.founder-photo img {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.founder-photo img[src=""], .founder-photo img:not([src]) { display: none; }
+
+/* LinkedIn button overlay · bottom-right of the photo, official LinkedIn
+   blue circle. Stays above whichever layer (placeholder or real image). */
+.founder-linkedin {
+  position: absolute;
+  bottom: 16px; right: 16px;
+  z-index: 2;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: #0A66C2;
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.7),
+    0 8px 18px -4px rgba(10, 102, 194, 0.45);
+  transition: transform .18s ease, box-shadow .22s ease, background .18s ease;
+}
+.founder-linkedin:hover {
+  transform: translateY(-1px);
+  background: #0858a8;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.7),
+    0 12px 24px -4px rgba(10, 102, 194, 0.55);
+}
+.founder-linkedin:focus-visible {
+  outline: 2px solid var(--vp-terracotta);
+  outline-offset: 4px;
+}
+
+.founder-content { min-width: 0; }
+.founder-name {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 64px);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  color: var(--vp-ink);
+  margin-bottom: 12px;
+}
+.founder-name .stop { color: var(--vp-terracotta); }
+.founder-role {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vp-terracotta);
+  margin-bottom: 24px;
+}
+.founder-bio p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--vp-ink-70);
+  margin: 0 0 14px;
+}
+.founder-bio p:last-child { margin-bottom: 0; }
+
+/* Operator credit strip · subdued mention of the rest of the team */
+.team-credit {
+  padding-top: 40px;
+  border-top: 1px solid var(--vp-border);
+}
+.team-credit-label {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--vp-muted);
+  margin-bottom: 24px;
+}
+.team-credit-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.team-credit-item {
+  border-top: 1px solid var(--vp-border-strong);
+  padding-top: 18px;
+}
+.tc-name {
+  font-family: var(--vp-font-display);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--vp-ink);
+  margin-bottom: 4px;
+}
+.tc-name .stop { color: var(--vp-terracotta); }
+.tc-role {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vp-terracotta);
+  margin-bottom: 10px;
+}
+.tc-line {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--vp-ink-70);
+}
+
+@media (max-width: 900px) {
+  .founder-feature { grid-template-columns: 1fr; gap: 36px; }
+  .founder-photo { aspect-ratio: 1 / 1; max-width: 420px; }
+  .team-credit-list { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 760px) {
+  .founder-feature { margin-bottom: 48px; }
+  .founder-linkedin { width: 40px; height: 40px; bottom: 12px; right: 12px; }
+}
 .team-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2220,40 +2364,59 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 
 <section class="section team-section" id="team">
   <div class="wrap">
-    <div class="eyebrow" style="margin-bottom: 24px">THE TEAM</div>
+    <div class="eyebrow" style="margin-bottom: 24px">FROM THE FOUNDER</div>
     <div class="team-hd">
-      <h2>The closers your competitors wish they'd hired first<span class="stop">.</span></h2>
-      <p class="team-sub">Carried a number. Hit it. Now they're hitting yours instead of your competitors'.</p>
+      <h2>Pablo runs the floor. He's not alone<span class="stop">.</span></h2>
+      <p class="team-sub">A four-person operator team. The same people who scope the work run the calls.</p>
     </div>
 
-    <div class="team-grid">
-      <div class="member">
-        <div class="member-photo">
-          <span class="ph">Anton</span>
-          <!-- Drop in src="anton.jpg" when ready -->
-          <img src="" alt="Anton, co-founder" />
-        </div>
-        <div class="member-name">Anton<span class="stop">.</span></div>
-        <div class="member-role">REVENUE INFRASTRUCTURE</div>
-        <div class="member-bio">Closed 6-figure deals at Revolut and Google Cloud, selling SaaS and financial products. Founded and grew his own startup before joining Veerpoint.</div>
+    <!-- Featured founder · Pablo. Photo with LinkedIn icon overlay, bio
+         on the right. Drop pablo.jpg in /img and update the src + the
+         LinkedIn URL when those land. -->
+    <div class="founder-feature">
+      <div class="founder-photo">
+        <span class="ph">Pablo</span>
+        <img src="" alt="Pablo, founder of Veerpoint" />
+        <a class="founder-linkedin"
+           href="https://www.linkedin.com/in/pablo-sharrock/"
+           target="_blank" rel="noopener"
+           aria-label="Pablo on LinkedIn">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/>
+          </svg>
+        </a>
       </div>
-      <div class="member">
-        <div class="member-photo">
-          <span class="ph">Pablo</span>
-          <img src="" alt="Pablo, co-founder" />
+      <div class="founder-content">
+        <div class="founder-name">Pablo<span class="stop">.</span></div>
+        <div class="founder-role">FOUNDER · GO-TO-MARKET</div>
+        <div class="founder-bio">
+          <p>Founded and exited a hospitality SaaS. Now runs go-to-market and franchise expansion across three European markets, focused on entering new markets and generating commercial traction for B2B AI products.</p>
+          <p>Veerpoint exists because we kept watching strong products fail to land — not because they were wrong, but because translation was harder than it looked. So we built the system we wished we'd had.</p>
         </div>
-        <div class="member-name">Pablo<span class="stop">.</span></div>
-        <div class="member-role">GO-TO-MARKET</div>
-        <div class="member-bio">Founded and exited a hospitality SaaS. Now runs go-to-market and franchise expansion across three European markets, focused on entering new markets and generating commercial traction for B2B AI products.</div>
       </div>
-      <div class="member">
-        <div class="member-photo">
-          <span class="ph">Dylan</span>
-          <img src="" alt="Dylan, co-founder" />
+    </div>
+
+    <!-- The rest of the operator team · subdued credit strip below the
+         founder feature. Currently three — Anton, Dylan, + one more
+         operator (placeholder, drop name + role in when confirmed). -->
+    <div class="team-credit">
+      <div class="team-credit-label">And the operators with him</div>
+      <div class="team-credit-list">
+        <div class="team-credit-item">
+          <div class="tc-name">Anton<span class="stop">.</span></div>
+          <div class="tc-role">Revenue infrastructure</div>
+          <div class="tc-line">Ex-Revolut · Ex-Google Cloud · founded and grew his own startup before joining.</div>
         </div>
-        <div class="member-name">Dylan<span class="stop">.</span></div>
-        <div class="member-role">HEAD OF REVENUE</div>
-        <div class="member-bio">High-performance closer with a track record of exceeding targets across iGaming, fintech, SaaS, and hospitality. Specialises in high-value deals, negotiation, and converting pipeline into revenue.</div>
+        <div class="team-credit-item">
+          <div class="tc-name">Dylan<span class="stop">.</span></div>
+          <div class="tc-role">Head of revenue</div>
+          <div class="tc-line">Senior closer across iGaming, fintech, SaaS, hospitality. Specialises in high-value deals.</div>
+        </div>
+        <div class="team-credit-item">
+          <div class="tc-name">+ 1<span class="stop">.</span></div>
+          <div class="tc-role">Operator</div>
+          <div class="tc-line">Placeholder — drop the fourth operator's name and role in here.</div>
+        </div>
       </div>
     </div>
   </div>
