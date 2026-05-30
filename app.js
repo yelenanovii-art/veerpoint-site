@@ -514,16 +514,67 @@
        positions change automatically when we prepend, so the CSS
        transitions handle the shift without any FLIP gymnastics. */
     const mqTouch = window.matchMedia('(max-width: 1080px)');
-    let feedIdx = 0;
-    function pushNew() {
-      const n = FEED[feedIdx % FEED.length];
-      feedIdx++;
+    const FLOOR_MAX = 4;
+    const floorList = document.getElementById('mapFloorList');
 
-      const touchMode = mqTouch.matches;
+    /* City code mapping for the terminal-style floor (3-letter IATA-ish
+       codes the old hero floor used). Same set the FEED city/country
+       values fall into. */
+    const CITY_CODES = {
+      Madrid: 'MAD', Barcelona: 'BCN', London: 'LDN', Amsterdam: 'AMS',
+      Paris: 'PAR', Dublin: 'DUB', Milan: 'MIL', Athens: 'ATH',
+      Brussels: 'BRU', Nicosia: 'NIC',
+    };
+
+    /* Floor row builder · terminal style, 3-col grid (time / event / city) */
+    function makeFloorRow(n) {
+      const row = document.createElement('div');
+      row.className = 'feed-row is-new';
+      row.dataset.country = n.country;
+      const code = CITY_CODES[n.city] || (n.city || '').slice(0, 3).toUpperCase();
+      row.innerHTML =
+        '<div class="t">' + n.time + '</div>' +
+        '<div class="e">' + n.title + '</div>' +
+        '<div class="c">' + code + ' · ' + n.country + '</div>';
+      setTimeout(() => row.classList.remove('is-new'), 2000);
+      return row;
+    }
+
+    /* Push to the terminal-style floor feed (mobile). Prepend at top,
+       fade-in, drop the oldest if over FLOOR_MAX. */
+    function pushFloorRow(n) {
+      if (!floorList) return;
+      const row = makeFloorRow(n);
+      floorList.insertBefore(row, floorList.firstChild);
+      // Trim down to FLOOR_MAX with a quick fade-out on the dropped row
+      while (floorList.children.length > FLOOR_MAX) {
+        const last = floorList.lastElementChild;
+        last.style.transition = 'opacity 0.25s ease, max-height 0.32s ease, padding 0.32s ease';
+        last.style.maxHeight = last.getBoundingClientRect().height + 'px';
+        void last.offsetWidth;
+        requestAnimationFrame(() => {
+          last.style.opacity = '0';
+          last.style.maxHeight = '0';
+          last.style.paddingTop = '0';
+          last.style.paddingBottom = '0';
+        });
+        // We have to commit removal synchronously to keep the count right,
+        // so detach now and rely on the inline transition to mask the gap.
+        const toRemove = last;
+        setTimeout(() => toRemove.remove(), 320);
+        break;
+      }
+      // Country highlight on the marker stays in sync
+      const markers2 = stage.querySelectorAll('.marker');
+      const arcs2    = stage.querySelectorAll('.arc');
+      markers2.forEach(m => m.classList.toggle('is-focus', m.dataset.country === n.country));
+      arcs2.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === n.country));
+      stage.classList.add('has-focus');
+    }
+
+    /* Push to the iPhone-card stack (desktop). FLIP-based slide-down. */
+    function pushPhoneStack(n) {
       const existing = Array.from(stack.children);
-
-      // Build + prepend the new card. Start state: well above its
-      // resting position, faded, scaled down — sets up the dramatic pop.
       const fresh = makeNotif(n);
       fresh.classList.remove('in');
       fresh.style.opacity = '0';
@@ -531,31 +582,22 @@
       fresh.style.transition = 'none';
       stack.insertBefore(fresh, stack.firstChild);
 
-      // FLIP step (desktop only) · snap existing cards back to their old
-      // positions so they appear to slide down from where they were.
-      if (!touchMode) {
-        const sample = stack.querySelector('.phone-notif');
-        const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
-        const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
-        existing.forEach(el => {
-          el.style.transition = 'none';
-          el.style.transform = `translateY(-${shift}px)`;
-        });
-      }
+      const sample = stack.querySelector('.phone-notif');
+      const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
+      const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
+      existing.forEach(el => {
+        el.style.transition = 'none';
+        el.style.transform = `translateY(-${shift}px)`;
+      });
 
-      // Force layout, then play the animations forward.
       void stack.offsetWidth;
       requestAnimationFrame(() => {
-        if (!touchMode) {
-          existing.forEach(el => {
-            el.style.transition = `transform 0.5s ${EASE}`;
-            el.style.transform = '';
-          });
-        }
+        existing.forEach(el => {
+          el.style.transition = `transform 0.5s ${EASE}`;
+          el.style.transform = '';
+        });
         fresh.style.transition =
-          `opacity 0.36s ease-out, ` +
-          `transform 0.62s ${POP}, ` +
-          `box-shadow 0.42s ease`;
+          `opacity 0.36s ease-out, transform 0.62s ${POP}, box-shadow 0.42s ease`;
         fresh.style.opacity = '1';
         fresh.style.transform = '';
         fresh.style.boxShadow =
@@ -565,9 +607,6 @@
           '0 14px 26px -8px rgba(160, 64, 34, 0.32)';
       });
 
-      // Clean up inline styles after the animation settles so the CSS
-      // nth-child rules (touch) or .is-active state (desktop) can take
-      // back over without inline conflicts.
       setTimeout(() => {
         existing.forEach(el => { el.style.transition = ''; el.style.transform = ''; });
         fresh.style.transition = '';
@@ -578,19 +617,13 @@
         refreshActive();
       }, 640);
 
-      // If we now have more than VISIBLE cards, retire the oldest with
-      // a slightly more decisive fall-off so it matches the pop-in energy
       const total = stack.children.length;
       if (total > VISIBLE) {
         const oldest = stack.lastElementChild;
         oldest.style.transition =
-          `opacity 0.32s ease-out, ` +
-          `transform 0.42s ${EASE}, ` +
-          `max-height 0.42s ${EASE}, ` +
-          `margin 0.42s ${EASE}, ` +
-          `padding 0.42s ${EASE}`;
+          `opacity 0.32s ease-out, transform 0.42s ${EASE}, ` +
+          `max-height 0.42s ${EASE}, margin 0.42s ${EASE}, padding 0.42s ${EASE}`;
         oldest.style.maxHeight = (oldest.getBoundingClientRect().height) + 'px';
-        // Force layout, then collapse to 0 height + drop away
         void oldest.offsetWidth;
         requestAnimationFrame(() => {
           oldest.style.opacity = '0';
@@ -602,6 +635,14 @@
         });
         setTimeout(() => oldest.remove(), 440);
       }
+    }
+
+    let feedIdx = 0;
+    function pushNew() {
+      const n = FEED[feedIdx % FEED.length];
+      feedIdx++;
+      if (mqTouch.matches) pushFloorRow(n);
+      else                 pushPhoneStack(n);
     }
 
     let timer = null;
@@ -647,24 +688,25 @@
     /* Make the phone's status-bar time, big clock, and date track the
        user's local time. Updates every 30s so the minute rollover is
        caught within ~half a tick. */
-    const elClockMini = document.getElementById('phoneTimeMini');
-    const elClockBig  = document.getElementById('phoneClockBig');
-    const elDate      = document.getElementById('phoneDate');
-    if (elClockMini && elClockBig && elDate) {
-      const pad = (n) => String(n).padStart(2, '0');
-      const fmtTime = (d) => pad(d.getHours()) + ':' + pad(d.getMinutes());
-      const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      function paintClock() {
-        const d = new Date();
-        const t = fmtTime(d);
-        elClockMini.textContent = t;
-        elClockBig.textContent  = t;
-        elDate.textContent = (dayNames[d.getDay()] + ', ' + monthNames[d.getMonth()] + ' ' + d.getDate()).toUpperCase();
-      }
-      paintClock();
-      setInterval(paintClock, 30000);
+    const elClockMini  = document.getElementById('phoneTimeMini');
+    const elClockBig   = document.getElementById('phoneClockBig');
+    const elDate       = document.getElementById('phoneDate');
+    const elFloorClock = document.getElementById('mapFloorClock');
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmtTime = (d) => pad(d.getHours()) + ':' + pad(d.getMinutes());
+    function paintClock() {
+      const d = new Date();
+      const t = fmtTime(d);
+      if (elClockMini)  elClockMini.textContent  = t;
+      if (elClockBig)   elClockBig.textContent   = t;
+      if (elFloorClock) elFloorClock.textContent = t;
+      if (elDate) elDate.textContent =
+        (dayNames[d.getDay()] + ', ' + monthNames[d.getMonth()] + ' ' + d.getDate()).toUpperCase();
     }
+    paintClock();
+    setInterval(paintClock, 30000);
   })();
 
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */

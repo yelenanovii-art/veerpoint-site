@@ -2247,6 +2247,39 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <!-- Home indicator bar at the very bottom — iOS swipe affordance -->
         <div class="phone-home-bar" aria-hidden="true"></div>
       </div>
+
+      <!-- Mobile-only · terminal-style live floor feed.
+           Replaces the iPhone-notification card under the map on touch
+           viewports. Max 4 rows visible; JS prepends new rows on each
+           feed tick, oldest drops off the bottom. -->
+      <div class="map-floor" id="mapFloor" aria-hidden="true">
+        <div class="map-floor-head">
+          <span class="title">FLOOR · LIVE</span>
+          <span class="clock" id="mapFloorClock">--:--</span>
+        </div>
+        <div class="map-floor-list" id="mapFloorList">
+          <div class="feed-row" data-country="ES">
+            <div class="t">now</div>
+            <div class="e">Deal closed <span class="v">· €38k ARR</span></div>
+            <div class="c">MAD · ES</div>
+          </div>
+          <div class="feed-row" data-country="UK">
+            <div class="t">3m</div>
+            <div class="e">Pipeline updated <span class="v">· €1.2M</span></div>
+            <div class="c">LDN · UK</div>
+          </div>
+          <div class="feed-row" data-country="IT">
+            <div class="t">12m</div>
+            <div class="e">M3 · First repeatable closes</div>
+            <div class="c">MIL · IT</div>
+          </div>
+          <div class="feed-row" data-country="BE">
+            <div class="t">1h</div>
+            <div class="e">Pipeline updated <span class="v">· €380k</span></div>
+            <div class="c">BRU · BE</div>
+          </div>
+        </div>
+      </div>
     </aside>
     </div>
 

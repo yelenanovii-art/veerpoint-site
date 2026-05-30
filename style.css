@@ -2311,6 +2311,9 @@
   /* Panel beside the map now hosts an iOS-style push-notification card
      (reuses .tracker-notif from the deleted homepage tracker block).
      The panel itself is transparent — the notif card carries the visual. */
+  /* FLOOR · LIVE terminal-style feed only renders on touch viewports.
+     The mobile breakpoint below flips this back on. */
+  .map-floor { display: none; }
   .map-panel {
     background: transparent;
     border: none;
@@ -2975,47 +2978,99 @@
     .map-svg .marker-ring                      { r: 12; }
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
-    /* Phone-feel panel · on touch the map grid stacks to one column.
-       Phone narrows and the notification stack folds into an iOS
-       "notification group" — only the top one is fully visible, the
-       2nd and 3rd hide behind it with only their bottom edges peeking
-       out, scaled and dimmed. */
-    .map-canvas { grid-template-columns: 1fr; gap: 24px; }
-    .phone-stage {
-      max-width: 320px;
+    /* Map · 1-column stack. Phone-stage hidden on touch; map-floor
+       (terminal-style ticker) takes over. */
+    .map-canvas { grid-template-columns: 1fr; gap: 16px; }
+    .phone-stage { display: none; }
+
+    /* Mobile FLOOR · LIVE feed — dense terminal-style ticker that sits
+       directly under the map. Max 4 rows, new rows fade in at top, old
+       drop off the bottom. Same DNA as the old hero floor card. */
+    .map-floor {
+      display: block;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%),
+        var(--vp-ink);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 6px;
+      padding: 14px 18px 16px;
+      font-family: var(--vp-font-mono);
+      color: rgba(255,255,255,0.78);
+      position: relative;
+      overflow: hidden;
+      max-width: 480px;
       margin: 0 auto;
     }
-    /* Grid stacking · all .phone-notif children share the same cell so
-       they layer on top of each other. nth-child rules then translate
-       and scale each card to its stacked-group position. */
-    .phone-stack {
+    .map-floor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+    .map-floor-head .title {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--vp-terracotta);
+    }
+    .map-floor-head .title::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--vp-terracotta);
+      box-shadow: 0 0 8px rgba(160,64,34,0.7);
+      animation: vp-live 1.6s ease-in-out infinite;
+    }
+    .map-floor-head .clock {
+      font-variant-numeric: tabular-nums;
+      color: rgba(255,255,255,0.7);
+    }
+    .map-floor-list {
+      display: flex;
+      flex-direction: column;
+      margin-top: 4px;
+    }
+    .map-floor .feed-row {
       display: grid;
-      grid-template-areas: "stack";
-      gap: 0;
+      grid-template-columns: 44px 1fr 70px;
+      gap: 12px;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.78);
+      animation: vp-feed-in .55s cubic-bezier(.22, 1, .36, 1);
     }
-    .phone-stack .phone-notif { grid-area: stack; }
-    /* Top notification: in front, full size */
-    .phone-stack .phone-notif:nth-child(1) {
-      z-index: 3;
-      transform: translateY(0) scale(1);
-      opacity: 1;
+    .map-floor .feed-row:last-child { border-bottom: none; }
+    .map-floor .feed-row .t {
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
     }
-    /* 2nd: peeks 8px down behind, slightly smaller and dimmer */
-    .phone-stack .phone-notif:nth-child(2) {
-      z-index: 2;
-      transform: translateY(10px) scale(0.94);
-      opacity: 0.55;
-      pointer-events: none;
+    .map-floor .feed-row .e {
+      color: var(--vp-warm-white);
+      letter-spacing: 0.01em;
     }
-    /* 3rd: peeks further behind, smaller still */
-    .phone-stack .phone-notif:nth-child(3) {
-      z-index: 1;
-      transform: translateY(20px) scale(0.88);
-      opacity: 0.28;
-      pointer-events: none;
+    .map-floor .feed-row .e .v { color: var(--vp-terracotta); }
+    .map-floor .feed-row .c {
+      text-align: right;
+      color: rgba(255,255,255,0.55);
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
-    /* Anything beyond the third: hidden (cycler removes overflow anyway). */
-    .phone-stack .phone-notif:nth-child(n+4) { display: none; }
+    /* New-row flash: warm glow that fades */
+    .map-floor .feed-row.is-new {
+      background: linear-gradient(90deg, rgba(160,64,34,0.18), rgba(160,64,34,0) 60%);
+      animation:
+        vp-feed-in .55s cubic-bezier(.22, 1, .36, 1),
+        vp-feed-flash 2s ease-out forwards;
+    }
     /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
        and CSS hides the markup defensively in case JS fails. */
     .scroll-dot, .scroll-trail-dot { display: none; }
