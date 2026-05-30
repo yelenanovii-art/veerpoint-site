@@ -436,106 +436,66 @@
     requestAnimationFrame(() => { readPathLength(); compute(); });
   })();
 
-  /* ───────── Europe map · live notification feed + country highlight ─────────
-     The map IS the live feed now. We cycle through a fixed list of
-     notifications (deal closed / pipeline updated / email campaign /
-     partnership / demo moved) every CYCLE_MS. On each tick we paint the
-     notification into the side panel AND fire the matching country
-     marker (.is-focus). Cadence is intentionally slow so a reader can
-     finish each line before it changes. */
+  /* ───────── Europe map · phone-screen notif stack + country highlight ─────────
+     The map's right column now hosts a phone-screen lock-screen view with
+     5 stacked iOS-style notifications. JS does two things:
+       1. Stagger the 5 cards in (add .in) when the map scrolls into view.
+       2. Cycle through them every CYCLE_MS — the active card glows
+          (.is-active) and its data-country marker on the map pulses
+          (.is-focus). Country read straight off each .phone-notif's
+          data-country attribute, so the stack and the map can never
+          drift out of sync. */
   (function initMapFeed() {
     const stage = document.getElementById('mapStage');
-    const panel = document.getElementById('mapPanel');
-    if (!stage || !panel) return;
+    const stack = document.getElementById('phoneStack');
+    if (!stage || !stack) return;
 
-    // Each entry becomes one iOS-style push notification: title (the
-    // sales action), body (city + country + context), time (relative).
-    const FEED = [
-      { country: 'ES', city: 'Madrid',     title: 'Deal closed · €38k ARR',          body: 'Series A SaaS · 22 days from first touch', time: 'now' },
-      { country: 'UK', city: 'London',     title: 'Pipeline updated · €1.2M',        body: 'Skyfall Studios · SOW signed',              time: '2m'  },
-      { country: 'NL', city: 'Amsterdam',  title: 'Sequence sent · 28 prospects',    body: 'Series B target list · scaleup tier',       time: '5m'  },
-      { country: 'FR', city: 'Paris',      title: 'Partnership signed',              body: 'French enterprise GTM co-sell',             time: '12m' },
-      { country: 'IE', city: 'Dublin',     title: 'Demo moved · Thursday 16:00',     body: 'EU HQ buyer · enterprise SaaS',             time: '24m' },
-      { country: 'IT', city: 'Milan',      title: 'Deal closed · €52k ARR',          body: 'Fashion-adjacent SaaS · 18 days',           time: '38m' },
-      { country: 'GR', city: 'Athens',     title: 'Sequence sent · 42 prospects',    body: 'Greek SMB · 14% reply rate',                time: '1h'  },
-      { country: 'BE', city: 'Brussels',   title: 'Pipeline updated · €380k added',  body: 'BeNeLux mid-market',                        time: '1h'  },
-      { country: 'CY', city: 'Nicosia',    title: 'Demo booked · Wed 11:00 EET',     body: 'Fintech founder · pre-Series A',            time: '2h'  },
-      { country: 'ES', city: 'Barcelona',  title: 'Partnership signed',              body: 'Iberian SaaS distributor · co-sell',        time: '2h'  },
-    ];
-
-    const COUNTRY_NAMES = {
-      ES: 'Spain', UK: 'United Kingdom', BE: 'Belgium', IE: 'Ireland',
-      NL: 'Netherlands', FR: 'France', IT: 'Italy', GR: 'Greece', CY: 'Cyprus',
-    };
-
-    const elTime  = document.getElementById('mpType');   // timestamp slot (kept id for back-compat)
-    const elTitle = document.getElementById('mpDesc');   // notif title (bold)
-    const elCity  = document.getElementById('mpCity');   // body · city
-    const elCountry = document.getElementById('mpCountry'); // body · country
-    const elIndex = document.getElementById('mpIndex');
-    // about.html still ships the old click-to-pin panel structure (no
-    // mpType element). Bail cleanly there instead of throwing on the
-    // first paint(). Updating about.html to the new iOS-notif panel can
-    // come later — for now this stops the page crashing the console.
-    if (!elTime || !elTitle || !elCity || !elCountry || !elIndex) return;
-
+    const notifs  = Array.from(stack.querySelectorAll('.phone-notif'));
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));
+    if (notifs.length === 0) return;
 
-    // Cadence: slow enough to actually read each line.
     const CYCLE_MS = 5500;
 
-    // Restore last idx across page refreshes so it doesn't always restart
-    // at notification 0 — same trick the deleted tracker used.
-    const STORE_KEY = 'vpMapFeedIdx';
-    let idx = 0;
-    try {
-      const saved = parseInt(sessionStorage.getItem(STORE_KEY), 10);
-      if (Number.isFinite(saved) && saved >= 0 && saved < FEED.length) idx = saved;
-    } catch (_) { /* sessionStorage may be unavailable */ }
-
-    function paint(i) {
-      const n = FEED[i];
+    function setActive(i) {
+      const n = notifs[i];
       if (!n) return;
-      elTime.textContent    = n.time;
-      elTitle.textContent   = n.title;
-      elCity.textContent    = n.city;
-      elCountry.textContent = COUNTRY_NAMES[n.country] || n.country;
-      elIndex.textContent   = String(i + 1).padStart(2, '0') + ' / ' + FEED.length;
-
-      // Light up the matching country marker + its arc; dim everything else.
-      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === n.country));
-      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === n.country));
-      // Use has-focus on the stage so existing CSS dims non-focused markers
+      const country = n.dataset.country;
+      notifs.forEach((el, j) => el.classList.toggle('is-active', j === i));
+      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === country));
+      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === country));
       stage.classList.add('has-focus');
-
-      // Re-trigger the iOS-style slide+fade-in on the active notif card.
-      const notif = panel.querySelector('.tracker-notif');
-      if (notif) {
-        notif.classList.remove('is-fresh');
-        void notif.offsetWidth;
-        notif.classList.add('is-fresh');
-      }
     }
 
-    function tick() {
-      idx = (idx + 1) % FEED.length;
-      try { sessionStorage.setItem(STORE_KEY, String(idx)); } catch (_) {}
-      paint(idx);
-    }
-
-    // Initial paint immediately so the panel isn't blank on load.
-    paint(idx);
-
-    // Only run while the map is in view (battery + perceived liveness).
+    let idx = 0;
     let timer = null;
-    const io = new IntersectionObserver((entries) => {
+    function tick() {
+      idx = (idx + 1) % notifs.length;
+      setActive(idx);
+    }
+
+    /* Observer 1 · stagger-in. Once the stack scrolls into view, give
+       each .phone-notif the .in class so its CSS transition fires.
+       Delays are encoded via --i in the markup. */
+    const ioStagger = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        notifs.forEach(el => el.classList.add('in'));
+        setActive(0);
+        ioStagger.unobserve(e.target);
+      });
+    }, { threshold: 0.35 });
+    ioStagger.observe(stack);
+
+    /* Observer 2 · run the country-highlight cycle only while the map is
+       on-screen. Pauses on scroll-away to save battery on phones. */
+    const ioCycle = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting && !timer) timer = setInterval(tick, CYCLE_MS);
         else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
       });
     }, { threshold: 0.25 });
-    io.observe(stage);
+    ioCycle.observe(stage);
   })();
 
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */

@@ -337,78 +337,109 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 /* ─────────── PROGRESS FEED · iOS notification stack ───────────
    Replaces the old scroll-scrub dashboard. Notifications stagger into
    a phone-screen frame on scroll-into-view. */
-.progress-feed {
-  padding: 88px 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(160, 64, 34, 0.10) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 60% at 50% 0%, rgba(28, 28, 30, 0.04), transparent 65%),
-    linear-gradient(180deg, var(--vp-warm-white) 0%, var(--vp-paper) 100%);
-}
-.progress-feed-hd { text-align: center; margin-bottom: 40px; }
-.progress-feed-hd .eyebrow { justify-content: center; margin-bottom: 18px; }
-.progress-feed-hd h2 {
-  font-family: var(--vp-font-display); font-weight: 700;
-  font-size: clamp(28px, 3.8vw, 44px);
-  letter-spacing: -0.03em; line-height: 1.08;
-  max-width: 22ch; margin: 0 auto 12px;
-}
-.progress-feed-sub {
-  font-size: 15px; color: var(--vp-ink-70); line-height: 1.5;
-  max-width: 42ch; margin: 0 auto;
-}
+/* Phone screen now sits inside the map's right column (.map-canvas grid).
+   Fills its column, dark Lock-Screen body, status bar at top, glass notifs.
+   The .map-panel wrapper is transparent — the phone-stage IS the visual. */
 .phone-stage {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 20px 18px 24px;
+  width: 100%;
+  padding: 22px 16px 18px;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(160, 64, 34, 0.12) 0%, transparent 60%),
-    linear-gradient(180deg, #1a1a1c 0%, #0e0e10 100%);
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+    radial-gradient(ellipse 90% 55% at 50% 0%, rgba(160, 64, 34, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(160, 64, 34, 0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #181820 0%, #0c0c0f 100%);
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
-    0 28px 60px -20px rgba(28, 28, 30, 0.55);
+    0 0 0 6px rgba(255, 255, 255, 0.02) inset,
+    0 28px 60px -22px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
+}
+.phone-stage::before {
+  /* iPhone-style top notch / Dynamic Island */
+  content: '';
+  position: absolute;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
+  width: 88px; height: 22px;
+  border-radius: 999px;
+  background: #050507;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  pointer-events: none;
+  z-index: 2;
 }
 .phone-status {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   font-family: var(--vp-font-mono);
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  padding: 4px 8px 18px;
+  padding: 38px 8px 18px;
+  position: relative; z-index: 1;
 }
-.phone-time { font-weight: 600; color: rgba(255, 255, 255, 0.75); font-variant-numeric: tabular-nums; }
+.phone-time { font-weight: 600; color: rgba(255, 255, 255, 0.8); font-variant-numeric: tabular-nums; }
 .phone-status-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
-.phone-stack { display: flex; flex-direction: column; gap: 8px; }
+.phone-stack {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  position: relative; z-index: 1;
+}
+/* iOS Lock-Screen-style frosted glass card */
 .phone-notif {
   display: grid;
   grid-template-columns: 38px 1fr;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 16px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%),
-    rgba(40, 40, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0.03) 100%),
+    rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 6px 16px -6px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  position: relative;
   /* Start hidden — JS adds .in to stagger them in via the --i var. */
   opacity: 0;
-  transform: translateY(-12px);
+  transform: translateY(-14px);
   transition:
-    opacity .42s cubic-bezier(.22, 1, .36, 1),
-    transform .42s cubic-bezier(.22, 1, .36, 1);
-  transition-delay: calc(var(--i, 0) * 0.18s);
+    opacity .48s cubic-bezier(.22, 1, .36, 1),
+    transform .48s cubic-bezier(.22, 1, .36, 1),
+    box-shadow .28s ease;
+  transition-delay: calc(var(--i, 0) * 0.16s);
+}
+.phone-notif::before {
+  /* Subtle top-edge highlight — what catches light on real iOS glass */
+  content: '';
+  position: absolute;
+  top: 0; left: 12%; right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  border-radius: 1px;
+  pointer-events: none;
 }
 .phone-notif.in { opacity: 1; transform: translateY(0); }
+/* When this notif's country is the active feed tick, give the card a
+   warm pulse — sells the live-feed link to the map markers. */
+.phone-notif.is-active {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(160, 64, 34, 0.28),
+    0 0 0 1px rgba(160, 64, 34, 0.22),
+    0 8px 22px -6px rgba(160, 64, 34, 0.38);
+}
 .phone-notif-icon {
   width: 38px; height: 38px;
-  border-radius: 9px;
+  border-radius: 10px;
   background:
     radial-gradient(ellipse 100% 100% at 30% 30%, rgba(160, 64, 34, 0.4) 0%, rgba(160, 64, 34, 0) 70%),
     linear-gradient(135deg, var(--vp-ink) 0%, #2a2a2c 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 0 0 1px rgba(160, 64, 34, 0.2),
+    inset 0 0 0 1px rgba(160, 64, 34, 0.22),
     0 0 12px rgba(160, 64, 34, 0.22);
   position: relative;
 }
@@ -427,7 +458,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   display: flex; justify-content: space-between; align-items: baseline;
   gap: 10px;
   font-size: 11px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .phone-notif-app {
   font-weight: 600; color: rgba(255, 255, 255, 0.85);
@@ -435,7 +466,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   font-family: var(--vp-font-mono); font-size: 10px;
 }
 .phone-notif-time {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.5);
   font-family: var(--vp-font-mono); font-size: 11px;
 }
 .phone-notif-title {
@@ -449,15 +480,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .phone-notif-sub {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.62);
   line-height: 1.35;
-}
-@media (max-width: 760px) {
-  .progress-feed { padding: 64px 0; }
-  .phone-stage { padding: 16px 14px 18px; border-radius: 24px; }
-  .phone-notif { padding: 10px 12px; }
-  .phone-notif-title { font-size: 13px; }
-  .phone-notif-sub { font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .phone-notif { transition: none; opacity: 1; transform: none; }
@@ -1893,121 +1917,78 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       </svg>
     </div>
 
-    <!-- Map-side live notifications · iOS push-notification look.
-         JS rewrites #mpType / #mpCity / #mpCountry / #mpDesc / #mpIndex
-         and pulses the matching country marker every 5.5s. Stack of two
-         dim backdrops behind the active card sells the "feed" idea. -->
+    <!-- Phone screen · iOS Lock-Screen-style notification stack sits to the
+         right of the map. Mix of six-month progression milestones and live
+         sales activity. JS triggers stagger-in on view (IntersectionObserver)
+         and cycles the .is-fresh / country-highlight pulse every 5.5s. -->
     <aside class="map-panel" id="mapPanel" aria-live="polite">
-      <div class="map-notif-stack">
-        <div class="tracker-notif-bg b2"></div>
-        <div class="tracker-notif-bg b1"></div>
-        <div class="tracker-notif">
-          <div class="tracker-app-icon"></div>
-          <div class="tracker-content">
-            <div class="tracker-meta">
-              <span class="tracker-app-name">Veerpoint</span>
-              <span class="tracker-time-wrap">
-                <span class="tracker-live-dot" aria-label="Live"></span>
-                <span class="tracker-time" id="mpType">DEAL CLOSED</span>
-              </span>
+      <div class="phone-stage" id="phoneStage">
+        <div class="phone-status">
+          <span class="phone-time">14:35</span>
+          <span class="phone-status-dot"></span>
+          <span class="phone-day">Friday, May 30</span>
+        </div>
+        <div class="phone-stack" id="phoneStack">
+          <div class="phone-notif" style="--i: 0" data-country="ES">
+            <div class="phone-notif-icon"></div>
+            <div class="phone-notif-body">
+              <div class="phone-notif-meta">
+                <span class="phone-notif-app">Veerpoint</span>
+                <span class="phone-notif-time">now</span>
+              </div>
+              <div class="phone-notif-title">M6 · Engine self-sustaining</div>
+              <div class="phone-notif-sub">€1.2M pipeline · MRR €38k · ready for an in-house hire</div>
             </div>
-            <div class="tracker-title" id="mpDesc">Deal closed · €38k ARR · Series A SaaS</div>
-            <div class="tracker-body">
-              <span id="mpCity">Madrid</span>, <span id="mpCountry">Spain</span>
+          </div>
+          <div class="phone-notif" style="--i: 1" data-country="ES">
+            <div class="phone-notif-icon"></div>
+            <div class="phone-notif-body">
+              <div class="phone-notif-meta">
+                <span class="phone-notif-app">Veerpoint</span>
+                <span class="phone-notif-time">3m</span>
+              </div>
+              <div class="phone-notif-title">Deal closed · €38k ARR</div>
+              <div class="phone-notif-sub">Madrid, Spain · Series A SaaS · 22 days from first touch</div>
+            </div>
+          </div>
+          <div class="phone-notif" style="--i: 2" data-country="IT">
+            <div class="phone-notif-icon"></div>
+            <div class="phone-notif-body">
+              <div class="phone-notif-meta">
+                <span class="phone-notif-app">Veerpoint</span>
+                <span class="phone-notif-time">42m</span>
+              </div>
+              <div class="phone-notif-title">M3 · First repeatable closes</div>
+              <div class="phone-notif-sub">€112k won · 18–26 day cycles · second motion firing</div>
+            </div>
+          </div>
+          <div class="phone-notif" style="--i: 3" data-country="BE">
+            <div class="phone-notif-icon"></div>
+            <div class="phone-notif-body">
+              <div class="phone-notif-meta">
+                <span class="phone-notif-app">Veerpoint</span>
+                <span class="phone-notif-time">1h</span>
+              </div>
+              <div class="phone-notif-title">Pipeline updated · €380k added</div>
+              <div class="phone-notif-sub">Brussels, Belgium · BeNeLux mid-market</div>
+            </div>
+          </div>
+          <div class="phone-notif" style="--i: 4" data-country="UK">
+            <div class="phone-notif-icon"></div>
+            <div class="phone-notif-body">
+              <div class="phone-notif-meta">
+                <span class="phone-notif-app">Veerpoint</span>
+                <span class="phone-notif-time">2h</span>
+              </div>
+              <div class="phone-notif-title">M1 · Foundations live</div>
+              <div class="phone-notif-sub">Positioning sharpened · ICP calibrated · outbound launched</div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="map-notif-cta">
-        <span id="mpIndex">01 / 10</span>
-        <a href="#book">Book a call →</a>
       </div>
     </aside>
     </div>
 
-  </div>
-</section>
-
-<!-- Progress feed · combined dashboard milestones + live sales activity,
-     styled as iOS-style notifications popping onto a phone screen.
-     Replaces the old scroll-scrub dashboard with something a quarter of
-     the height. Cards stagger-in via IntersectionObserver. -->
-<section class="section progress-feed" id="progress">
-  <div class="wrap">
-    <div class="progress-feed-hd">
-      <div class="eyebrow"><span class="dot"></span>SIX MONTHS · IN YOUR POCKET</div>
-      <h2>This is what your phone looks like, on Veerpoint<span class="stop">.</span></h2>
-      <p class="progress-feed-sub">Same six months as the dashboard, but the way you'd actually receive it — one ping at a time.</p>
-    </div>
-
-    <div class="phone-stage" id="phoneStage">
-      <div class="phone-status">
-        <span class="phone-time">14:35</span>
-        <span class="phone-status-dot"></span>
-        <span class="phone-day">Friday, May 30</span>
-      </div>
-
-      <div class="phone-stack" id="phoneStack">
-        <!-- Newest at top → oldest at bottom. Mix of progression milestones
-             ("M6 · today" etc.) and live sales activity. JS sets
-             style="--i: N" on each so the stagger-in delay can scale. -->
-        <div class="phone-notif" style="--i: 0">
-          <div class="phone-notif-icon"></div>
-          <div class="phone-notif-body">
-            <div class="phone-notif-meta">
-              <span class="phone-notif-app">Veerpoint</span>
-              <span class="phone-notif-time">now</span>
-            </div>
-            <div class="phone-notif-title">M6 · Engine self-sustaining</div>
-            <div class="phone-notif-sub">€1.2M pipeline · MRR €38k · ready for an in-house hire</div>
-          </div>
-        </div>
-        <div class="phone-notif" style="--i: 1">
-          <div class="phone-notif-icon"></div>
-          <div class="phone-notif-body">
-            <div class="phone-notif-meta">
-              <span class="phone-notif-app">Veerpoint</span>
-              <span class="phone-notif-time">3m</span>
-            </div>
-            <div class="phone-notif-title">Deal closed · €38k ARR</div>
-            <div class="phone-notif-sub">Madrid, Spain · Series A SaaS · 22 days from first touch</div>
-          </div>
-        </div>
-        <div class="phone-notif" style="--i: 2">
-          <div class="phone-notif-icon"></div>
-          <div class="phone-notif-body">
-            <div class="phone-notif-meta">
-              <span class="phone-notif-app">Veerpoint</span>
-              <span class="phone-notif-time">42m</span>
-            </div>
-            <div class="phone-notif-title">M3 · First repeatable closes</div>
-            <div class="phone-notif-sub">€112k won · 18–26 day cycles · second motion firing</div>
-          </div>
-        </div>
-        <div class="phone-notif" style="--i: 3">
-          <div class="phone-notif-icon"></div>
-          <div class="phone-notif-body">
-            <div class="phone-notif-meta">
-              <span class="phone-notif-app">Veerpoint</span>
-              <span class="phone-notif-time">1h</span>
-            </div>
-            <div class="phone-notif-title">Pipeline updated · €380k added</div>
-            <div class="phone-notif-sub">Brussels, Belgium · BeNeLux mid-market</div>
-          </div>
-        </div>
-        <div class="phone-notif" style="--i: 4">
-          <div class="phone-notif-icon"></div>
-          <div class="phone-notif-body">
-            <div class="phone-notif-meta">
-              <span class="phone-notif-app">Veerpoint</span>
-              <span class="phone-notif-time">2h</span>
-            </div>
-            <div class="phone-notif-title">M1 · Foundations live</div>
-            <div class="phone-notif-sub">Positioning sharpened · ICP calibrated · outbound launched</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -2425,24 +2406,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     });
   }, { threshold: 0.15 });
   mio.observe(map);
-})();
-
-/* Progress-feed notification stack · stagger-in on scroll into view.
-   Each .phone-notif animates via its --i CSS var (transition-delay),
-   so adding .in to the parent stack triggers all of them at once and
-   they cascade in order. */
-(function() {
-  const stack = document.getElementById('phoneStack');
-  if (!stack) return;
-  const items = Array.from(stack.querySelectorAll('.phone-notif'));
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      items.forEach(el => el.classList.add('in'));
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.35 });
-  io.observe(stack);
 })();
 </script>
 
