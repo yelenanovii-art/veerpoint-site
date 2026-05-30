@@ -2954,8 +2954,14 @@
        styleable in all modern browsers and override the SVG attributes. */
     .map-stage {
       aspect-ratio: 19 / 15;
-      margin-left: calc(var(--vp-pad) * -1);
-      margin-right: calc(var(--vp-pad) * -1);
+      /* Guarantee 100vw width regardless of parent padding/grid cell. The
+         50% - 50vw trick reliably pulls the stage out to the viewport
+         edges even when the .wrap / .map-canvas constraints would
+         normally box it in. */
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      max-width: none;
       border-left: none;
       border-right: none;
       border-radius: 0;
@@ -2970,18 +2976,46 @@
     .map-svg .land-dot                         { r: 1.6; }
     .map-svg .graticule line                   { stroke-width: 0.9; }
     /* Phone-feel panel · on touch the map grid stacks to one column.
-       Phone narrows and the stack stops at 2 notifs (3rd hidden).
-       That's the "even shorter" the user asked for — only the latest
-       two pings visible, like a real Lock Screen with a couple of
-       notifs sitting in the queue. */
+       Phone narrows and the notification stack folds into an iOS
+       "notification group" — only the top one is fully visible, the
+       2nd and 3rd hide behind it with only their bottom edges peeking
+       out, scaled and dimmed. */
     .map-canvas { grid-template-columns: 1fr; gap: 24px; }
     .phone-stage {
-      max-width: 300px;
+      max-width: 320px;
       margin: 0 auto;
     }
-    /* Cap visible notifs at 2 on mobile · the 3rd is still in the DOM
-       (JS animations cycle through it) but never rendered. */
-    .phone-stack .phone-notif:nth-child(n+3) { display: none; }
+    /* Grid stacking · all .phone-notif children share the same cell so
+       they layer on top of each other. nth-child rules then translate
+       and scale each card to its stacked-group position. */
+    .phone-stack {
+      display: grid;
+      grid-template-areas: "stack";
+      gap: 0;
+    }
+    .phone-stack .phone-notif { grid-area: stack; }
+    /* Top notification: in front, full size */
+    .phone-stack .phone-notif:nth-child(1) {
+      z-index: 3;
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    /* 2nd: peeks 8px down behind, slightly smaller and dimmer */
+    .phone-stack .phone-notif:nth-child(2) {
+      z-index: 2;
+      transform: translateY(10px) scale(0.94);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+    /* 3rd: peeks further behind, smaller still */
+    .phone-stack .phone-notif:nth-child(3) {
+      z-index: 1;
+      transform: translateY(20px) scale(0.88);
+      opacity: 0.28;
+      pointer-events: none;
+    }
+    /* Anything beyond the third: hidden (cycler removes overflow anyway). */
+    .phone-stack .phone-notif:nth-child(n+4) { display: none; }
     /* MVP: bouncy dot is desktop-only. JS short-circuits on coarse pointers,
        and CSS hides the markup defensively in case JS fails. */
     .scroll-dot, .scroll-trail-dot { display: none; }

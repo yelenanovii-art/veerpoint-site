@@ -508,54 +508,56 @@
       if (top) highlightCountry(top.dataset.country);
     }
 
-    /* Push a new notification at the top using the FLIP technique so the
-       existing cards smoothly translate down instead of snapping. */
+    /* Push a new notification at the top. On desktop we use the FLIP
+       technique so the existing cards visibly slide down. On touch the
+       cards are CSS-grid stacked behind each other — their nth-child
+       positions change automatically when we prepend, so the CSS
+       transitions handle the shift without any FLIP gymnastics. */
+    const mqTouch = window.matchMedia('(max-width: 1080px)');
     let feedIdx = 0;
     function pushNew() {
       const n = FEED[feedIdx % FEED.length];
       feedIdx++;
 
-      // Measure how far existing cards will shift (height of a card + gap)
-      const sample = stack.querySelector('.phone-notif');
-      const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
-      const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
-
-      // Existing children that will move down
+      const touchMode = mqTouch.matches;
       const existing = Array.from(stack.children);
 
       // Build + prepend the new card. Start state: well above its
       // resting position, faded, scaled down — sets up the dramatic pop.
       const fresh = makeNotif(n);
-      // Drop the .in class so we control the entrance manually here
       fresh.classList.remove('in');
       fresh.style.opacity = '0';
       fresh.style.transform = 'translateY(-48px) scale(0.85)';
       fresh.style.transition = 'none';
       stack.insertBefore(fresh, stack.firstChild);
 
-      // FLIP step: snap existing cards back to their previous positions
-      existing.forEach(el => {
-        el.style.transition = 'none';
-        el.style.transform = `translateY(-${shift}px)`;
-      });
+      // FLIP step (desktop only) · snap existing cards back to their old
+      // positions so they appear to slide down from where they were.
+      if (!touchMode) {
+        const sample = stack.querySelector('.phone-notif');
+        const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
+        const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
+        existing.forEach(el => {
+          el.style.transition = 'none';
+          el.style.transform = `translateY(-${shift}px)`;
+        });
+      }
 
-      // Force layout, then play all the animations forward to identity.
-      // Existing cards use the smooth EASE (they're just being pushed
-      // down). The new card uses POP — bouncy overshoot, like a real
-      // iOS push notification landing on the lock screen.
+      // Force layout, then play the animations forward.
       void stack.offsetWidth;
       requestAnimationFrame(() => {
-        existing.forEach(el => {
-          el.style.transition = `transform 0.5s ${EASE}`;
-          el.style.transform = '';
-        });
+        if (!touchMode) {
+          existing.forEach(el => {
+            el.style.transition = `transform 0.5s ${EASE}`;
+            el.style.transform = '';
+          });
+        }
         fresh.style.transition =
           `opacity 0.36s ease-out, ` +
           `transform 0.62s ${POP}, ` +
           `box-shadow 0.42s ease`;
         fresh.style.opacity = '1';
         fresh.style.transform = '';
-        // Brief shadow lift on arrival so the card "thuds" into place
         fresh.style.boxShadow =
           'inset 0 1px 0 rgba(255, 255, 255, 0.95), ' +
           '0 0 0 1px rgba(160, 64, 34, 0.22), ' +
@@ -563,15 +565,15 @@
           '0 14px 26px -8px rgba(160, 64, 34, 0.32)';
       });
 
-      // Clean up inline styles after the animation settles so .is-active
-      // and country highlight can take over without conflicts.
+      // Clean up inline styles after the animation settles so the CSS
+      // nth-child rules (touch) or .is-active state (desktop) can take
+      // back over without inline conflicts.
       setTimeout(() => {
         existing.forEach(el => { el.style.transition = ''; el.style.transform = ''; });
         fresh.style.transition = '';
         fresh.style.opacity = '';
         fresh.style.transform = '';
-        fresh.classList.add('in');           // keeps the rest state stable
-        // Hand off the shadow to .is-active via refreshActive()
+        fresh.classList.add('in');
         fresh.style.boxShadow = '';
         refreshActive();
       }, 640);
