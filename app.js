@@ -450,51 +450,170 @@
     const stack = document.getElementById('phoneStack');
     if (!stage || !stack) return;
 
-    const notifs  = Array.from(stack.querySelectorAll('.phone-notif'));
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));
-    if (notifs.length === 0) return;
+    const initialNotifs = Array.from(stack.querySelectorAll('.phone-notif'));
+    if (initialNotifs.length === 0) return;
 
     const CYCLE_MS = 5500;
+    const VISIBLE  = 5;     // how many notifs stay in the stack
+    const EASE     = 'cubic-bezier(.22, 1, .36, 1)';
 
-    function setActive(i) {
-      const n = notifs[i];
-      if (!n) return;
-      const country = n.dataset.country;
-      notifs.forEach((el, j) => el.classList.toggle('is-active', j === i));
-      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === country));
-      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === country));
+    /* Rotation pool · mix of progression milestones and live sales events.
+       The cycler picks each in turn and prepends as a fresh notification. */
+    const FEED = [
+      { country: 'ES', city: 'Madrid',     title: 'Deal closed · €38k ARR',          sub: 'Series A SaaS · 22 days from first touch', time: 'now' },
+      { country: 'UK', city: 'London',     title: 'Pipeline updated · €1.2M added',  sub: 'Skyfall Studios · SOW signed',              time: '2m'  },
+      { country: 'NL', city: 'Amsterdam',  title: 'Sequence sent · 28 prospects',    sub: 'Series B target list · scaleup tier',       time: '5m'  },
+      { country: 'IT', city: 'Milan',      title: 'M3 · First repeatable closes',    sub: '€112k won · 18–26 day cycles',              time: '12m' },
+      { country: 'FR', city: 'Paris',      title: 'Partnership signed',              sub: 'French enterprise GTM co-sell',             time: '24m' },
+      { country: 'IE', city: 'Dublin',     title: 'Demo moved · Thursday 16:00',     sub: 'EU HQ buyer · enterprise SaaS',             time: '38m' },
+      { country: 'ES', city: 'Madrid',     title: 'M6 · Engine self-sustaining',     sub: '€1.2M pipeline · MRR €38k',                 time: '1h'  },
+      { country: 'GR', city: 'Athens',     title: 'Sequence sent · 42 prospects',    sub: 'Greek SMB · 14% reply rate',                time: '1h'  },
+      { country: 'BE', city: 'Brussels',   title: 'Pipeline updated · €380k added',  sub: 'BeNeLux mid-market',                        time: '1h'  },
+      { country: 'CY', city: 'Nicosia',    title: 'Demo booked · Wed 11:00 EET',     sub: 'Fintech founder · pre-Series A',            time: '2h'  },
+      { country: 'UK', city: 'London',     title: 'M1 · Foundations live',           sub: 'Positioning sharpened · ICP calibrated',    time: '2h'  },
+      { country: 'ES', city: 'Barcelona',  title: 'Partnership signed',              sub: 'Iberian SaaS distributor · co-sell',        time: '3h'  },
+    ];
+
+    /* Build a fresh .phone-notif element from a FEED entry */
+    function makeNotif(n) {
+      const el = document.createElement('div');
+      el.className = 'phone-notif in';
+      el.dataset.country = n.country;
+      el.innerHTML = `
+        <div class="phone-notif-icon"></div>
+        <div class="phone-notif-body">
+          <div class="phone-notif-meta">
+            <span class="phone-notif-app">Veerpoint</span>
+            <span class="phone-notif-time">${n.time}</span>
+          </div>
+          <div class="phone-notif-title">${n.title}</div>
+          <div class="phone-notif-sub">${n.sub}</div>
+        </div>`;
+      return el;
+    }
+
+    /* Country highlight syncs to whatever's at the top of the stack. */
+    function highlightCountry(code) {
+      markers.forEach(m => m.classList.toggle('is-focus', m.dataset.country === code));
+      arcs.forEach(a    => a.classList.toggle('is-focus', a.dataset.country === code));
       stage.classList.add('has-focus');
     }
-
-    let idx = 0;
-    let timer = null;
-    function tick() {
-      idx = (idx + 1) % notifs.length;
-      setActive(idx);
+    function refreshActive() {
+      const cards = stack.querySelectorAll('.phone-notif');
+      cards.forEach((c, i) => c.classList.toggle('is-active', i === 0));
+      const top = cards[0];
+      if (top) highlightCountry(top.dataset.country);
     }
 
-    /* Observer 1 · stagger-in. Once the stack scrolls into view, give
-       each .phone-notif the .in class so its CSS transition fires.
-       Delays are encoded via --i in the markup. */
+    /* Push a new notification at the top using the FLIP technique so the
+       existing cards smoothly translate down instead of snapping. */
+    let feedIdx = 0;
+    function pushNew() {
+      const n = FEED[feedIdx % FEED.length];
+      feedIdx++;
+
+      // Measure how far existing cards will shift (height of a card + gap)
+      const sample = stack.querySelector('.phone-notif');
+      const gap = parseFloat(getComputedStyle(stack).gap || '0') || 8;
+      const shift = sample ? sample.getBoundingClientRect().height + gap : 60;
+
+      // Existing children that will move down
+      const existing = Array.from(stack.children);
+
+      // Build + prepend the new card (already in final position in flow)
+      const fresh = makeNotif(n);
+      // Pre-state: above its final spot, faded, slightly smaller
+      fresh.style.opacity = '0';
+      fresh.style.transform = 'translateY(-28px) scale(0.96)';
+      fresh.style.transition = 'none';
+      stack.insertBefore(fresh, stack.firstChild);
+
+      // FLIP step: snap existing cards back to their previous positions
+      existing.forEach(el => {
+        el.style.transition = 'none';
+        el.style.transform = `translateY(-${shift}px)`;
+      });
+
+      // Force layout, then play all the animations forward to identity
+      void stack.offsetWidth;
+      requestAnimationFrame(() => {
+        existing.forEach(el => {
+          el.style.transition = `transform 0.5s ${EASE}`;
+          el.style.transform = '';
+        });
+        fresh.style.transition = `opacity 0.5s ease-out, transform 0.5s ${EASE}`;
+        fresh.style.opacity = '1';
+        fresh.style.transform = '';
+      });
+
+      // Clean up inline styles after the animation settles so .is-active
+      // and country highlight can take over without conflicts
+      setTimeout(() => {
+        existing.forEach(el => { el.style.transition = ''; el.style.transform = ''; });
+        fresh.style.transition = ''; fresh.style.opacity = ''; fresh.style.transform = '';
+        refreshActive();
+      }, 520);
+
+      // If we now have more than VISIBLE cards, gracefully retire the oldest
+      const total = stack.children.length;
+      if (total > VISIBLE) {
+        const oldest = stack.lastElementChild;
+        oldest.style.transition = `opacity 0.4s ease, transform 0.4s ease, max-height 0.5s ${EASE}, margin 0.5s ${EASE}, padding 0.5s ${EASE}`;
+        oldest.style.maxHeight = (oldest.getBoundingClientRect().height) + 'px';
+        // Force layout, then collapse to 0 height + fade out
+        void oldest.offsetWidth;
+        requestAnimationFrame(() => {
+          oldest.style.opacity = '0';
+          oldest.style.transform = 'translateY(8px) scale(0.96)';
+          oldest.style.maxHeight = '0';
+          oldest.style.marginTop = '0';
+          oldest.style.paddingTop = '0';
+          oldest.style.paddingBottom = '0';
+        });
+        setTimeout(() => oldest.remove(), 500);
+      }
+    }
+
+    let timer = null;
+    function startCycle() {
+      if (timer) return;
+      timer = setInterval(pushNew, CYCLE_MS);
+    }
+    function stopCycle() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+    }
+
+    /* Observer 1 · stagger-in for the initial 5 cards, then mark the
+       top one active and start the live push cycle. */
     const ioStagger = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
-        notifs.forEach(el => el.classList.add('in'));
-        setActive(0);
+        initialNotifs.forEach(el => el.classList.add('in'));
+        refreshActive();
         ioStagger.unobserve(e.target);
+        // Wait for the stagger cascade to finish before starting the cycle.
+        // 5 cards × 0.16s delay + ~0.5s transition = ~1.3s
+        setTimeout(startCycle, 1400);
       });
     }, { threshold: 0.35 });
     ioStagger.observe(stack);
 
-    /* Observer 2 · run the country-highlight cycle only while the map is
-       on-screen. Pauses on scroll-away to save battery on phones. */
+    /* Observer 2 · pause the cycle when the map scrolls off-screen.
+       Battery friendly and avoids stacking 50 unseen ticks. */
     const ioCycle = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting && !timer) timer = setInterval(tick, CYCLE_MS);
-        else if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
+        if (e.isIntersecting) {
+          // Only start if the stagger has already happened
+          if (initialNotifs[0] && initialNotifs[0].classList.contains('in')) startCycle();
+        } else {
+          stopCycle();
+        }
       });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.15 });
     ioCycle.observe(stage);
 
     /* Make the phone's status-bar time, big clock, and date track the
