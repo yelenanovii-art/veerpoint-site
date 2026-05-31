@@ -2650,23 +2650,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 </footer>
 
 
-<!-- EU map · draw branches when section enters view (mobile + desktop) -->
-<script>
-(function() {
-  const map = document.getElementById('euMap');
-  if (!map) return;
-  const mio = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        map.classList.add('in-view');
-        mio.unobserve(map);
-      }
-    });
-  }, { threshold: 0.15 });
-  mio.observe(map);
-})();
-</script>
-
 <!-- Connecting ball · springs from the terracotta period at the end of each
      <h1>/<h2> headline to the next as you scroll. Logic in app.js. -->
 <div class="scroll-dot" aria-hidden="true"></div>
@@ -2701,14 +2684,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     window.vpQuizPick = function (k) { track('quiz_answer', { key: k }); return quizPickOrig.apply(this, arguments); };
   }
 
-  // 3. Video play — fires once when the video placeholder area is clicked
-  //    (real video embed will replace this and we can hook into its API).
-  var videoSection = document.getElementById('video');
-  if (videoSection) {
-    videoSection.addEventListener('click', function () { track('video_play_intent'); }, { once: true });
-  }
-
-  // 4. Scroll depth — fire at 25 / 50 / 75 / 100 once each.
+  // 3. Scroll depth — fire at 25 / 50 / 75 / 100 once each.
   var depthsHit = {};
   function checkScrollDepth() {
     var h = document.documentElement;
@@ -2813,7 +2789,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<script src="app.js?v=2026053106" defer></script>
+<script src="app.js?v=2026053107" defer></script>
 
 </body>
 </html>
