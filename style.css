@@ -701,7 +701,7 @@
     border-bottom: 1px dashed rgba(255,255,255,0.05);
     font-size: 11.5px;
     color: rgba(255,255,255,0.78);
-    animation: vp-feed-in .55s cubic-bezier(.22, 1, .36, 1);
+    animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1);
   }
   .feed-row .t {
     color: rgba(255,255,255,0.4);
@@ -724,7 +724,7 @@
   }
   .feed-row.is-new {
     background: linear-gradient(90deg, rgba(160,64,34,0.18), rgba(160,64,34,0) 60%);
-    animation: vp-feed-in .55s cubic-bezier(.22, 1, .36, 1), vp-feed-flash 2s ease-out forwards;
+    animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1), vp-feed-flash 1s ease-out forwards;
   }
   @keyframes vp-feed-in {
     from { opacity: 0; transform: translateY(-8px); }
@@ -2269,7 +2269,7 @@
     fill: var(--vp-terracotta);
     stroke: var(--vp-terracotta);
     stroke-width: 2;
-    animation: vp-marker-pulse 1.4s cubic-bezier(.22, 1, .36, 1);
+    animation: vp-marker-pulse .7s cubic-bezier(.22, 1, .36, 1);
   }
   .map-svg .marker.is-focus .marker-label {
     opacity: 1;
@@ -2279,7 +2279,7 @@
     stroke: var(--vp-terracotta);
     stroke-width: 1.6;
     opacity: 1;
-    animation: vp-arc-flash 1.2s cubic-bezier(.22, 1, .36, 1);
+    animation: vp-arc-flash .6s cubic-bezier(.22, 1, .36, 1);
   }
   /* Pulse · stroke expands outward and fades each time .is-focus lands
      on a marker, mimicking an iOS Maps "ping". JS forces a reflow so
@@ -3005,7 +3005,7 @@
     border-bottom: 1px dashed rgba(255,255,255,0.05);
     font-size: 11.5px;
     color: rgba(255,255,255,0.78);
-    animation: vp-feed-in .55s cubic-bezier(.22, 1, .36, 1);
+    animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1);
   }
   .map-floor .feed-row:last-child { border-bottom: none; }
   .map-floor .feed-row .t {
@@ -3028,8 +3028,8 @@
   .map-floor .feed-row.is-new {
     background: linear-gradient(90deg, rgba(160,64,34,0.18), rgba(160,64,34,0) 60%);
     animation:
-      vp-feed-in .55s cubic-bezier(.22, 1, .36, 1),
-      vp-feed-flash 2s ease-out forwards;
+      vp-feed-in .28s cubic-bezier(.22, 1, .36, 1),
+      vp-feed-flash 1s ease-out forwards;
   }
 
   /* ───────── responsive ───────── */

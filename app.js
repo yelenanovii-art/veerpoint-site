@@ -305,7 +305,7 @@
 
     /* Build a starting feed with stamps walking backward from "now" */
     const MAX_ROWS = 11;
-    const STEP_MS = 3400;
+    const STEP_MS = 1700;
 
     let pipelineM = 4.2;
     let demos = 38;
@@ -449,7 +449,7 @@
     const markers = Array.from(stage.querySelectorAll('.marker'));
     const arcs    = Array.from(stage.querySelectorAll('.arc'));
 
-    const CYCLE_MS  = 5500;
+    const CYCLE_MS  = 2750;
     const FLOOR_MAX = 4;     // max rows visible in the ticker
 
     /* Rotation pool · mix of progression milestones and live sales events.
@@ -499,7 +499,7 @@
         '<div class="t">' + n.time + '</div>' +
         '<div class="e">' + n.title + '</div>' +
         '<div class="c">' + code + ' · ' + n.country + '</div>';
-      setTimeout(() => row.classList.remove('is-new'), 2000);
+      setTimeout(() => row.classList.remove('is-new'), 1000);
       return row;
     }
 
@@ -513,7 +513,7 @@
       floorList.insertBefore(row, floorList.firstChild);
       if (floorList.children.length > FLOOR_MAX) {
         const last = floorList.lastElementChild;
-        last.style.transition = 'opacity 0.25s ease, max-height 0.32s ease, padding 0.32s ease';
+        last.style.transition = 'opacity 0.12s ease, max-height 0.16s ease, padding 0.16s ease';
         last.style.maxHeight = last.getBoundingClientRect().height + 'px';
         void last.offsetWidth;
         requestAnimationFrame(() => {
@@ -522,7 +522,7 @@
           last.style.paddingTop = '0';
           last.style.paddingBottom = '0';
         });
-        setTimeout(() => last.remove(), 320);
+        setTimeout(() => last.remove(), 160);
       }
       highlightCountry(n.country);
     }
