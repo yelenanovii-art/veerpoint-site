@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Veerpoint · Cost Comparison · 3 hires vs €4k/mo</title>
-<meta name="description" content="Run the math: hiring three sales reps for six months — salary, social security, holidays — vs running a Veerpoint cycle at €4,000 a month." />
+<title>Veerpoint · Cost Comparison · 2 BDRs + 1 manager vs €4k/mo</title>
+<meta name="description" content="Run the math: three months of base salary for 2 BDRs and a sales manager — and that's before social, bonus, tools, or ramp — vs running a Veerpoint cycle at €4,000 a month." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -697,7 +697,7 @@ footer {
       <a href="pricing.html" class="nav-dd-trigger active">Pricing <span class="caret">▾</span></a>
       <div class="nav-dd-menu">
         <a href="pricing.html">Plans &amp; pricing<span class="sub">Retainer + commission, fixed in writing</span></a>
-        <a href="calculator.html" class="active">Cost Comparison<span class="sub">3 hires vs €4k/mo Veerpoint</span></a>
+        <a href="calculator.html" class="active">Cost Comparison<span class="sub">2 BDRs + 1 manager vs €4k/mo Veerpoint</span></a>
       </div>
     </div>
     <a href="about.html">About</a>
@@ -709,28 +709,38 @@ footer {
 <section class="page-hero">
   <div class="crumbs"><a href="index.html">Home</a> · <a href="pricing.html">Pricing</a> · Cost Comparison</div>
   <div class="eyebrow"><span class="dot"></span>COST COMPARISON · FREE</div>
-  <h1>Three salespeople, or one Veerpoint cycle<span class="stop">.</span></h1>
-  <p class="lede">Same six months. Run the math on hiring three sales reps — base salary, employer social security, holiday accrual — against running a Veerpoint cycle at €4,000 a month. The gap is bigger than founders expect.</p>
+  <h1>Two BDRs and a sales manager, or one Veerpoint cycle<span class="stop">.</span></h1>
+  <p class="lede">Three months. Base salary for 2 BDRs and a sales manager — and that's <b>before</b> social, bonus, tools, or 90 days of ramp. Veerpoint runs the same three months at €4,000 a month, already in market by day 14.</p>
 </section>
 
 <section class="calc">
   <!-- INPUTS -->
   <aside class="inputs">
-    <div class="inputs-hd">YOUR NUMBER</div>
-    <div class="inputs-title">One input<span class="stop">.</span></div>
+    <div class="inputs-hd">YOUR NUMBERS</div>
+    <div class="inputs-title">Two inputs<span class="stop">.</span></div>
 
     <div class="field">
-      <label for="salary">Average annual base salary per rep</label>
+      <label for="bdrSalary">BDR annual base salary</label>
       <div class="input-prefix">
         <span class="prefix">€</span>
-        <input id="salary" type="number" value="50000" step="5000" min="20000" max="150000" />
+        <input id="bdrSalary" type="number" value="40000" step="2000" min="20000" max="120000" />
       </div>
-      <div class="field-help">EU mid-market sales rep ~€45–60k base. Adjust for your geography.</div>
+      <div class="field-help">EU mid-market BDR ~€35–45k base. Adjust for your geography.</div>
+    </div>
+
+    <div class="field">
+      <label for="mgrSalary">Sales manager annual base salary</label>
+      <div class="input-prefix">
+        <span class="prefix">€</span>
+        <input id="mgrSalary" type="number" value="72000" step="2000" min="40000" max="200000" />
+      </div>
+      <div class="field-help">EU mid-market sales manager ~€65–85k base.</div>
     </div>
 
     <div class="locked-row">
-      <div class="locked-item"><span class="locked-l">Heads to hire</span><span class="locked-v">3</span></div>
-      <div class="locked-item"><span class="locked-l">Engagement window</span><span class="locked-v">6 months</span></div>
+      <div class="locked-item"><span class="locked-l">BDRs</span><span class="locked-v">2</span></div>
+      <div class="locked-item"><span class="locked-l">Sales manager</span><span class="locked-v">1</span></div>
+      <div class="locked-item"><span class="locked-l">Engagement window</span><span class="locked-v">3 months</span></div>
       <div class="locked-item"><span class="locked-l">Veerpoint rate</span><span class="locked-v">€4,000 / mo</span></div>
     </div>
   </aside>
@@ -740,10 +750,10 @@ footer {
     <div class="compare">
       <!-- HIRE -->
       <div class="cost-card hire">
-        <div class="cost-tag">OPTION A · HIRE 3 SALESPEOPLE</div>
-        <div class="cost-name">3 reps in seat, ramping<span class="stop">.</span></div>
-        <div class="cost-total" id="hireTotal">€101,250<span class="stop">.</span></div>
-        <div class="cost-period">6-MONTH ALL-IN</div>
+        <div class="cost-tag">OPTION A · HIRE 2 BDRS + 1 MANAGER</div>
+        <div class="cost-name">2 BDRs + 1 sales manager, ramping<span class="stop">.</span></div>
+        <div class="cost-total" id="hireTotal">€38,000<span class="stop">.</span></div>
+        <div class="cost-period">3 MONTHS · BASE SALARY ONLY</div>
         <div class="cost-breakdown" id="hireBreakdown">
           <!-- filled by JS -->
         </div>
@@ -752,9 +762,9 @@ footer {
       <!-- VEERPOINT -->
       <div class="cost-card veer">
         <div class="cost-tag">OPTION B · RUN A VEERPOINT CYCLE</div>
-        <div class="cost-name">Senior operators, 6 months<span class="stop">.</span></div>
-        <div class="cost-total" id="veerTotal">€24,000<span class="stop">.</span></div>
-        <div class="cost-period">6-MONTH ENGAGEMENT · KICKOFF DAY 14</div>
+        <div class="cost-name">Senior operators, 3 months<span class="stop">.</span></div>
+        <div class="cost-total" id="veerTotal">€12,000<span class="stop">.</span></div>
+        <div class="cost-period">3-MONTH ENGAGEMENT · KICKOFF DAY 14</div>
         <div class="cost-breakdown" id="veerBreakdown">
           <!-- filled by JS -->
         </div>
@@ -765,11 +775,11 @@ footer {
     <div class="roi">
       <div class="roi-left">
         <div class="label">SAVINGS DELTA</div>
-        <h3>Hiring costs you <span id="roiNarrative">4.2x</span> more<span class="stop">.</span></h3>
-        <p id="roiSavings">You save €77,250 in cash. Plus the 90 days of ramp. Plus the risk of a wrong hire (×3).</p>
+        <h3>Hiring costs you <span id="roiNarrative">3.2x</span> more<span class="stop">.</span></h3>
+        <p id="roiSavings">You save €26,000 in cash — and that's base salary only. Add social, bonus, tools, and 90 days of ramp and the gap widens fast.</p>
       </div>
       <div>
-        <div class="roi-big" id="roiMultiple">4.2x<span class="stop">.</span></div>
+        <div class="roi-big" id="roiMultiple">3.2x<span class="stop">.</span></div>
         <div class="roi-big-sub">MORE EXPENSIVE</div>
       </div>
     </div>
@@ -792,7 +802,7 @@ footer {
 
     <!-- FOOTNOTE -->
     <div class="footnote">
-      <strong>METHODOLOGY ·</strong> Hire cost models three sales reps in seat for six months. Base salary × 0.5 (half-year), plus 30% employer social security &amp; benefits loading (typical EU mid-market), plus 5% accrued holiday and sick. Excludes tooling, recruiter fees, and the empirical 30% mis-hire rate against a €50k replacement cost. Veerpoint cycle priced at the standard €4,000 monthly retainer × 6 months — no commission, no ramp, off-ramp every 30 days. Compete on price.
+      <strong>METHODOLOGY ·</strong> Hire cost models 2 BDRs and 1 sales manager in seat for three months at <b>base salary only</b> — annual base × (3 / 12). Deliberately excludes the 30% employer social security &amp; benefits loading, 5% holiday and sick accrual, tooling, recruiter fees, bonus, and the empirical 30% mis-hire rate against a €50k replacement cost. The real number is materially higher; we're showing the floor. Veerpoint cycle priced at the standard €4,000 monthly retainer × 3 months — no commission, no ramp, off-ramp every 30 days. Compete on price.
     </div>
   </div>
 </section>
@@ -841,11 +851,13 @@ footer {
 
 <script>
 // ============ MATH ============
-// Hard-coded per spec: 3 hires vs Veerpoint at €4k/mo, both running 6 months.
-const HEADS              = 3;
-const ENGAGEMENT_MONTHS  = 6;
-const SOCIAL_BENEFITS    = 0.30;  // employer social security + benefits loading
-const HOLIDAY_LOADING    = 0.05;  // accrued paid holiday + sick
+// Per spec: 2 BDRs + 1 sales manager at BASE SALARY ONLY for 3 months,
+// vs Veerpoint at €4k/mo for the same 3 months. Social / holiday /
+// recruiter / tooling / mis-hire are deliberately excluded so the hire
+// side reflects the floor only — the real number is materially higher.
+const BDR_HEADS          = 2;
+const MGR_HEADS          = 1;
+const ENGAGEMENT_MONTHS  = 3;
 const VP_MONTHLY_RATE    = 4000;
 
 function fmtEur(n) {
@@ -858,19 +870,19 @@ function fmtEurFull(n) {
 }
 
 function calculate() {
-  const salary = +document.getElementById('salary').value || 0;
+  const bdrSalary = +document.getElementById('bdrSalary').value || 0;
+  const mgrSalary = +document.getElementById('mgrSalary').value || 0;
 
-  // ----- HIRE: 3 reps × base × half-year, plus loadings -----
-  const baseSixMo  = HEADS * salary * (ENGAGEMENT_MONTHS / 12);
-  const socialCost = baseSixMo * SOCIAL_BENEFITS;
-  const holiCost   = baseSixMo * HOLIDAY_LOADING;
-  const hireTotal  = baseSixMo + socialCost + holiCost;
+  // ----- HIRE: base salary only, 3 months -----
+  const bdrCost   = BDR_HEADS * bdrSalary * (ENGAGEMENT_MONTHS / 12);
+  const mgrCost   = MGR_HEADS * mgrSalary * (ENGAGEMENT_MONTHS / 12);
+  const hireTotal = bdrCost + mgrCost;
 
-  // ----- VEERPOINT: flat retainer × 6 months -----
-  const veerTotal  = VP_MONTHLY_RATE * ENGAGEMENT_MONTHS;
+  // ----- VEERPOINT: flat retainer × 3 months -----
+  const veerTotal = VP_MONTHLY_RATE * ENGAGEMENT_MONTHS;
 
   // ----- COMPARISON -----
-  const multiple = hireTotal / veerTotal;
+  const multiple = veerTotal > 0 ? hireTotal / veerTotal : 0;
   const savings  = hireTotal - veerTotal;
 
   // ----- RENDER -----
@@ -879,17 +891,18 @@ function calculate() {
   document.getElementById('roiMultiple').innerHTML = multiple.toFixed(1) + 'x<span class="stop">.</span>';
   document.getElementById('roiNarrative').textContent = multiple.toFixed(1) + 'x';
   document.getElementById('roiSavings').textContent =
-    'You save ' + fmtEur(savings) + ' in cash. Plus the 90 days of ramp. Plus the risk of a wrong hire (×3).';
+    'You save ' + fmtEur(savings) + ' in cash — and that’s base salary only. Add social, bonus, tools, and 90 days of ramp and the gap widens fast.';
 
   document.getElementById('hireBreakdown').innerHTML =
-    line('Base salary · 3 reps × 6 mo', baseSixMo) +
-    line('Social security & benefits · 30%', socialCost) +
-    line('Holiday + sick accrual · 5%', holiCost) +
-    line('Recruiter fees, tooling', 0, 'NOT INCLUDED') +
-    line('Mis-hire risk · 30% × €50k × 3', 0, 'NOT INCLUDED');
+    line('BDR base · 2 × 3 mo', bdrCost) +
+    line('Manager base · 1 × 3 mo', mgrCost) +
+    line('Social security & benefits · 30%', 0, 'NOT INCLUDED') +
+    line('Holiday + sick accrual · 5%', 0, 'NOT INCLUDED') +
+    line('Bonus, tooling, recruiter fees', 0, 'NOT INCLUDED') +
+    line('Mis-hire risk · 30% × €50k', 0, 'NOT INCLUDED');
 
   document.getElementById('veerBreakdown').innerHTML =
-    line('Retainer · €4k × 6 months', veerTotal) +
+    line('Retainer · €4k × 3 months', veerTotal) +
     line('Ramp', 0, 'NONE · DAY 14') +
     line('Recruiter fees, tooling', 0, 'INCLUDED') +
     line('Mis-hire risk', 0, 'OFF-RAMP EVERY 30 DAYS') +
@@ -901,7 +914,7 @@ function line(lbl, val, override) {
   return `<div class="cost-line"><span class="lbl">${lbl}</span>${right}</div>`;
 }
 
-document.querySelectorAll('#salary').forEach(el => {
+document.querySelectorAll('#bdrSalary, #mgrSalary').forEach(el => {
   el.addEventListener('input', calculate);
   el.addEventListener('change', calculate);
 });
