@@ -962,50 +962,6 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .placeholder .desc { color: var(--vp-muted); font-size: 14px; max-width: 50ch; margin: 0 auto; }
 
-/* QUIZ POPUP MODAL */
-.quiz-trigger-section {
-  padding: 96px 0;
-  background: var(--vp-warm-white);
-}
-.quiz-trigger-card {
-  max-width: 920px;
-  margin: 0 auto;
-  background:
-    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(160, 64, 34, 0.10) 0%, transparent 70%),
-    var(--vp-paper);
-  border: 1px solid var(--vp-border);
-  border-radius: 4px;
-  padding: 52px 56px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 40px;
-  align-items: center;
-}
-.quiz-trigger-card .eyebrow { margin-bottom: 14px; }
-.quiz-trigger-card h3 {
-  font-family: var(--vp-font-display);
-  font-weight: 700;
-  font-size: 32px;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  margin-bottom: 12px;
-}
-.quiz-trigger-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
-@media (max-width: 760px) {
-  .quiz-trigger-ctas { flex-direction: column; }
-  .quiz-trigger-ctas .btn { width: 100%; justify-content: center; }
-}
-.quiz-trigger-card p {
-  color: var(--vp-ink-70);
-  font-size: 15px;
-  max-width: 48ch;
-  line-height: 1.5;
-}
-@media (max-width: 760px) {
-  .quiz-trigger-section { padding: 32px 0; }
-  .quiz-trigger-card { grid-template-columns: 1fr; padding: 32px 24px; }
-}
-
 /* MODAL */
 .modal {
   position: fixed;
@@ -2195,21 +2151,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 
 
 
-<section class="quiz-trigger-section">
-  <div class="wrap">
-    <div class="quiz-trigger-card">
-      <div>
-        <div class="eyebrow">THE 60-SECOND READ</div>
-        <h3>Two weeks from now you're either still planning, or already in the market with Veerpoint<span class="stop">.</span></h3>
-        <p>Five questions. Plots your position on the growth graph. You'll get back a personalised six-month plan as a PDF: what stage we'd start at, what the cycle would look like, what to expect by month six.</p>
-      </div>
-      <div class="quiz-trigger-ctas">
-        <button class="btn btn-accent" onclick="vpQuizOpen()" style="padding: 14px 22px; font-size: 14px">Take the fit quiz →</button>
-        <a class="btn btn-ghost" href="#book" style="padding: 14px 22px; font-size: 14px">Book a Meeting</a>
-      </div>
-    </div>
-  </div>
-</section>
 
 
 <section class="section team-section" id="team">
