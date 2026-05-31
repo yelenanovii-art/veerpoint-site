@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053105">
+<link rel="stylesheet" href="style.css?v=2026053106">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -345,9 +345,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
    getPointAtLength(p × total), and toggles .is-active on the
    three milestones + matching labels at p ≥ 0.2 / 0.55 / 0.9. */
 .scroll-curve {
-  padding: 64px 0;
+  padding: 64px 0 0;
   background: var(--vp-paper);
-  border-bottom: 1px solid var(--vp-border);
 }
 .scroll-curve-hd { text-align: center; margin-bottom: 28px; }
 .scroll-curve-hd .eyebrow { justify-content: center; margin-bottom: 14px; }
@@ -420,12 +419,20 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   letter-spacing: -0.01em;
 }
 @media (max-width: 760px) {
-  .scroll-curve { padding: 32px 0 36px; }
+  .scroll-curve { padding: 32px 0 0; }
   .scroll-curve-hd { margin-bottom: 20px; }
   .scroll-curve-stage { padding: 0 4px; }
   .scroll-curve-labels { gap: 8px; margin-top: 12px; }
   .ms-label .m { font-size: 9px; letter-spacing: 0.18em; }
   .ms-label .t { font-size: 12px; line-height: 1.2; }
+}
+
+/* Inter-section CTA between the scroll-curve and the showdown card */
+.curve-cta { padding: 36px 0 48px; background: var(--vp-paper); text-align: center; }
+.curve-cta-btn { padding: 16px 30px; font-size: 15px; font-weight: 600; }
+@media (max-width: 760px) {
+  .curve-cta { padding: 24px 0 32px; }
+  .curve-cta-btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 
 .showdown {
@@ -2088,6 +2095,15 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <div class="ms-label" data-stage="3"><div class="m">M5 – M6</div><div class="t">Self-sustaining</div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Inter-section CTA · the scroll-curve sets up the six-month arc;
+     this single button gives readers an action point before they hit
+     the math card. Reuses vpQuizOpen() — same handler as nav + hero. -->
+<section class="curve-cta">
+  <div class="wrap">
+    <button type="button" class="btn btn-accent curve-cta-btn" onclick="vpQuizOpen()">Take the fit quiz <span class="arrow">→</span></button>
   </div>
 </section>
 
