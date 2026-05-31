@@ -159,7 +159,7 @@
   .page-hero .crumbs a { color: var(--vp-muted); text-decoration: none; }
   .page-hero .crumbs a:hover { color: var(--vp-terracotta); }
   @media (max-width: 760px) {
-    .page-hero { padding: 64px 0 48px; }
+    .page-hero { padding: 40px 0 32px; }
   }
 
   /* ───────── Operators · founder photo grid ───────── */
@@ -3168,20 +3168,21 @@
     .nav-dd-menu a .sub { display: none; }
     .nav-dd-menu a:hover, .nav-dd-menu a:focus { background: transparent; color: var(--vp-terracotta); }
 
-    .hero { padding: 56px 0 80px; }
-    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero { padding: 40px 0 56px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 28px; }
     .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .hero-stat-n { font-size: 32px; }
-    .section { padding: 72px 0; }
-    .section.airy { padding: 88px 0; }
-    .section-hd { grid-template-columns: 1fr; }
+    .section { padding: 48px 0; }
+    .section.airy { padding: 56px 0; }
+    .section.tight { padding: 40px 0; }
+    .section-hd { grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
     .trust-inner { grid-template-columns: 1fr; gap: 24px; }
     .icp-grid { grid-template-columns: 1fr; }
     .icp-cell { border-right: none; border-bottom: 1px solid var(--vp-border); }
     .icp-cell:last-child { border-bottom: none; }
     .tiers { grid-template-columns: 1fr; }
-    .why-grid { grid-template-columns: 1fr; gap: 40px; }
-    .gap { padding: 72px 0; }
+    .why-grid { grid-template-columns: 1fr; gap: 28px; }
+    .gap { padding: 48px 0; }
     .gap-quote { padding-left: 20px; }
     .gap-attr { margin-left: 20px; }
     .icp-card { padding: 28px 24px; }
@@ -3190,8 +3191,8 @@
     .faq-row { grid-template-columns: 1fr; gap: 12px; padding: 24px 0; }
     .faq-row .n { padding-top: 0; }
     .faq-row .a { padding-left: 0; }
-    .dash { padding: 72px 0; }
-    .map-sec { padding: 72px 0; }
+    .dash { padding: 48px 0; }
+    .map-sec { padding: 48px 0; }
     .map-stats { grid-template-columns: 1fr 1fr; gap: 20px; }
     .map-stat .n { font-size: 26px; }
     /* .map-panel slim rules live in the 1080px breakpoint above — clock/meta
