@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053104">
+<link rel="stylesheet" href="style.css?v=2026053105">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -337,6 +337,96 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 /* iPhone-style Lock-Screen UI removed — the FLOOR · LIVE terminal
    feed (.map-floor in style.css) is now the only feed on every viewport. */
 /* phone-stage CSS removed · was here */
+
+/* ───────── Six-month progression · scroll-driven curve ─────────
+   Small concise growth path with three milestone dots. JS reads
+   the section's position relative to the viewport, normalises to
+   0-1, drives stroke-dashoffset on .fg, moves the .you dot along
+   getPointAtLength(p × total), and toggles .is-active on the
+   three milestones + matching labels at p ≥ 0.2 / 0.55 / 0.9. */
+.scroll-curve {
+  padding: 64px 0;
+  background: var(--vp-paper);
+  border-bottom: 1px solid var(--vp-border);
+}
+.scroll-curve-hd { text-align: center; margin-bottom: 28px; }
+.scroll-curve-hd .eyebrow { justify-content: center; margin-bottom: 14px; }
+.scroll-curve-hd h2 {
+  font-family: var(--vp-font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 3.2vw, 38px);
+  letter-spacing: -0.03em;
+  line-height: 1.06;
+  margin: 0 auto;
+  max-width: 26ch;
+}
+.scroll-curve-stage { position: relative; max-width: 720px; margin: 0 auto; padding: 0 8px; }
+.scroll-curve-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.scroll-curve-svg .bg {
+  fill: none;
+  stroke: var(--vp-border-strong);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+.scroll-curve-svg .fg {
+  fill: none;
+  stroke: var(--vp-terracotta);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.scroll-curve-svg .ms {
+  fill: var(--vp-paper);
+  stroke: var(--vp-border-strong);
+  stroke-width: 2;
+  transition: fill 0.25s ease, stroke 0.25s ease, r 0.25s ease;
+}
+.scroll-curve-svg .ms.is-active {
+  fill: var(--vp-terracotta);
+  stroke: var(--vp-terracotta);
+}
+.scroll-curve-svg .you {
+  fill: var(--vp-ink);
+  stroke: var(--vp-warm-white);
+  stroke-width: 3;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.18));
+}
+.scroll-curve-labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+  text-align: center;
+}
+.ms-label { opacity: 0.35; transition: opacity 0.3s ease, transform 0.3s ease; }
+.ms-label.is-active { opacity: 1; transform: translateY(-2px); }
+.ms-label .m {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+}
+.ms-label .t {
+  font-size: 14px;
+  color: var(--vp-ink);
+  font-weight: 600;
+  margin-top: 4px;
+  letter-spacing: -0.01em;
+}
+@media (max-width: 760px) {
+  .scroll-curve { padding: 32px 0 36px; }
+  .scroll-curve-hd { margin-bottom: 20px; }
+  .scroll-curve-stage { padding: 0 4px; }
+  .scroll-curve-labels { gap: 8px; margin-top: 12px; }
+  .ms-label .m { font-size: 9px; letter-spacing: 0.18em; }
+  .ms-label .t { font-size: 12px; line-height: 1.2; }
+}
 
 .showdown {
   padding: 88px 0;
@@ -1972,6 +2062,35 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
+<!-- Six-month progression · scroll-driven curve. As the user scrolls
+     through .scroll-curve, a 0-1 progress value walks the YOU dot
+     along an SVG growth path and lights up M1-2 / M3-4 / M5-6 stages
+     in turn. Small and concise — replaces the old scroll-scrub
+     dashboard with something a quarter the height. -->
+<section class="scroll-curve" id="approach">
+  <div class="wrap">
+    <div class="scroll-curve-hd">
+      <div class="eyebrow"><span class="dot"></span>THE SHAPE OF SIX MONTHS</div>
+      <h2>From foundations to a self-sustaining engine<span class="stop">.</span></h2>
+    </div>
+    <div class="scroll-curve-stage" id="scrollCurveStage">
+      <svg class="scroll-curve-svg" viewBox="0 0 600 200" aria-hidden="true">
+        <path class="bg" d="M 20 175 C 140 170, 200 130, 300 95 C 400 60, 460 30, 580 18" />
+        <path class="fg" id="scrollCurvePath" d="M 20 175 C 140 170, 200 130, 300 95 C 400 60, 460 30, 580 18" />
+        <circle class="ms" cx="120" cy="167" r="6" data-stage="1"/>
+        <circle class="ms" cx="300" cy="95"  r="6" data-stage="2"/>
+        <circle class="ms" cx="540" cy="22"  r="6" data-stage="3"/>
+        <circle class="you" id="scrollCurveDot" cx="20" cy="175" r="8"/>
+      </svg>
+      <div class="scroll-curve-labels">
+        <div class="ms-label" data-stage="1"><div class="m">M1 – M2</div><div class="t">Foundations</div></div>
+        <div class="ms-label" data-stage="2"><div class="m">M3 – M4</div><div class="t">Repeatable closes</div></div>
+        <div class="ms-label" data-stage="3"><div class="m">M5 – M6</div><div class="t">Self-sustaining</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Cost showdown · €4k Veerpoint vs 2 BDRs + 1 sales manager · 3-months-in milestone snapshot. Punchy comparison
      under the hero, calculator.html holds the deeper interactive. -->
 <section class="section showdown" id="showdown">
@@ -2560,7 +2679,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<script src="app.js?v=2026053104" defer></script>
+<script src="app.js?v=2026053105" defer></script>
 
 </body>
 </html>

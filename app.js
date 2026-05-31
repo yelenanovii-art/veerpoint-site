@@ -556,6 +556,58 @@
     }
   })();
 
+  /* ───────── Six-month progression · scroll-driven curve ─────────
+     As the user scrolls through .scroll-curve, normalise the section's
+     position relative to the viewport into p ∈ [0, 1]. Drives:
+       · stroke-dashoffset on the foreground curve (draws as you scroll)
+       · cx/cy on the YOU dot via getPointAtLength(p × total)
+       · .is-active on each of the 3 milestone dots + their labels
+         at the thresholds 0.2 / 0.55 / 0.9 (lines up with M1-2,
+         M3-4, M5-6 on the curve). */
+  (function initScrollCurve() {
+    const section = document.querySelector('.scroll-curve');
+    const path    = document.getElementById('scrollCurvePath');
+    const dot     = document.getElementById('scrollCurveDot');
+    if (!section || !path || !dot) return;
+
+    const stones = Array.from(section.querySelectorAll('.scroll-curve-svg .ms'));
+    const labels = Array.from(section.querySelectorAll('.ms-label'));
+    const THRESHOLDS = [0.20, 0.55, 0.90];
+
+    let total = path.getTotalLength();
+    path.style.strokeDasharray  = total;
+    path.style.strokeDashoffset = total;
+
+    function compute() {
+      const rect = section.getBoundingClientRect();
+      const vh   = window.innerHeight || document.documentElement.clientHeight;
+      // Animate while the section overlaps the viewport. p = 0 when its
+      // top is at vh (just entered from the bottom); p = 1 when its
+      // bottom hits the top.
+      const span = rect.height + vh;
+      const raw  = (vh - rect.top) / span;
+      const p    = Math.max(0, Math.min(1, raw));
+
+      path.style.strokeDashoffset = total * (1 - p);
+      const pt = path.getPointAtLength(total * p);
+      dot.setAttribute('cx', pt.x);
+      dot.setAttribute('cy', pt.y);
+
+      for (let i = 0; i < stones.length; i++) {
+        const active = p >= THRESHOLDS[i];
+        stones[i].classList.toggle('is-active', active);
+        labels[i].classList.toggle('is-active', active);
+      }
+    }
+
+    // Resize → re-measure path length (responsive SVG)
+    function remeasure() { total = path.getTotalLength(); path.style.strokeDasharray = total; compute(); }
+
+    compute();
+    window.addEventListener('scroll', compute, { passive: true });
+    window.addEventListener('resize', remeasure);
+  })();
+
   /* ───────── Fit quiz · 5 Qs, scored, result ───────── */
   const QUIZ = [
     {
