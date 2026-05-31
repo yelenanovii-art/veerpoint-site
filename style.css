@@ -3168,10 +3168,15 @@
     .nav-dd-menu a .sub { display: none; }
     .nav-dd-menu a:hover, .nav-dd-menu a:focus { background: transparent; color: var(--vp-terracotta); }
 
-    .hero { padding: 40px 0 56px; }
+    .hero { padding: 40px 0 24px; }
     .hero-grid { grid-template-columns: 1fr; gap: 28px; }
     .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .hero-stat-n { font-size: 32px; }
+    /* Hero-sub is the LAST element of the mobile hero (no hero-stats
+       below), so its 36px bottom margin is dead air against the section
+       below. Zero it out and let .hero's own bottom padding handle the
+       gap. */
+    .hero-sub { margin-bottom: 0; }
     .section { padding: 48px 0; }
     .section.airy { padding: 56px 0; }
     .section.tight { padding: 40px 0; }
