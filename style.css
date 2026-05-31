@@ -698,13 +698,13 @@
     gap: 14px;
     align-items: baseline;
     padding: 8px 0;
-    border-bottom: 1px dashed rgba(255,255,255,0.05);
+    border-bottom: 1px dashed rgba(255,255,255,0.12);
     font-size: 11.5px;
-    color: rgba(255,255,255,0.78);
+    color: rgba(255,255,255,0.92);
     animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1);
   }
   .feed-row .t {
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.62);
     letter-spacing: 0.04em;
     font-variant-numeric: tabular-nums;
   }
@@ -717,13 +717,13 @@
   }
   .feed-row .c {
     text-align: right;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.75);
     font-size: 10px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
   .feed-row.is-new {
-    background: linear-gradient(90deg, rgba(160,64,34,0.18), rgba(160,64,34,0) 60%);
+    background: linear-gradient(90deg, rgba(160,64,34,0.28), rgba(160,64,34,0) 60%);
     animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1), vp-feed-flash 1s ease-out forwards;
   }
   @keyframes vp-feed-in {
@@ -2158,7 +2158,7 @@
     font-size: 9px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.65);
     z-index: 2;
     pointer-events: none;
   }
@@ -2180,26 +2180,26 @@
 
   .map-svg { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
   .map-svg .graticule {
-    stroke: rgba(255,255,255,0.05);
+    stroke: rgba(255,255,255,0.10);
     stroke-width: 0.6;
     fill: none;
   }
   .map-svg .land-dot {
-    fill: rgba(255,255,255,0.13);
+    fill: rgba(255,255,255,0.24);
     transition: fill .4s ease;
   }
-  .map-stage.vp-in .land-dot { fill: rgba(255,255,255,0.18); }
+  .map-stage.vp-in .land-dot { fill: rgba(255,255,255,0.32); }
 
   /* Arcs · Barcelona HQ → every city */
   .map-svg .arc {
     fill: none;
-    stroke: rgba(160,64,34,0.32);
-    stroke-width: 0.9;
+    stroke: rgba(160,64,34,0.55);
+    stroke-width: 1.1;
     stroke-linecap: round;
     stroke-dasharray: var(--len, 600);
     stroke-dashoffset: var(--len, 600);
     transition: stroke .35s ease, stroke-width .35s ease, opacity .35s ease;
-    opacity: 0.45;
+    opacity: 0.7;
   }
   .map-stage.vp-in .arc {
     animation: vp-arc-draw 1.8s cubic-bezier(.22, 1, .36, 1) forwards;
@@ -2219,14 +2219,14 @@
     cursor: pointer;
   }
   .map-svg .marker-dot {
-    fill: rgba(255,255,255,0.78);
+    fill: rgba(255,255,255,0.92);
     stroke: rgba(255,255,255,0);
     stroke-width: 2;
     transition: fill .25s ease, stroke .25s ease, r .25s ease;
   }
   .map-svg .marker[data-tier="hq"]  .marker-dot { fill: var(--vp-terracotta); }
   .map-svg .marker[data-tier="hub"] .marker-dot { fill: var(--vp-warm-white); }
-  .map-svg .marker[data-tier="mkt"] .marker-dot { fill: rgba(255,255,255,0.55); }
+  .map-svg .marker[data-tier="mkt"] .marker-dot { fill: rgba(255,255,255,0.78); }
 
   .map-svg .marker-ring {
     fill: none;
@@ -2254,16 +2254,16 @@
     font-size: 8.5px;
     letter-spacing: 1.6px;
     text-transform: uppercase;
-    opacity: 0.55;
+    opacity: 0.78;
     transition: opacity .25s ease, fill .25s ease;
     pointer-events: none;
   }
   .map-svg .marker[data-tier="hq"]  .marker-label { opacity: 1; font-weight: 600; fill: var(--vp-terracotta); }
-  .map-svg .marker[data-tier="hub"] .marker-label { opacity: 0.85; }
+  .map-svg .marker[data-tier="hub"] .marker-label { opacity: 0.95; }
 
   /* Active/hover · markers brighten, others dim */
   .map-stage.has-focus .marker:not(.is-focus) .marker-dot   { fill: rgba(255,255,255,0.25); }
-  .map-stage.has-focus .marker:not(.is-focus) .marker-label { opacity: 0.18; }
+  .map-stage.has-focus .marker:not(.is-focus) .marker-label { opacity: 0.42; }
   .map-stage.has-focus .arc:not(.is-focus) { opacity: 0.12; }
   .map-svg .marker.is-focus .marker-dot {
     fill: var(--vp-terracotta);
@@ -2952,13 +2952,13 @@
   .map-floor {
     display: block;
     background:
-      linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%),
+      linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%),
       var(--vp-ink);
-    border: 1px solid rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 6px;
     padding: 14px 18px 16px;
     font-family: var(--vp-font-mono);
-    color: rgba(255,255,255,0.78);
+    color: rgba(255,255,255,0.92);
     position: relative;
     overflow: hidden;
   }
@@ -2967,11 +2967,11 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.14);
     font-size: 9px;
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.72);
   }
   .map-floor-head .title {
     display: inline-flex;
@@ -2989,7 +2989,7 @@
   }
   .map-floor-head .clock {
     font-variant-numeric: tabular-nums;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.88);
   }
   .map-floor-list {
     display: flex;
@@ -3002,14 +3002,14 @@
     gap: 12px;
     align-items: baseline;
     padding: 8px 0;
-    border-bottom: 1px dashed rgba(255,255,255,0.05);
+    border-bottom: 1px dashed rgba(255,255,255,0.12);
     font-size: 11.5px;
-    color: rgba(255,255,255,0.78);
+    color: rgba(255,255,255,0.92);
     animation: vp-feed-in .28s cubic-bezier(.22, 1, .36, 1);
   }
   .map-floor .feed-row:last-child { border-bottom: none; }
   .map-floor .feed-row .t {
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.62);
     letter-spacing: 0.04em;
     font-variant-numeric: tabular-nums;
   }
@@ -3020,13 +3020,13 @@
   .map-floor .feed-row .e .v { color: var(--vp-terracotta); }
   .map-floor .feed-row .c {
     text-align: right;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.75);
     font-size: 9.5px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
   .map-floor .feed-row.is-new {
-    background: linear-gradient(90deg, rgba(160,64,34,0.18), rgba(160,64,34,0) 60%);
+    background: linear-gradient(90deg, rgba(160,64,34,0.28), rgba(160,64,34,0) 60%);
     animation:
       vp-feed-in .28s cubic-bezier(.22, 1, .36, 1),
       vp-feed-flash 1s ease-out forwards;
