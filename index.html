@@ -620,13 +620,16 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (max-width: 760px) {
   /* Disclaimer banner sits right before the form section now (intro
      column was removed). Cut the bottom padding so the two sit close. */
-  .principle { padding: 64px 0 48px; }
+  .principle { padding: 32px 0 32px; }
+  .principle .eyebrow { margin-bottom: 16px; }
+  .principle h2 { margin: 0 auto 20px; }
+  .principle-cta { margin-top: 20px; }
   .principle-cta .btn { width: 100%; max-width: 320px; justify-content: center; }
 }
 
 /* Team section · tightened so the page doesn't run away. */
 .team-section { padding: 96px 0; }
-@media (max-width: 760px) { .team-section { padding: 32px 0 24px; } .team-hd { margin-bottom: 24px; } }
+@media (max-width: 760px) { .team-section { padding: 32px 0 8px; } .team-hd { margin-bottom: 24px; } }
 
 .team-hd { margin-bottom: 40px; max-width: 60ch; }
 .team-hd h2 {
