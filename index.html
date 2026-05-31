@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053106">
+<link rel="stylesheet" href="style.css?v=2026053107">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -1098,9 +1098,13 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .modal-step-bar {
   display: flex; gap: 4px;
+  flex: 1; min-width: 0;
+  max-width: 220px;
 }
 .modal-step-bar span {
-  width: 24px; height: 3px;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 3px;
   background: var(--vp-border-strong);
   border-radius: 2px;
   transition: background 0.2s;
@@ -1231,6 +1235,50 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   transition: background 0.15s;
 }
 .modal-gate-form button:hover { background: var(--vp-terracotta-hover); }
+
+/* Q9 · company-info form rendered inside .modal-options. Stacks the
+   fields vertically so it doesn't compete with the multi-choice stack
+   above it visually. Submit button styled like a primary CTA. */
+.modal-quiz-form { display: flex; flex-direction: column; gap: 14px; }
+.modal-quiz-field { display: flex; flex-direction: column; gap: 6px; }
+.modal-quiz-field .lbl {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--vp-ink-70);
+}
+.modal-quiz-field .lbl em { font-style: normal; color: var(--vp-muted); text-transform: none; letter-spacing: 0.05em; }
+.modal-quiz-field input {
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border-strong, var(--vp-border));
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-size: 15px;
+  outline: none;
+  font-family: inherit;
+}
+.modal-quiz-field input:focus { border-color: var(--vp-ink); }
+.modal-quiz-submit {
+  margin-top: 4px;
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  border-radius: 4px;
+  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.modal-quiz-submit:hover { background: var(--vp-terracotta-hover); }
+.modal-quiz-submit .arrow { transition: transform 0.15s; }
+.modal-quiz-submit:hover .arrow { transform: translateX(3px); }
+
 .modal-done {
   text-align: center;
   padding: 36px 0 20px;
@@ -2322,13 +2370,13 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <!-- QUESTIONS -->
     <div id="quizQuestion">
       <div class="modal-step">
-        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 5</span>
+        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 9</span>
         <span class="modal-step-bar" id="qStepBar">
-          <span class="done"></span><span></span><span></span><span></span><span></span>
+          <span class="done"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </span>
       </div>
-      <h2 class="modal-q" id="quizQ">Where are you now?</h2>
-      <p class="modal-sub" id="quizSub">Pick the closest. Doesn't have to be exact.</p>
+      <h2 class="modal-q" id="quizQ">Which best describes your business today?</h2>
+      <p class="modal-sub" id="quizSub">Pick the closest match.</p>
       <div class="modal-options" id="quizOptions"></div>
     </div>
 
@@ -2339,7 +2387,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <span class="modal-step-bar"><span class="done"></span><span class="done"></span><span class="done"></span></span>
       </div>
       <span class="stage-pill" id="resultStage">PIPELINE STAGE · M3 to M4 START</span>
-      <h2>Here's where you sit<span class="stop">.</span></h2>
+      <h2 id="resultH">Here's where you sit<span class="stop">.</span></h2>
       <div class="modal-result-graph">
         <svg viewBox="0 0 480 100" style="width: 100%; height: 90px; display: block">
           <line x1="0" y1="80" x2="480" y2="80" stroke="#E5E5E5" stroke-width="1"/>
@@ -2376,102 +2424,221 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 
 <script>
 (function() {
+  /* QS · 8 scored multiple-choice questions + Q9 company-info form.
+     score: 0 (earliest stage) → 3 (most mature). Totals from 0-24
+     bucket into three personas:
+       · 0-8   early       — too early for a cycle, honest 'wait'
+       · 9-16  founder     — sweet spot, this is who we run for
+       · 17-24 scale       — established, scale or new-market entry
+     Q9 is `kind: 'form'` and not scored. */
   const QS = [
     {
-      q: "Where are you now?",
-      sub: "Pick the closest. Doesn't have to be exact.",
+      q: "Which best describes your business today?",
+      sub: "Pick the closest match.",
       opts: [
-        { k: 'A', t: "Pre-revenue",         s: "Product in market, no paying customers yet" },
-        { k: 'B', t: "Under €500k ARR",     s: "First deals, no repeatable motion" },
-        { k: 'C', t: "€500k – €2M ARR",     s: "Founder-led closes, scaling beyond is the bottleneck" },
-        { k: 'D', t: "Above €2M ARR",       s: "Have a team. New market or motion." },
+        { k: 'A', t: "Still validating the idea",                          score: 0 },
+        { k: 'B', t: "Getting first customers consistently",               score: 1 },
+        { k: 'C', t: "Founder-led sales with steady growth",               score: 2 },
+        { k: 'D', t: "Growing company with repeatable demand",             score: 3 },
+        { k: 'E', t: "Established company, scaling sales aggressively",    score: 3 },
       ]
     },
     {
-      q: "What does your sales function look like today?",
+      q: "What's your current monthly revenue?",
+      sub: "Approximate is fine.",
+      opts: [
+        { k: 'A', t: "Pre-revenue",          score: 0 },
+        { k: 'B', t: "€0 – 5k / month",      score: 1 },
+        { k: 'C', t: "€5k – 20k / month",    score: 2 },
+        { k: 'D', t: "€20k – 50k / month",   score: 3 },
+        { k: 'E', t: "€50k+ / month",        score: 3 },
+      ]
+    },
+    {
+      q: "What's your biggest growth bottleneck right now?",
+      sub: "The thing that's been stuck the longest.",
+      opts: [
+        { k: 'A', t: "Not enough qualified leads",                  score: 2 },
+        { k: 'B', t: "Leads come in, but we struggle to close",     score: 3 },
+        { k: 'C', t: "Sales depend too much on the founder",        score: 3 },
+        { k: 'D', t: "No consistent sales process or system",       score: 3 },
+        { k: 'E', t: "Team lacks structure or accountability",      score: 2 },
+        { k: 'F', t: "Customer acquisition costs are too high",     score: 2 },
+        { k: 'G', t: "I'm not fully sure yet",                      score: 1 },
+      ]
+    },
+    {
+      q: "How are sales currently handled?",
       sub: "Whoever is closing deals right now.",
       opts: [
-        { k: 'A', t: "Founders selling, no AE" },
-        { k: 'B', t: "One AE in seat, ramping" },
-        { k: 'C', t: "Small team · 2–5 reps" },
-        { k: 'D', t: "Full org · entering a new market" },
+        { k: 'A', t: "I'm not actively selling yet",                score: 0 },
+        { k: 'B', t: "I handle all sales myself",                   score: 1 },
+        { k: 'C', t: "Founder + freelancers / agencies",            score: 2 },
+        { k: 'D', t: "Small internal sales team (1 – 3 people)",    score: 3 },
+        { k: 'E', t: "Structured sales team (4+ people)",           score: 3 },
       ]
     },
     {
-      q: "What's the biggest blocker?",
-      sub: "The thing that's been stuck for the longest.",
+      q: "What have you already tried to grow sales?",
+      sub: "Pick the channel you've leaned on most.",
       opts: [
-        { k: 'A', t: "Pipeline is too thin" },
-        { k: 'B', t: "Conversion · qualified leads don't close" },
-        { k: 'C', t: "Deal velocity · cycles too slow" },
-        { k: 'D', t: "Scaling beyond the founders" },
-      ]
-    },
-    /* ── PLACEHOLDER QUESTIONS · swap copy through the back end ── */
-    {
-      q: "When do you need pipeline moving?",
-      sub: "Be honest about the timeline pressure.",
-      opts: [
-        { k: 'A', t: "This quarter",            s: "Board / runway pressure" },
-        { k: 'B', t: "Next 3–6 months",         s: "Planning ahead of a fundraise or push" },
-        { k: 'C', t: "End of the year",         s: "Building the foundation now" },
-        { k: 'D', t: "No real urgency",         s: "Exploring options" },
+        { k: 'A', t: "Mostly organic / referrals",                  score: 1 },
+        { k: 'B', t: "Content and social media",                    score: 1 },
+        { k: 'C', t: "Paid ads",                                    score: 2 },
+        { k: 'D', t: "Outbound sales / cold outreach",              score: 2 },
+        { k: 'E', t: "Consultants or agencies",                     score: 2 },
+        { k: 'F', t: "Events and partnerships",                     score: 2 },
+        { k: 'G', t: "Multiple channels with mixed results",        score: 3 },
       ]
     },
     {
-      q: "Where are competitors winning that you're not?",
-      sub: "What gets you out of bed at 3am.",
+      q: "How much are you currently investing monthly in growth?",
+      sub: "Marketing + sales spend combined.",
       opts: [
-        { k: 'A', t: "Outbound · they're in every inbox first" },
-        { k: 'B', t: "Speed · they close in days, we take weeks" },
-        { k: 'C', t: "Pricing · they undercut and still land the deal" },
-        { k: 'D', t: "Brand · they get warm intros, we cold-pitch" },
+        { k: 'A', t: "€0 – 500",       score: 0 },
+        { k: 'B', t: "€500 – 2k",      score: 1 },
+        { k: 'C', t: "€2k – 10k",      score: 2 },
+        { k: 'D', t: "€10k – 25k",     score: 3 },
+        { k: 'E', t: "€25k+",          score: 3 },
       ]
+    },
+    {
+      q: "What would make the next 6 – 12 months feel like a success?",
+      sub: "The single biggest outcome.",
+      opts: [
+        { k: 'A', t: "Validated demand — people actively trying my product",   score: 0 },
+        { k: 'B', t: "Consistent qualified meetings or demos booked",          score: 1 },
+        { k: 'C', t: "First paying customers / deals closed",                  score: 1 },
+        { k: 'D', t: "Predictable monthly revenue growth",                     score: 2 },
+        { k: 'E', t: "Significant revenue scale and clear product-market fit", score: 3 },
+        { k: 'F', t: "Something else",                                         score: 1 },
+      ]
+    },
+    {
+      q: "Which best describes your mindset today?",
+      sub: "Where your head is at this quarter.",
+      opts: [
+        { k: 'A', t: "Just exploring options",                       score: 0 },
+        { k: 'B', t: "Looking for clarity and direction",            score: 1 },
+        { k: 'C', t: "Actively trying to fix growth bottlenecks",    score: 2 },
+        { k: 'D', t: "Ready to build a scalable sales system",       score: 3 },
+        { k: 'E', t: "Ready to hire or expand a sales team now",     score: 3 },
+      ]
+    },
+    {
+      kind: 'form',
+      q: "Quick context — where can we find you?",
+      sub: "We use this to match your six-month plan to your motion.",
+      fields: [
+        { name: 'website',  label: 'Company website',     placeholder: 'https://your-company.com',     type: 'url',  required: true  },
+        { name: 'social',   label: 'LinkedIn or social',  placeholder: 'linkedin.com/company/...',     type: 'text', required: false },
+      ],
     },
   ];
 
-  const STAGE_BY_Q1 = {
-    A: { label: 'FOUNDATIONS · M1 START', text: 'A six-month Veerpoint cycle would start at zero: positioning, ICP calibration, outbound launch, first discovery calls. Expect pipeline to start moving by M2, first closes by M3.', x: 40 },
-    B: { label: 'FOUNDATIONS → EXECUTION · M2', text: 'You have early signal but no engine. We\'d productise what\'s working and run two sequences in parallel, then move into Execution by M3: discovery, demos, structured close motion.', x: 100 },
-    C: { label: 'EXECUTION · M3 START', text: 'A six-month Veerpoint cycle would focus on repeatable closes from day one: pricing reviews, deal-velocity work, and a second motion to lift you out of the founder bottleneck.', x: 180 },
-    D: { label: 'SCALE / NEW MARKET · M4 START', text: 'You don\'t need foundations. You need a new motion or a new market. A six-month sprint would compress the typical 12-month new-market entry into a tighter, ops-led one.', x: 280 },
+  /* Three personas keyed off the total score */
+  const RESULT = {
+    early: {
+      label: 'EARLY STAGE · validate first',
+      h: "We'd say wait — and tell you why<span class=\"stop\">.</span>",
+      text: "You're earlier than where Veerpoint plugs in. Our six-month cycle assumes you already know who you're selling to and have early traction. Get to first repeatable closes — or proof of demand — then come back. We'd rather tell you that now than charge you for a cycle you're not ready for.",
+      dotX: 60,
+    },
+    founder: {
+      label: 'FOUNDER BOTTLENECK · M2 START',
+      h: "You're our sweet spot<span class=\"stop\">.</span>",
+      text: "Steady growth, founder-led, hitting the ceiling that always shows up around this revenue band. A six-month Veerpoint cycle would productise what's working, run two motions in parallel, and pull you out of the founder bottleneck by M3. This is the case we run most often.",
+      dotX: 220,
+    },
+    scale: {
+      label: 'SCALE-READY · M4 START',
+      h: "You don't need foundations. You need scale<span class=\"stop\">.</span>",
+      text: "Repeatable demand, real spend behind growth, an existing team. A six-month sprint would compress a typical 12-month new-market entry or sales-team build into an ops-led one — without you adding senior headcount yourselves.",
+      dotX: 400,
+    },
   };
+
+  function bucket(total) {
+    if (total <= 8)  return 'early';
+    if (total <= 16) return 'founder';
+    return 'scale';
+  }
+
+  function computeScore() {
+    let total = 0;
+    for (let i = 0; i < answers.length; i++) {
+      const Q = QS[i];
+      if (!Q || !Q.opts) continue;          // skips Q9 (form)
+      const opt = Q.opts.find(o => o.k === answers[i]);
+      if (opt) total += opt.score;
+    }
+    return total;
+  }
 
   let step = 0;
   let answers = [];
 
   const modal = document.getElementById('vpQuiz');
   function render() {
-    document.getElementById('quizQuestion').style.display = step < QS.length ? 'block' : 'none';
-    document.getElementById('quizResult').style.display = (step === QS.length) ? 'block' : 'none';
-    document.getElementById('quizDone').style.display = (step === QS.length + 1) ? 'block' : 'none';
+    const showQuestion = step < QS.length;
+    const showResult   = step === QS.length;
+    const showDone     = step === QS.length + 1;
 
-    if (step < QS.length) {
+    document.getElementById('quizQuestion').style.display = showQuestion ? 'block' : 'none';
+    document.getElementById('quizResult').style.display   = showResult ? 'block' : 'none';
+    document.getElementById('quizDone').style.display     = showDone ? 'block' : 'none';
+
+    if (showQuestion) {
       const Q = QS[step];
       document.getElementById('quizQ').textContent = Q.q;
       document.getElementById('quizSub').textContent = Q.sub;
       document.getElementById('qStepLabel').textContent = `QUESTION ${step + 1} OF ${QS.length}`;
       document.getElementById('qStepBar').innerHTML = QS.map((_, i) =>
         `<span class="${i <= step ? 'done' : ''}"></span>`).join('');
-      document.getElementById('quizOptions').innerHTML = Q.opts.map(o => `
-        <button class="modal-option" onclick="vpQuizPick('${o.k}')">
-          <span class="key">${o.k}</span>
-          <span>
-            <span class="lbl-main">${o.t}</span>
-            ${o.s ? `<span class="lbl-sub">${o.s}</span>` : ''}
-          </span>
-        </button>
-      `).join('');
+
+      const optsEl = document.getElementById('quizOptions');
+      if (Q.kind === 'form') {
+        // Q9 · context form. Submission advances to result.
+        optsEl.innerHTML = `
+          <form class="modal-quiz-form" onsubmit="vpQuizFormSubmit(event)">
+            ${Q.fields.map(f => `
+              <label class="modal-quiz-field">
+                <span class="lbl">${f.label}${f.required ? '' : ' <em>(optional)</em>'}</span>
+                <input
+                  name="${f.name}"
+                  type="${f.type}"
+                  placeholder="${f.placeholder}"
+                  ${f.required ? 'required' : ''}
+                  autocomplete="off"
+                />
+              </label>
+            `).join('')}
+            <button type="submit" class="modal-quiz-submit">See my result <span class="arrow">→</span></button>
+          </form>
+        `;
+      } else {
+        optsEl.innerHTML = Q.opts.map(o => `
+          <button class="modal-option" onclick="vpQuizPick('${o.k}')">
+            <span class="key">${o.k}</span>
+            <span>
+              <span class="lbl-main">${o.t}</span>
+              ${o.s ? `<span class="lbl-sub">${o.s}</span>` : ''}
+            </span>
+          </button>
+        `).join('');
+      }
     }
-    if (step === QS.length) {
-      const s = STAGE_BY_Q1[answers[0]] || STAGE_BY_Q1.C;
-      document.getElementById('resultStage').textContent = s.label;
-      document.getElementById('resultText').textContent = s.text;
-      const dotX = s.x;
-      // Map x to curve y (approximate, matching the path curve in SVG)
-      const pct = dotX / 480;
+
+    if (showResult) {
+      const total = computeScore();
+      const r = RESULT[bucket(total)];
+      document.getElementById('resultStage').textContent = r.label;
+      document.getElementById('resultText').textContent = r.text;
+      document.getElementById('resultH').innerHTML = r.h;
+      const dotX = r.dotX;
+      const pct  = dotX / 480;
       const dotY = 80 - (68 * Math.pow(pct, 1.2));
-      const dot = document.getElementById('resultDot');
+      const dot  = document.getElementById('resultDot');
       const dot2 = document.getElementById('resultDot2');
       dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY);
       dot2.setAttribute('cx', dotX); dot2.setAttribute('cy', dotY);
@@ -2491,6 +2658,16 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   };
   window.vpQuizPick = function(k) {
     answers.push(k);
+    step++;
+    render();
+  };
+  window.vpQuizFormSubmit = function(e) {
+    e.preventDefault();
+    const data = {};
+    Array.from(e.currentTarget.elements).forEach(el => {
+      if (el.name) data[el.name] = el.value.trim();
+    });
+    answers.push(data);
     step++;
     render();
   };
