@@ -3193,6 +3193,11 @@
     .faq-row .a { padding-left: 0; }
     .dash { padding: 48px 0; }
     .map-sec { padding: 48px 0; }
+    /* Mobile · header text reads better AFTER seeing the live map +
+       dashboard, so flip the order. Flex with explicit order: rule on
+       .map-hd pushes it below .map-canvas. */
+    .map-sec > .wrap { display: flex; flex-direction: column; }
+    .map-sec .map-hd { order: 2; margin: 28px 0 0; }
     .map-stats { grid-template-columns: 1fr 1fr; gap: 20px; }
     .map-stat .n { font-size: 26px; }
     /* .map-panel slim rules live in the 1080px breakpoint above — clock/meta
