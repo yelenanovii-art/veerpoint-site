@@ -581,12 +581,15 @@
     function compute() {
       const rect = section.getBoundingClientRect();
       const vh   = window.innerHeight || document.documentElement.clientHeight;
-      // Animate while the section overlaps the viewport. p = 0 when its
-      // top is at vh (just entered from the bottom); p = 1 when its
-      // bottom hits the top.
-      const span = rect.height + vh;
-      const raw  = (vh - rect.top) / span;
-      const p    = Math.max(0, Math.min(1, raw));
+      // Front-loaded mapping: animation starts BEFORE the section fully
+      // enters the viewport (top is still 100px below the fold) and is
+      // already DONE by the time the section reaches the viewport's
+      // vertical middle. So the dot lands on M5-M6 around the moment
+      // the headline is centred on screen — not later.
+      const startTop = vh + 100;
+      const endTop   = vh * 0.5;
+      const raw      = (startTop - rect.top) / (startTop - endTop);
+      const p        = Math.max(0, Math.min(1, raw));
 
       path.style.strokeDashoffset = total * (1 - p);
       const pt = path.getPointAtLength(total * p);
