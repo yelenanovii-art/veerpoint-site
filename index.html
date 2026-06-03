@@ -1349,6 +1349,95 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .modal-gate-form button:hover { background: var(--vp-terracotta-hover); }
 
+/* Founder-to-Scale Curve exec summary · score, category, diagnosis,
+   6-step curve. Replaces the older single-paragraph result UI. */
+.result-heading {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--vp-ink);
+  margin: 10px 0 14px;
+}
+.result-heading .stop { color: var(--vp-terracotta); }
+.result-lede {
+  font-size: 13px;
+  font-family: var(--vp-font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vp-ink-70);
+  margin: 0 0 6px;
+}
+.result-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.result-score {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--vp-terracotta);
+  font-variant-numeric: tabular-nums;
+}
+.result-out-of {
+  font-family: var(--vp-font-mono);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: var(--vp-ink-70);
+  text-transform: uppercase;
+}
+.result-placement {
+  font-size: 16px;
+  color: var(--vp-ink);
+  margin: 0 0 18px;
+}
+.result-category {
+  color: var(--vp-terracotta);
+  font-weight: 700;
+  font-style: normal;
+}
+.result-summary {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--vp-ink);
+  margin: 0 0 24px;
+  white-space: pre-wrap;
+}
+.result-curve {
+  margin: 0 0 12px;
+  padding: 16px 4px 8px;
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+}
+.result-curve svg { display: block; width: 100%; height: auto; }
+.result-curve .curve-labels text {
+  font-family: var(--vp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  fill: var(--vp-ink-70);
+  text-transform: uppercase;
+}
+.result-curve .curve-you-label {
+  font-family: var(--vp-font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.20em;
+  fill: var(--vp-terracotta);
+}
+@media (max-width: 760px) {
+  .result-heading { font-size: 21px; }
+  .result-score { font-size: 52px; }
+  .result-summary { font-size: 14px; line-height: 1.55; }
+  .result-curve .curve-labels text { font-size: 7.5px; letter-spacing: 0.06em; }
+  .result-curve .curve-you-label { font-size: 8px; }
+}
+
 /* 90-day plan teaser · sits in the result step after the exec snapshot.
    Three-block timeline + phone/email gate so the user trades contact
    info for the plan. Visually elevated so the offer pops. */
@@ -2677,27 +2766,47 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       <div class="modal-options" id="quizOptions"></div>
     </div>
 
-    <!-- RESULT -->
+    <!-- RESULT · Founder-to-Scale Curve exec summary. Follows the
+         spec in prompts/fit-quiz-summary.md. -->
     <div id="quizResult" style="display: none">
       <div class="modal-step">
-        <span class="modal-step-label" style="color: var(--vp-ink-70)">YOUR PROFILE</span>
+        <span class="modal-step-label" style="color: var(--vp-ink-70)">YOUR EXECUTIVE SUMMARY</span>
         <span class="modal-step-bar"><span class="done"></span><span class="done"></span><span class="done"></span></span>
       </div>
-      <span class="stage-pill" id="resultStage">PIPELINE STAGE · M3 to M4 START</span>
-      <h2 id="resultH">Here's where you sit<span class="stop">.</span></h2>
-      <div class="modal-result-graph">
-        <svg viewBox="0 0 480 100" style="width: 100%; height: 90px; display: block">
-          <line x1="0" y1="80" x2="480" y2="80" stroke="#E5E5E5" stroke-width="1"/>
-          <path d="M 0,80 C 80,78 160,68 240,52 C 320,34 400,18 480,12" stroke="#A04022" stroke-width="2" fill="none"/>
-          <circle id="resultDot" cx="180" cy="60" r="7" fill="#A04022"/>
-          <circle id="resultDot2" cx="180" cy="60" r="14" fill="none" stroke="#A04022" stroke-width="1.5" opacity="0.35"/>
-          <text x="0" y="98" font-family="Geist Mono" font-size="9" fill="#6E6E73" letter-spacing="0.12em">M1</text>
-          <text x="160" y="98" font-family="Geist Mono" font-size="9" fill="#6E6E73" letter-spacing="0.12em">M3</text>
-          <text x="320" y="98" font-family="Geist Mono" font-size="9" fill="#6E6E73" letter-spacing="0.12em">M5</text>
-          <text x="472" y="98" font-family="Geist Mono" font-size="9" fill="#6E6E73" letter-spacing="0.12em" text-anchor="end">M6</text>
+      <h2 class="result-heading">Where You Rank on the Founder-to-Scale Curve<span class="stop">.</span></h2>
+      <p class="result-lede">Based on your answers, your business appears to score:</p>
+      <div class="result-score-row">
+        <span class="result-score" id="resultScore">--</span><span class="result-out-of">/ 10</span>
+      </div>
+      <p class="result-placement">That places you in <strong class="result-category" id="resultCategory">--</strong>.</p>
+      <p class="result-summary" id="resultSummary"></p>
+
+      <!-- Six-step Founder-to-Scale curve. YOU dot positioned by JS
+           based on category.curveX. -->
+      <div class="result-curve">
+        <svg viewBox="0 0 600 90" preserveAspectRatio="xMidYMid meet">
+          <line x1="30" y1="55" x2="570" y2="55" stroke="rgba(0,0,0,0.12)" stroke-width="1.2" stroke-linecap="round"/>
+          <g class="curve-ticks">
+            <circle cx="30"  cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="138" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="246" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="354" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="462" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="570" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+          </g>
+          <g class="curve-labels">
+            <text x="30"  y="78" text-anchor="middle">Validation</text>
+            <text x="138" y="78" text-anchor="middle">Foundations</text>
+            <text x="246" y="78" text-anchor="middle">First Meetings</text>
+            <text x="354" y="78" text-anchor="middle">Repeatable</text>
+            <text x="462" y="78" text-anchor="middle">Optimisation</text>
+            <text x="570" y="78" text-anchor="middle">Scale</text>
+          </g>
+          <circle id="resultDot2" cx="180" cy="55" r="16" fill="none" stroke="#A04022" stroke-width="1.5" opacity="0.35"/>
+          <circle id="resultDot"  cx="180" cy="55" r="8"  fill="#A04022"/>
+          <text id="resultDotLabel" x="180" y="32" text-anchor="middle" class="curve-you-label">YOU ARE HERE</text>
         </svg>
       </div>
-      <p class="modal-result-text" id="resultText">A six-month Veerpoint cycle would start by sharpening positioning, then move you into a repeatable close pattern. By M6 you'd have a self-sustaining engine.</p>
 
       <!-- 90-day plan teaser · three-block timeline + phone+email gate.
            The exec snapshot above is free; the full plan unlocks once
@@ -2760,7 +2869,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         { k: 'A', t: "Still validating the idea",                          score: 0 },
         { k: 'B', t: "Getting first customers consistently",               score: 1 },
         { k: 'C', t: "Founder-led sales with steady growth",               score: 2 },
-        { k: 'D', t: "Growing company with repeatable demand",             score: 3 },
+        { k: 'D', t: "Growing company with repeatable demand",             score: 2.5 },
         { k: 'E', t: "Established company, scaling sales aggressively",    score: 3 },
       ]
     },
@@ -2769,23 +2878,23 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       sub: "Approximate is fine.",
       opts: [
         { k: 'A', t: "Pre-revenue",          score: 0 },
-        { k: 'B', t: "€0 – 5k / month",      score: 1 },
-        { k: 'C', t: "€5k – 20k / month",    score: 2 },
-        { k: 'D', t: "€20k – 50k / month",   score: 3 },
-        { k: 'E', t: "€50k+ / month",        score: 3 },
+        { k: 'B', t: "€0 – 5k / month",      score: 0.5 },
+        { k: 'C', t: "€5k – 20k / month",    score: 1 },
+        { k: 'D', t: "€20k – 50k / month",   score: 1.5 },
+        { k: 'E', t: "€50k+ / month",        score: 2 },
       ]
     },
     {
       q: "What's your biggest growth bottleneck right now?",
       sub: "The thing that's been stuck the longest.",
       opts: [
-        { k: 'A', t: "Not enough qualified leads",                  score: 2 },
-        { k: 'B', t: "Leads come in, but we struggle to close",     score: 3 },
-        { k: 'C', t: "Sales depend too much on the founder",        score: 3 },
-        { k: 'D', t: "No consistent sales process or system",       score: 3 },
-        { k: 'E', t: "Team lacks structure or accountability",      score: 2 },
-        { k: 'F', t: "Customer acquisition costs are too high",     score: 2 },
-        { k: 'G', t: "I'm not fully sure yet",                      score: 1 },
+        { k: 'A', t: "Not enough qualified leads",                  score: 1 },
+        { k: 'B', t: "Leads come in, but we struggle to close",     score: 1.2 },
+        { k: 'C', t: "Sales depend too much on the founder",        score: 1.5 },
+        { k: 'D', t: "No consistent sales process or system",       score: 1.5 },
+        { k: 'E', t: "Team lacks structure or accountability",      score: 1.3 },
+        { k: 'F', t: "Customer acquisition costs are too high",     score: 1.2 },
+        { k: 'G', t: "I'm not fully sure yet",                      score: 0.5 },
       ]
     },
     {
@@ -2794,44 +2903,44 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       opts: [
         { k: 'A', t: "I'm not actively selling yet",                score: 0 },
         { k: 'B', t: "I handle all sales myself",                   score: 1 },
-        { k: 'C', t: "Founder + freelancers / agencies",            score: 2 },
-        { k: 'D', t: "Small internal sales team (1 – 3 people)",    score: 3 },
-        { k: 'E', t: "Structured sales team (4+ people)",           score: 3 },
+        { k: 'C', t: "Founder + freelancers / agencies",            score: 1.5 },
+        { k: 'D', t: "Small internal sales team (1 – 3 people)",    score: 2 },
+        { k: 'E', t: "Structured sales team (4+ people)",           score: 2 },
       ]
     },
     {
       q: "What have you already tried to grow sales?",
       sub: "Pick the channel you've leaned on most.",
       opts: [
-        { k: 'A', t: "Mostly organic / referrals",                  score: 1 },
-        { k: 'B', t: "Content and social media",                    score: 1 },
-        { k: 'C', t: "Paid ads",                                    score: 2 },
-        { k: 'D', t: "Outbound sales / cold outreach",              score: 2 },
-        { k: 'E', t: "Consultants or agencies",                     score: 2 },
-        { k: 'F', t: "Events and partnerships",                     score: 2 },
-        { k: 'G', t: "Multiple channels with mixed results",        score: 3 },
+        { k: 'A', t: "Mostly organic / referrals",                  score: 0.5 },
+        { k: 'B', t: "Content and social media",                    score: 0.7 },
+        { k: 'C', t: "Paid ads",                                    score: 1 },
+        { k: 'D', t: "Outbound sales / cold outreach",              score: 1 },
+        { k: 'E', t: "Consultants or agencies",                     score: 1 },
+        { k: 'F', t: "Events and partnerships",                     score: 0.8 },
+        { k: 'G', t: "Multiple channels with mixed results",        score: 1.2 },
       ]
     },
     {
       q: "How much are you currently investing monthly in growth?",
       sub: "Marketing + sales spend combined.",
       opts: [
-        { k: 'A', t: "€0 – 500",       score: 0 },
-        { k: 'B', t: "€500 – 2k",      score: 1 },
-        { k: 'C', t: "€2k – 10k",      score: 2 },
-        { k: 'D', t: "€10k – 25k",     score: 3 },
-        { k: 'E', t: "€25k+",          score: 3 },
+        { k: 'A', t: "€0 – 500",       score: 0.2 },
+        { k: 'B', t: "€500 – 2k",      score: 0.5 },
+        { k: 'C', t: "€2k – 10k",      score: 1 },
+        { k: 'D', t: "€10k – 25k",     score: 1.3 },
+        { k: 'E', t: "€25k+",          score: 1.5 },
       ]
     },
     {
       q: "What would make the next 6 – 12 months feel like a success?",
       sub: "The single biggest outcome.",
       opts: [
-        { k: 'A', t: "Validated demand — people actively trying my product",   score: 0 },
+        { k: 'A', t: "Validated demand — people actively trying my product",   score: 0.5 },
         { k: 'B', t: "Consistent qualified meetings or demos booked",          score: 1 },
         { k: 'C', t: "First paying customers / deals closed",                  score: 1 },
-        { k: 'D', t: "Predictable monthly revenue growth",                     score: 2 },
-        { k: 'E', t: "Significant revenue scale and clear product-market fit", score: 3 },
+        { k: 'D', t: "Predictable monthly revenue growth",                     score: 1.5 },
+        { k: 'E', t: "Significant revenue scale and clear product-market fit", score: 1.5 },
         { k: 'F', t: "Something else",                                         score: 1 },
       ]
     },
@@ -2839,11 +2948,11 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       q: "Which best describes your mindset today?",
       sub: "Where your head is at this quarter.",
       opts: [
-        { k: 'A', t: "Just exploring options",                       score: 0 },
-        { k: 'B', t: "Looking for clarity and direction",            score: 1 },
-        { k: 'C', t: "Actively trying to fix growth bottlenecks",    score: 2 },
-        { k: 'D', t: "Ready to build a scalable sales system",       score: 3 },
-        { k: 'E', t: "Ready to hire or expand a sales team now",     score: 3 },
+        { k: 'A', t: "Just exploring options",                       score: 0.2 },
+        { k: 'B', t: "Looking for clarity and direction",            score: 0.5 },
+        { k: 'C', t: "Actively trying to fix growth bottlenecks",    score: 1 },
+        { k: 'D', t: "Ready to build a scalable sales system",       score: 1.5 },
+        { k: 'E', t: "Ready to hire or expand a sales team now",     score: 1.5 },
       ]
     },
     {
@@ -2857,43 +2966,137 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     },
   ];
 
-  /* Three personas keyed off the total score */
-  const RESULT = {
-    early: {
-      label: 'EARLY STAGE · validate first',
-      h: "We'd say wait — and tell you why<span class=\"stop\">.</span>",
-      text: "You're earlier than where Veerpoint plugs in. Our six-month cycle assumes you already know who you're selling to and have early traction. Get to first repeatable closes — or proof of demand — then come back. We'd rather tell you that now than charge you for a cycle you're not ready for.",
-      dotX: 60,
-    },
-    founder: {
-      label: 'FOUNDER BOTTLENECK · M2 START',
-      h: "You're our sweet spot<span class=\"stop\">.</span>",
-      text: "Steady growth, founder-led, hitting the ceiling that always shows up around this revenue band. A six-month Veerpoint cycle would productise what's working, run two motions in parallel, and pull you out of the founder bottleneck by M3. This is the case we run most often.",
-      dotX: 220,
-    },
-    scale: {
-      label: 'SCALE-READY · M4 START',
-      h: "You don't need foundations. You need scale<span class=\"stop\">.</span>",
-      text: "Repeatable demand, real spend behind growth, an existing team. A six-month sprint would compress a typical 12-month new-market entry or sales-team build into an ops-led one — without you adding senior headcount yourselves.",
-      dotX: 400,
-    },
+  /* Founder-to-Scale Curve · 5 categories keyed off the normalised
+     /10 score. See prompts/fit-quiz-summary.md for the full spec
+     this implements. */
+  const CATEGORIES = [
+    { min: 0,   max: 2.9, key: 'demand',     label: 'Market Demand Discovery', curveX: 0.08 },
+    { min: 3,   max: 4.9, key: 'validation', label: 'Validation Sprint Ready', curveX: 0.25 },
+    { min: 5,   max: 6.9, key: 'founder',    label: 'Founder Bottleneck Stage', curveX: 0.45 },
+    { min: 7,   max: 8.4, key: 'sprint',     label: 'Sales Sprint Ready',       curveX: 0.62 },
+    { min: 8.5, max: 10,  key: 'scale',      label: 'Scale Ready',              curveX: 0.92 },
+  ];
+
+  const VERDICTS = {
+    demand:     'Before sales, prove demand.',
+    validation: 'Validate fast, or risk building the wrong sales motion.',
+    founder:    'Founder-led sales is not a system. It is a bottleneck.',
+    sprint:     'You are ready for sales execution, but only if the system is worth executing.',
+    scale:      'You are ready to scale, but the cost of poor execution is now much higher.',
   };
 
-  function bucket(total) {
-    if (total <= 8)  return 'early';
-    if (total <= 16) return 'founder';
-    return 'scale';
+  /* Q3-based main risk language (one per option key) */
+  const Q3_RISKS = {
+    A: 'You may not need more general awareness. You need a sharper route to qualified conversations.',
+    B: 'Demand may already be entering the pipeline, but too little of it is turning into revenue.',
+    C: 'Founder-led sales can close early deals, but it is not a scalable sales system.',
+    D: 'Scattered sales activity becomes expensive once the company tries to scale.',
+    E: 'Activity without ownership is how sales teams become expensive without becoming predictable.',
+    F: 'If acquisition costs are already rising, more spend will not fix a weak conversion system.',
+    G: 'If you cannot clearly name the bottleneck, scaling sales can amplify the wrong problem.',
+  };
+
+  /* FOMO lines · pick one per result. Ordered loosely by category fit */
+  const FOMO = {
+    demand:     'The market will not wait while you guess who the buyer is.',
+    validation: 'Competitors with clearer positioning can win the same buyer attention faster.',
+    founder:    'Founder-led sales can make the business look healthier than the system really is.',
+    sprint:     'Scaling a weak sales system does not fix the leak — it makes the leak bigger.',
+    scale:      'Good salespeople get frustrated when pipeline quality is weak.',
+  };
+
+  /* CTA · 3 variants by category score band */
+  const CTA = {
+    lower: "Next step: leave your contact details and we'll create a free, fully personalised 90-Day Sales Growth Plan showing how to test demand, sharpen positioning, and find the right route to market.",
+    mid:   "Next step: leave your contact details and we'll create a free, fully personalised 90-Day Sales Growth Plan showing what to test first, what to fix, and what sales structure makes sense for your stage.",
+    upper: "Next step: leave your contact details and we'll create a free, fully personalised 90-Day Sales Growth Plan showing where pipeline may be leaking and what to fix before scaling further.",
+  };
+
+  function getCategory(score10) {
+    for (const c of CATEGORIES) {
+      if (score10 >= c.min && score10 <= c.max) return c;
+    }
+    return CATEGORIES[CATEGORIES.length - 1];
   }
 
-  function computeScore() {
+  /* Raw sum across Q1–Q8, normalised to /10 via raw / 16.2 * 10. */
+  function computeRawScore() {
     let total = 0;
     for (let i = 0; i < answers.length; i++) {
       const Q = QS[i];
-      if (!Q || !Q.opts) continue;          // skips Q9 (form)
+      if (!Q || !Q.opts) continue;            // skips Q9 (form)
       const opt = Q.opts.find(o => o.k === answers[i]);
       if (opt) total += opt.score;
     }
     return total;
+  }
+  function computeScore10() {
+    return Math.round((computeRawScore() / 16.2) * 10 * 10) / 10;
+  }
+
+  /* Pick one relevant benchmark line based on the trigger rules in the
+     prompt spec. Checked in priority order — founder-led + paid risks
+     beat the broader demand-survival lines if both fire. */
+  function pickBenchmark() {
+    const Q1 = answers[0], Q3 = answers[2], Q4 = answers[3];
+    const Q5 = answers[4], Q6 = answers[5], Q7 = answers[6], Q8 = answers[7];
+    // Founder-led sales risk
+    if (Q3 === 'C' && (Q4 === 'B' || Q4 === 'C')) {
+      return 'If only a small percentage of leads typically convert, and the founder is still qualifying and chasing most of them manually, the company may look busy while the real system stays weak.';
+    }
+    // Sales productivity benchmark
+    if ((Q4 === 'D' || Q4 === 'E') && (Q8 === 'E' || Q3 === 'E' || Q6 === 'D' || Q6 === 'E')) {
+      return 'Sales research has shown reps may spend only around 28% of their week actually selling — so without a clean process, new headcount can quickly become expensive activity.';
+    }
+    // Paid acquisition risk
+    if (Q5 === 'C' && (Q6 === 'C' || Q6 === 'D' || Q6 === 'E')) {
+      return 'If you are already paying for demand, weak qualification or follow-up does not just hurt conversion — it burns budget while competitors with cleaner sales operations learn faster.';
+    }
+    // Outbound risk
+    if (Q5 === 'D' && (Q3 === 'A' || Q3 === 'B' || Q3 === 'D' || Q3 === 'G')) {
+      return 'Outbound is not a volume game when positioning is weak. Without tight targeting and a clear pain trigger, more outreach usually creates more rejection, not more pipeline.';
+    }
+    // Low B2B conversion benchmark
+    if ((Q3 === 'A' || Q3 === 'B' || Q3 === 'D') && (Q7 === 'B' || Q7 === 'D')) {
+      return 'In broad B2B funnels, only around 2–6% of leads may become customers. That means vague targeting does not just reduce performance — it can make the whole sales motion look broken.';
+    }
+    // Market demand / PMF risk
+    if (Q1 === 'A' && (Q7 === 'A' || Q3 === 'G' || Q8 === 'A' || Q8 === 'B')) {
+      return 'Most early companies do not die because the founder lacked effort. They die because the market never cared enough. Your answers suggest demand testing is more urgent than sales hiring.';
+    }
+    // Business survival (low-score default)
+    if ((Q1 === 'A' || Q1 === 'B') || (Q7 === 'A' && Q8 === 'A')) {
+      return 'European business survival data is brutal: close to half of new firms do not make it past the first few years. At your stage, the risk is not weak sales execution — it is building before the market proves it cares.';
+    }
+    return null;
+  }
+
+  function getMaturityLine() {
+    const Q2 = answers[1];
+    if (Q2 === 'A' || Q2 === 'B') return 'Revenue is not consistent enough yet to justify scaling sales aggressively.';
+    if (Q2 === 'C' || Q2 === 'D') return 'There is enough traction to take sales seriously, but not enough structure to scale blindly.';
+    if (Q2 === 'E') return 'At this level, inefficiency compounds faster because the business already has spend, team time, and market momentum in motion.';
+    return '';
+  }
+
+  function getCta(score10) {
+    if (score10 < 5)  return CTA.lower;
+    if (score10 >= 7) return CTA.upper;
+    return CTA.mid;
+  }
+
+  /* Assembles a 130–190 word executive summary from spec fragments */
+  function buildExecSummary(score10, category) {
+    const Q3 = answers[2];
+    const maturity = getMaturityLine();
+    const risk = Q3_RISKS[Q3] || '';
+    const benchmark = pickBenchmark() || '';
+    const fomo = FOMO[category.key] || '';
+    const verdict = VERDICTS[category.key] || '';
+    const cta = getCta(score10);
+    // Join with single spaces; period/comma rhythm comes from each fragment.
+    return [maturity, risk, benchmark, fomo, 'Executive verdict: ' + verdict, cta]
+      .filter(Boolean).join(' ');
   }
 
   let step = 0;
@@ -2951,18 +3154,24 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     }
 
     if (showResult) {
-      const total = computeScore();
-      const r = RESULT[bucket(total)];
-      document.getElementById('resultStage').textContent = r.label;
-      document.getElementById('resultText').textContent = r.text;
-      document.getElementById('resultH').innerHTML = r.h;
-      const dotX = r.dotX;
-      const pct  = dotX / 480;
-      const dotY = 80 - (68 * Math.pow(pct, 1.2));
+      const score10  = computeScore10();
+      const category = getCategory(score10);
+      const summary  = buildExecSummary(score10, category);
+
+      document.getElementById('resultScore').textContent    = score10.toFixed(1);
+      document.getElementById('resultCategory').textContent = category.label;
+      document.getElementById('resultSummary').textContent  = summary;
+
+      // Position the YOU dot on the 6-step curve. The curve <line>
+      // spans x = 30 → 570 in a 600-wide viewBox; map curveX (0–1)
+      // into that span.
+      const dotX = 30 + category.curveX * 540;
       const dot  = document.getElementById('resultDot');
       const dot2 = document.getElementById('resultDot2');
-      dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY);
-      dot2.setAttribute('cx', dotX); dot2.setAttribute('cy', dotY);
+      const lbl  = document.getElementById('resultDotLabel');
+      if (dot)  { dot.setAttribute('cx',  dotX); }
+      if (dot2) { dot2.setAttribute('cx', dotX); }
+      if (lbl)  { lbl.setAttribute('x',   dotX); }
     }
   }
 
