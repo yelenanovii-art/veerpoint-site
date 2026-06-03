@@ -660,6 +660,37 @@
 
 })();
 
+/* ───────── Quote rotator · cycles the .quote children in .quotes-stage ─────
+   Auto-advances the .is-active class every INTERVAL ms with a brief
+   cross-fade handled by CSS. Pauses while the band is off-screen
+   (IntersectionObserver) so quotes don't tick over silently for users
+   who scroll past. Honours prefers-reduced-motion by holding on the
+   first quote and not rotating. */
+(function initQuoteRotator() {
+  const stage = document.getElementById('quotesStage');
+  if (!stage) return;
+  const quotes = Array.from(stage.querySelectorAll('.quote'));
+  if (quotes.length < 2) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const INTERVAL = 6500;
+  let idx = quotes.findIndex(q => q.classList.contains('is-active'));
+  if (idx < 0) { idx = 0; quotes[0].classList.add('is-active'); }
+  let timer = null;
+  function tick() {
+    quotes[idx].classList.remove('is-active');
+    idx = (idx + 1) % quotes.length;
+    quotes[idx].classList.add('is-active');
+  }
+  function start() { if (!timer) timer = setInterval(tick, INTERVAL); }
+  function stop()  { if (timer) { clearInterval(timer); timer = null; } }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => e.isIntersecting ? start() : stop());
+  }, { threshold: 0.2 });
+  io.observe(stage);
+})();
+
 /* ───────── Mobile nav · auto-close burger drawer on link tap ─────────
    The drawer is driven by a checkbox toggle. Without this, tapping a nav
    link smooth-scrolls to the anchor but leaves the drawer covering the

@@ -525,6 +525,48 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 
 /* Inter-section CTA between the scroll-curve and the showdown card */
 .curve-cta { padding: 36px 0 48px; background: var(--vp-paper); text-align: center; }
+
+/* Quote rotator · slim divider strip on paper. Four <p> children stack
+   absolutely in one slot; only .is-active is opaque, the others fade
+   out. JS swaps the class every ~6.5s — short, dynamic, doesn't
+   reflow the page. */
+.quotes-band {
+  padding: 28px 0;
+  background: var(--vp-paper);
+  border-top: 1px solid var(--vp-border);
+  border-bottom: 1px solid var(--vp-border);
+}
+.quotes-stage {
+  position: relative;
+  min-height: 82px;
+  max-width: 64ch;
+  margin: 0 auto;
+  text-align: center;
+}
+.quote {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  font-family: var(--vp-font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.42;
+  letter-spacing: -0.005em;
+  color: var(--vp-ink);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.quote.is-active { opacity: 1; transform: translateY(0); }
+@media (max-width: 760px) {
+  .quotes-band { padding: 22px 0; }
+  .quotes-stage { min-height: 132px; max-width: 38ch; padding: 0 12px; }
+  .quote { font-size: 16px; line-height: 1.4; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quote { transition: opacity .2s ease; transform: none; }
+}
 .curve-cta-btn { padding: 16px 30px; font-size: 15px; font-weight: 600; }
 @media (max-width: 760px) {
   .curve-cta { padding: 24px 0 32px; }
@@ -2243,6 +2285,21 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
+<!-- Quote rotator · slim divider band between the CTA and the math
+     card. Four quotes share one absolute-stacked slot; the active one
+     fades in, the rest sit at opacity 0. JS in app.js rotates the
+     .is-active class every ~6.5s with a brief cross-fade. -->
+<section class="quotes-band">
+  <div class="wrap">
+    <div class="quotes-stage" id="quotesStage">
+      <p class="quote is-active">&ldquo;I&rsquo;ve seen a lot of startups die because they were too slow to release stuff, and none because they were too quick.&rdquo;</p>
+      <p class="quote">&ldquo;For weeks I was focused on improving the product. The growth only came when I spent the time getting in front of the people who actually needed it.&rdquo;</p>
+      <p class="quote">&ldquo;Every week you delay selling, you are not reducing risk. You are postponing the truth.&rdquo;</p>
+      <p class="quote">&ldquo;The longer you keep perfecting the product, the longer you delay finding out if the market actually wants it.&rdquo;</p>
+    </div>
+  </div>
+</section>
+
 <!-- Cost showdown · €4k Veerpoint vs 2 BDRs + 1 sales manager · 3-months-in milestone snapshot. Punchy comparison
      under the hero, calculator.html holds the deeper interactive. -->
 <section class="section showdown" id="showdown">
@@ -2911,7 +2968,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<script src="app.js?v=2026053110" defer></script>
+<script src="app.js?v=2026053111" defer></script>
 
 </body>
 </html>
