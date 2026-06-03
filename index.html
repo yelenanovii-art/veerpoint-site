@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053110">
+<link rel="stylesheet" href="style.css?v=2026053111">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -337,6 +337,76 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 /* iPhone-style Lock-Screen UI removed — the FLOOR · LIVE terminal
    feed (.map-floor in style.css) is now the only feed on every viewport. */
 /* phone-stage CSS removed · was here */
+
+/* ───────── Track-record band · marquee wordmarks ─────────
+   Auto-scrolling strip on a paper background. The .logos-track is
+   sized to hold TWO copies of the wordmark list; the keyframe slides
+   it by -50% so the first copy hands off to the second seamlessly.
+   Edge mask softens the strip into the page so the looping seam never
+   reads as a hard cut. */
+.logos-band {
+  padding: 56px 0 60px;
+  background: var(--vp-paper);
+  border-bottom: 1px solid var(--vp-border);
+}
+.logos-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--vp-muted);
+  margin: 0 0 28px;
+}
+.logos-eyebrow .dot {
+  width: 6px; height: 6px;
+  background: var(--vp-terracotta);
+  border-radius: 1px;
+  display: inline-block;
+}
+.logos-marquee {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+}
+.logos-track {
+  display: flex;
+  align-items: center;
+  gap: 72px;
+  width: max-content;
+  padding-right: 72px;
+  animation: vp-marquee 38s linear infinite;
+  will-change: transform;
+}
+.logos-marquee:hover .logos-track { animation-play-state: paused; }
+.logo-item {
+  font-family: var(--vp-font-display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  color: var(--vp-ink);
+  opacity: 0.62;
+  white-space: nowrap;
+  transition: opacity .25s ease;
+}
+.logo-item:hover { opacity: 1; }
+@keyframes vp-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (max-width: 760px) {
+  .logos-band { padding: 36px 0 40px; }
+  .logos-eyebrow { font-size: 10px; margin-bottom: 18px; }
+  .logos-track { gap: 44px; padding-right: 44px; animation-duration: 28s; }
+  .logo-item { font-size: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logos-track { animation: none; }
+}
 
 /* ───────── Six-month progression · scroll-driven curve ─────────
    Small concise growth path with three milestone dots. JS reads
@@ -2095,6 +2165,36 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     </aside>
     </div>
 
+  </div>
+</section>
+
+<!-- Track-record band · auto-scrolling wordmark carousel of products
+     the operators have sold for. Sits between the dark map and the
+     paper-bg progression curve, on its own paper background. Each
+     mark is set in display-weight type with measured spacing, list
+     duplicated inline so the marquee loops seamlessly at 50% offset.
+     Edge masks taper the strip into the page on both sides. -->
+<section class="logos-band">
+  <div class="wrap">
+    <p class="logos-eyebrow"><span class="dot"></span>Products our team has sold</p>
+    <div class="logos-marquee" aria-label="Companies our team has sold for">
+      <div class="logos-track">
+        <span class="logo-item">Revolut</span>
+        <span class="logo-item">Google Cloud</span>
+        <span class="logo-item">Stripe</span>
+        <span class="logo-item">Corgi Group</span>
+        <span class="logo-item">Guava</span>
+        <span class="logo-item">IBM</span>
+        <span class="logo-item">Exact Software</span>
+        <span class="logo-item" aria-hidden="true">Revolut</span>
+        <span class="logo-item" aria-hidden="true">Google Cloud</span>
+        <span class="logo-item" aria-hidden="true">Stripe</span>
+        <span class="logo-item" aria-hidden="true">Corgi Group</span>
+        <span class="logo-item" aria-hidden="true">Guava</span>
+        <span class="logo-item" aria-hidden="true">IBM</span>
+        <span class="logo-item" aria-hidden="true">Exact Software</span>
+      </div>
+    </div>
   </div>
 </section>
 
