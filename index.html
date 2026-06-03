@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053113">
+<link rel="stylesheet" href="style.css?v=2026053114">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -1999,6 +1999,12 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
             <stop offset="0%"   stop-color="#A04022" stop-opacity="0.45"/>
             <stop offset="100%" stop-color="#A04022" stop-opacity="0"/>
           </radialGradient>
+          <!-- Cobe-style dotted landmass · 7×7 grid stippled across the
+               Europe path. The pattern tiles over the path's bounding
+               box; coastline stroke gives the silhouette. -->
+          <pattern id="europe-dots" x="0" y="0" width="7" height="7" patternUnits="userSpaceOnUse">
+            <circle cx="3.5" cy="3.5" r="1.05" fill="rgba(244,242,238,0.78)" />
+          </pattern>
         </defs>
 
         <!-- Graticule · faint long/lat grid -->
@@ -2150,6 +2156,26 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           </g>
         </g>
       </svg>
+
+      <!-- LIVE pills · floating overlays anchored to key markers via
+           the same viewBox percentages (760×600). Each pill: pulsing
+           terracotta dot, 'LIVE' mono caps, city name with a hairline
+           separator. Pointer-events disabled so they don't intercept
+           marker clicks underneath. -->
+      <div class="globe-pills" aria-hidden="true">
+        <div class="globe-pill" style="--x: 23.7%; --y: 75.8%">
+          <span class="live-dot"></span><span class="live-label">LIVE</span><span class="city-label">Barcelona</span>
+        </div>
+        <div class="globe-pill" style="--x: 32.9%; --y: 47.5%">
+          <span class="live-dot"></span><span class="live-label">LIVE</span><span class="city-label">London</span>
+        </div>
+        <div class="globe-pill" style="--x: 53.3%; --y: 67.5%">
+          <span class="live-dot"></span><span class="live-label">LIVE</span><span class="city-label">Milan</span>
+        </div>
+        <div class="globe-pill" style="--x: 71%; --y: 85%">
+          <span class="live-dot"></span><span class="live-label">LIVE</span><span class="city-label">Athens</span>
+        </div>
+      </div>
     </div>
 
     <!-- Phone screen · iOS Lock-Screen-style notification stack sits to the

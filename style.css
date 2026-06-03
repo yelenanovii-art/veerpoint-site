@@ -2183,35 +2183,92 @@
   }
   @keyframes vp-live { 0%, 100% { opacity: 1 } 50% { opacity: 0.25 } }
 
+  /* LIVE pills · floating callouts above key markers. The container
+     fills the .map-stage and lets clicks through to the SVG markers
+     underneath; each pill positions itself via --x / --y custom
+     properties set inline (percentages of the viewBox). Translate
+     centres the pill horizontally on the marker and lifts it 14px. */
+  .globe-pills {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .globe-pill {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    transform: translate(-50%, calc(-100% - 14px));
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 9px 5px 8px;
+    background: linear-gradient(135deg, rgba(26,26,28,0.94) 0%, rgba(45,45,48,0.94) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    font-family: var(--vp-font-mono);
+    line-height: 1;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .globe-pill .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--vp-terracotta);
+    box-shadow: 0 0 6px rgba(160,64,34,0.75);
+    animation: vp-live 1.5s ease-in-out infinite;
+    flex: 0 0 auto;
+  }
+  .globe-pill .live-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--vp-terracotta);
+    text-transform: uppercase;
+  }
+  .globe-pill .city-label {
+    font-size: 8.5px;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.78);
+    padding-left: 7px;
+    border-left: 1px solid rgba(255,255,255,0.18);
+  }
+  @media (max-width: 760px) {
+    .globe-pill { padding: 4px 7px; gap: 5px; }
+    .globe-pill .live-label,
+    .globe-pill .city-label { font-size: 7.5px; }
+    .globe-pill .live-dot { width: 5px; height: 5px; }
+  }
+
   .map-svg { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
   .map-svg .graticule {
     stroke: rgba(255,255,255,0.05);
     stroke-width: 0.5;
     fill: none;
   }
-  /* Europe landmass · the actual continent shape behind the markers.
-     Warm parchment fill + cream coastline stroke give it a printed-map
-     feel; the terracotta drop-shadow is the warm 'land glow' so the
-     continent reads at a glance. A second black drop-shadow lifts it
-     off the dark ocean.
-
-     Fill bumped vs earlier passes (0.14 → 0.20) because the new path
-     has ~150 anchors with finer coastline detail; the stroke needs to
-     be slightly visible for that detail to register. */
+  /* Europe landmass · cobe-style stippled fill. The #europe-dots SVG
+     pattern tiles a 7×7 dot grid across the path's bounding box; the
+     coastline stroke gives the silhouette; the warm terracotta drop-
+     shadow is the 'land glow' that makes the continent read at a
+     glance against the dark ocean. */
   .map-svg .europe-landmass {
-    fill: rgba(228, 208, 175, 0.20);
-    stroke: rgba(250, 230, 200, 0.62);
+    fill: url(#europe-dots);
+    stroke: rgba(250, 230, 200, 0.55);
     stroke-width: 1.1;
     stroke-linejoin: round;
     stroke-linecap: round;
     filter:
-      drop-shadow(0 0 18px rgba(160, 64, 34, 0.50))
+      drop-shadow(0 0 20px rgba(160, 64, 34, 0.55))
       drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
-    transition: fill .4s ease, stroke .4s ease;
+    transition: stroke .4s ease, filter .4s ease;
   }
   .map-stage.vp-in .europe-landmass {
-    fill: rgba(228, 208, 175, 0.28);
-    stroke: rgba(250, 230, 200, 0.78);
+    stroke: rgba(250, 230, 200, 0.72);
+    filter:
+      drop-shadow(0 0 24px rgba(160, 64, 34, 0.62))
+      drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
   }
 
   /* Arcs · Barcelona HQ → every city */
