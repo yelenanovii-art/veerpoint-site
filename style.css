@@ -2248,11 +2248,9 @@
     stroke-width: 0.5;
     fill: none;
   }
-  /* Europe landmass · cobe-style stippled fill. The #europe-dots SVG
-     pattern tiles a 7×7 dot grid across the path's bounding box; the
-     coastline stroke gives the silhouette; the warm terracotta drop-
-     shadow is the 'land glow' that makes the continent read at a
-     glance against the dark ocean. */
+  /* Europe landmass · hand-traced fallback. Stays visible until the D3
+     module successfully renders the real Natural Earth countries
+     (it adds .is-replaced on success). */
   .map-svg .europe-landmass {
     fill: url(#europe-dots);
     stroke: rgba(250, 230, 200, 0.55);
@@ -2269,6 +2267,34 @@
     filter:
       drop-shadow(0 0 24px rgba(160, 64, 34, 0.62))
       drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
+  }
+  .map-svg .europe-landmass.is-replaced { display: none; }
+
+  /* D3-rendered real Europe · Natural Earth country polygons. Warm
+     cream fill on the dark ocean, faint terracotta border between
+     countries, terracotta drop-shadow on the whole group for the
+     warm 'land glow' the design calls for. Cursor: grab on the SVG
+     so users discover the drag interaction. */
+  .map-svg .d3-countries {
+    filter:
+      drop-shadow(0 0 18px rgba(160, 64, 34, 0.42))
+      drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
+  }
+  .map-svg .d3-country {
+    fill: var(--vp-warm-white);
+    stroke: rgba(160, 64, 34, 0.42);
+    stroke-width: 0.55;
+    stroke-linejoin: round;
+    transition: fill 0.25s ease;
+    vector-effect: non-scaling-stroke;
+  }
+  .map-svg .d3-country:hover {
+    fill: #FFE2BE;
+  }
+  .map-stage.vp-in .d3-countries {
+    filter:
+      drop-shadow(0 0 22px rgba(160, 64, 34, 0.52))
+      drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
   }
 
   /* Arcs · Barcelona HQ → every city */

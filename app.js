@@ -556,6 +556,164 @@
     }
   })();
 
+  /* ───────── Real Europe map · D3 + Natural Earth TopoJSON ─────────
+     Loads the public-domain world-atlas TopoJSON via CDN, filters to
+     European countries, projects them through d3.geoConicConformal
+     centred on 15°E / 52°N, renders into a <g class="d3-countries">
+     layer inside the existing .map-svg. When that succeeds the hand-
+     traced .europe-landmass path hides itself so we don't double up.
+     Drag the map to rotate longitude (phi) and tilt latitude (theta);
+     the existing markers, arcs, country labels, and FLOOR · LIVE
+     highlight integration all keep working because we sit underneath
+     them in the SVG paint order. */
+  (async function initEuropeD3() {
+    const stage = document.getElementById('mapStage');
+    if (!stage) return;
+    const svg = stage.querySelector('.map-svg');
+    if (!svg) return;
+
+    // Wait briefly for the deferred D3 + topojson scripts to settle.
+    for (let tries = 0; tries < 30; tries++) {
+      if (window.d3 && window.topojson) break;
+      await new Promise(r => setTimeout(r, 100));
+    }
+    if (!window.d3 || !window.topojson) {
+      // CDN failed — fall back to the hand-traced path that's already
+      // in the SVG. Nothing to do.
+      return;
+    }
+
+    // ISO 3166-1 numeric IDs for European countries the world-atlas
+    // 110m file uses. Includes a generous list so border edges read
+    // continuous (Russia/Turkey/Belarus/etc. trimmed by the viewBox).
+    const EUROPE_IDS = new Set([
+      '008','020','040','056','070','100','112','191','196','203','208',
+      '233','246','250','268','276','292','300','336','348','352','372',
+      '380','428','438','440','442','470','492','498','499','528','578',
+      '616','620','642','643','674','688','703','705','724','752','756',
+      '792','804','807','826'
+    ]);
+
+    let world;
+    try {
+      const resp = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+      if (!resp.ok) throw new Error('atlas fetch ' + resp.status);
+      world = await resp.json();
+    } catch (e) {
+      return;
+    }
+
+    const countries = window.topojson.feature(world, world.objects.countries);
+    const europe = countries.features.filter(f => EUROPE_IDS.has(String(f.id)));
+    if (!europe.length) return;
+
+    const VW = 760, VH = 600;
+
+    // Drag offsets — phi rotates longitude, theta tilts latitude.
+    let phi = 0, theta = 0;
+    function makeProjection() {
+      return window.d3.geoConicConformal()
+        .rotate([-15 + phi, 0])
+        .center([0, 52 + theta])
+        .parallels([40, 65])
+        .scale(900)
+        .translate([VW / 2, VH / 2]);
+    }
+
+    let projection = makeProjection();
+    let pathGen = window.d3.geoPath(projection);
+
+    // Insert the country layer behind everything else inside the SVG
+    // so markers, arcs, and labels sit on top.
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    let countryG = svg.querySelector('.d3-countries');
+    if (!countryG) {
+      countryG = document.createElementNS(SVG_NS, 'g');
+      countryG.setAttribute('class', 'd3-countries');
+      const defs = svg.querySelector('defs');
+      if (defs && defs.nextSibling) {
+        svg.insertBefore(countryG, defs.nextSibling);
+      } else {
+        svg.insertBefore(countryG, svg.firstChild);
+      }
+    }
+
+    function renderCountries() {
+      // Use D3 join semantics manually to keep the file dep-free of D3-
+      // selection helpers we don't already use elsewhere.
+      const existing = countryG.querySelectorAll('path');
+      europe.forEach((feature, i) => {
+        let el = existing[i];
+        if (!el) {
+          el = document.createElementNS(SVG_NS, 'path');
+          el.setAttribute('class', 'd3-country');
+          el.setAttribute('data-id', String(feature.id));
+          countryG.appendChild(el);
+        }
+        const d = pathGen(feature);
+        if (d) el.setAttribute('d', d);
+      });
+      // Remove any extras (shouldn't happen with stable data but cheap)
+      for (let i = europe.length; i < existing.length; i++) {
+        existing[i].remove();
+      }
+    }
+
+    renderCountries();
+
+    // Hide the hand-traced landmass now that the real one is live.
+    const handTraced = svg.querySelector('.europe-landmass');
+    if (handTraced) handTraced.classList.add('is-replaced');
+
+    // Drag-to-rotate. Pointer events so it works with touch + mouse.
+    let dragging = null;
+    function onPointerDown(e) {
+      dragging = { x: e.clientX, y: e.clientY };
+      svg.style.cursor = 'grabbing';
+      svg.setPointerCapture(e.pointerId);
+    }
+    function onPointerMove(e) {
+      if (!dragging) return;
+      const dx = e.clientX - dragging.x;
+      const dy = e.clientY - dragging.y;
+      dragging = { x: e.clientX, y: e.clientY };
+      phi += dx * 0.18;
+      theta -= dy * 0.10;
+      theta = Math.max(-25, Math.min(25, theta));
+      projection = makeProjection();
+      pathGen = window.d3.geoPath(projection);
+      renderCountries();
+    }
+    function onPointerUp(e) {
+      dragging = null;
+      svg.style.cursor = 'grab';
+    }
+    svg.style.cursor = 'grab';
+    svg.addEventListener('pointerdown', onPointerDown);
+    svg.addEventListener('pointermove', onPointerMove);
+    svg.addEventListener('pointerup', onPointerUp);
+    svg.addEventListener('pointercancel', onPointerUp);
+
+    // Subtle auto-drift while the user isn't interacting — gives the
+    // map a faint 'breathing' feel without being distracting.
+    let lastDrift = performance.now();
+    function driftFrame(now) {
+      const dt = now - lastDrift;
+      lastDrift = now;
+      if (!dragging) {
+        phi += dt * 0.0008;  // ~1.7°/sec drift, very slow
+        projection = makeProjection();
+        pathGen = window.d3.geoPath(projection);
+        renderCountries();
+      }
+      requestAnimationFrame(driftFrame);
+    }
+    // Only drift if the user prefers motion.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(driftFrame);
+    }
+  })();
+
   /* ───────── Six-month progression · scroll-driven curve ─────────
      As the user scrolls through .scroll-curve, normalise the section's
      position relative to the viewport into p ∈ [0, 1]. Drives:
