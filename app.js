@@ -731,10 +731,13 @@
     const stones      = Array.from(section.querySelectorAll('.scroll-curve-svg .ms'));
     const labels      = Array.from(section.querySelectorAll('.ms-label'));
     const phaseTexts  = Array.from(section.querySelectorAll('.phase-text'));
-    const THRESHOLDS  = [0.20, 0.55, 0.90];
-    // Where the description swaps: just past each milestone so the
-    // text update reads as a consequence of crossing it.
-    const PHASE_BREAKS = [0.55, 0.90];
+    // Marker positions along the path: Phase 1 sits at ~p=0.18,
+    // Phase 2 at ~p=0.55, Phase 3 at ~p=0.93. Thresholds match those
+    // so the dots light up exactly when the ball arrives.
+    const THRESHOLDS  = [0.18, 0.55, 0.93];
+    // Description swaps the moment the ball crosses Phase 2 then
+    // Phase 3 — so the text reads as the consequence of arrival.
+    const PHASE_BREAKS = [0.55, 0.92];
 
     let total = path.getTotalLength();
     path.style.strokeDasharray  = total;
@@ -753,14 +756,25 @@
     function readTarget() {
       const rect = section.getBoundingClientRect();
       const vh   = window.innerHeight || document.documentElement.clientHeight;
-      // Stretched mapping so the curve draws gradually across more
-      // scroll distance:
+      // Scroll window for the animation:
       //   start: top is 200px below the fold (slight early lead-in)
       //   end:   top is 15% down the viewport
       const startTop = vh + 200;
       const endTop   = vh * 0.15;
       const raw      = (startTop - rect.top) / (startTop - endTop);
-      pTarget        = Math.max(0, Math.min(1, raw));
+      const s        = Math.max(0, Math.min(1, raw));
+      // Piecewise mapping so the ball lands ON Phase 1 at s=1/3,
+      // ON Phase 2 at s=2/3, ON Phase 3 at s=1. Marker positions
+      // along the path: ~0.18 / 0.55 / 0.93.
+      let p;
+      if (s <= 1 / 3) {
+        p = s * 3 * 0.18;                              //   0   → 0.18
+      } else if (s <= 2 / 3) {
+        p = 0.18 + (s - 1 / 3) * 3 * (0.55 - 0.18);    // 0.18  → 0.55
+      } else {
+        p = 0.55 + (s - 2 / 3) * 3 * (0.93 - 0.55);    // 0.55  → 0.93
+      }
+      pTarget = p;
     }
 
     function paint(p) {

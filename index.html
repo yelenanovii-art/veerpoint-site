@@ -380,9 +380,18 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   width: max-content;
   padding-right: 72px;
   animation: vp-marquee 38s linear infinite;
+  /* translate3d nudges iOS Safari into GPU-compositing this layer,
+     which avoids the 'frozen marquee on iPhone' bug that pure
+     translateX(%) on a max-content flex parent can trip into. */
+  transform: translate3d(0, 0, 0);
   will-change: transform;
 }
-.logos-marquee:hover .logos-track { animation-play-state: paused; }
+/* :hover pause is desktop-only. On iOS, tapping near the strip
+   leaves a phantom hover state that pauses the animation and never
+   clears — so gate it behind real hover capability. */
+@media (hover: hover) and (pointer: fine) {
+  .logos-marquee:hover .logos-track { animation-play-state: paused; }
+}
 .logo-item {
   font-family: var(--vp-font-display);
   font-weight: 600;
@@ -393,10 +402,12 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   white-space: nowrap;
   transition: opacity .25s ease;
 }
-.logo-item:hover { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .logo-item:hover { opacity: 1; }
+}
 @keyframes vp-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 @media (max-width: 760px) {
   .logos-band { padding: 36px 0 40px; }
@@ -3175,7 +3186,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
      back to the hand-traced SVG path if either CDN is unreachable. -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" defer></script>
-<script src="app.js?v=2026060101" defer></script>
+<script src="app.js?v=2026060102" defer></script>
 
 </body>
 </html>
