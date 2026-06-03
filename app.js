@@ -786,6 +786,10 @@
     // Drag-to-rotate. Pointer events so it works with touch + mouse.
     let dragging = null;
     function onPointerDown(e) {
+      // Suppress the browser's default touch behaviour on Android
+      // Chrome so the page doesn't try to scroll while you're
+      // dragging the map. iOS Safari already respects touch-action.
+      if (e.cancelable) e.preventDefault();
       dragging = { x: e.clientX, y: e.clientY };
       svg.style.cursor = 'grabbing';
       svg.setPointerCapture(e.pointerId);
@@ -807,6 +811,15 @@
       svg.style.cursor = 'grab';
     }
     svg.style.cursor = 'grab';
+    // Android Chrome treats touch-drag on a child element as page
+    // scroll by default — iOS Safari is more permissive. Setting
+    // touch-action: none tells the browser the SVG owns gestures
+    // for itself, so dragging rotates the map instead of scrolling
+    // the page on Android. user-select stops text highlighting
+    // from flashing on long drags.
+    svg.style.touchAction = 'none';
+    svg.style.webkitUserSelect = 'none';
+    svg.style.userSelect = 'none';
     svg.addEventListener('pointerdown', onPointerDown);
     svg.addEventListener('pointermove', onPointerMove);
     svg.addEventListener('pointerup', onPointerUp);
