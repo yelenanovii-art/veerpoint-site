@@ -2191,23 +2191,27 @@
   }
   /* Europe landmass · the actual continent shape behind the markers.
      Warm parchment fill + cream coastline stroke give it a printed-map
-     feel; the terracotta drop-shadow is the 'slight orange shadow'
-     the design asked for. A second softer black drop-shadow lifts it
-     off the dark ocean. */
+     feel; the terracotta drop-shadow is the warm 'land glow' so the
+     continent reads at a glance. A second black drop-shadow lifts it
+     off the dark ocean.
+
+     Fill bumped vs earlier passes (0.14 → 0.20) because the new path
+     has ~150 anchors with finer coastline detail; the stroke needs to
+     be slightly visible for that detail to register. */
   .map-svg .europe-landmass {
-    fill: rgba(220, 200, 170, 0.14);
-    stroke: rgba(245, 225, 195, 0.45);
-    stroke-width: 1;
+    fill: rgba(228, 208, 175, 0.20);
+    stroke: rgba(250, 230, 200, 0.62);
+    stroke-width: 1.1;
     stroke-linejoin: round;
     stroke-linecap: round;
     filter:
-      drop-shadow(0 0 16px rgba(160, 64, 34, 0.42))
-      drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5));
+      drop-shadow(0 0 18px rgba(160, 64, 34, 0.50))
+      drop-shadow(0 6px 16px rgba(0, 0, 0, 0.55));
     transition: fill .4s ease, stroke .4s ease;
   }
   .map-stage.vp-in .europe-landmass {
-    fill: rgba(220, 200, 170, 0.22);
-    stroke: rgba(245, 225, 195, 0.62);
+    fill: rgba(228, 208, 175, 0.28);
+    stroke: rgba(250, 230, 200, 0.78);
   }
 
   /* Arcs · Barcelona HQ → every city */
