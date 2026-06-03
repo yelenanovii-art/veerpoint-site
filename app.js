@@ -503,6 +503,20 @@
       return row;
     }
 
+    /* Position-based time labels so the top row is always 'now' and
+       each row below it reads as progressively older. Decoupling the
+       label from the FEED entry's own time field guarantees the
+       visible feed is always chronological regardless of FEED order
+       or cycle wrap. */
+    const TIME_SLOTS = ['now', '3m', '12m', '1h'];
+    function relabelTimes() {
+      const rows = floorList.children;
+      for (let i = 0; i < rows.length && i < TIME_SLOTS.length; i++) {
+        const t = rows[i].querySelector('.t');
+        if (t) t.textContent = TIME_SLOTS[i];
+      }
+    }
+
     /* Prepend the new row, trim the oldest if we're over FLOOR_MAX, and
        pulse the matching country marker. */
     let feedIdx = 0;
@@ -524,8 +538,14 @@
         });
         setTimeout(() => last.remove(), 160);
       }
+      relabelTimes();
       highlightCountry(n.country);
     }
+
+    // Pre-rendered HTML ticker rows may have mis-ordered times if the
+    // FEED data evolves — relabel them on init so the very first paint
+    // is chronological too.
+    relabelTimes();
 
     let timer = null;
     function startCycle() { if (!timer) timer = setInterval(pushRow, CYCLE_MS); }
