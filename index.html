@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053108">
+<link rel="stylesheet" href="style.css?v=2026053109">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -1870,6 +1870,23 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           <line x1="600" y1="0"   x2="600" y2="600"/>
           <line x1="700" y1="0"   x2="700" y2="600"/>
         </g>
+
+        <!-- Europe landmass · subtle filled shape behind the dots so the
+             continent reads as a single mass against the ocean. The
+             approximate outline traces mainland Europe + a separate
+             Britain + Ireland sub-paths. Pixel-rough but recognisable. -->
+        <path class="europe-mass" d="
+          M 35 470 L 25 510 L 65 555 L 170 565 L 230 540 L 255 490
+          L 280 475 L 350 470 L 380 415 L 400 395 L 420 415 L 425 460
+          L 440 490 L 455 510 L 490 525 L 535 535 L 575 525 L 590 495
+          L 575 460 L 540 410 L 495 360 L 470 295 L 478 240 L 455 200
+          L 410 180 L 350 175 L 290 180 L 250 200 L 240 235 L 255 270
+          L 280 285 L 295 270 L 285 245 L 260 235 L 240 250 L 220 285
+          L 200 320 L 180 360 L 150 395 L 115 420 L 75 445 Z
+          M 200 245 L 175 252 L 165 280 L 178 305 L 215 318 L 248 308
+          L 262 285 L 252 252 L 222 240 Z
+          M 145 258 L 130 280 L 140 308 L 165 312 L 175 295 L 162 270 Z
+        " />
 
         <!-- Land dots · loose Europe outline -->
         <g>
