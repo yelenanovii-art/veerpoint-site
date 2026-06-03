@@ -472,51 +472,167 @@ h1 {
   margin-top: 4px;
 }
 
-/* EMAIL GATE */
-.gate {
-  background: var(--vp-ink);
+/* 90-DAY PLAN GATE · dark canvas with three timeline blocks +
+   phone/email form. Replaces the old single-field email gate. */
+.gate.gate-plan {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(160,64,34,0.18) 0%, transparent 65%),
+    var(--vp-ink);
   color: var(--vp-warm-white);
-  padding: 28px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 20px;
-  align-items: center;
+  padding: 32px 32px 28px;
+  display: block;
+  position: relative;
+  overflow: hidden;
 }
-.gate-left .label {
+.gate.gate-plan::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vp-terracotta) 0%, rgba(160,64,34,0.35) 100%);
+}
+.gate-plan-head { margin-bottom: 22px; }
+.gate-plan-head .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--vp-font-mono);
   font-size: 11px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   color: var(--vp-terracotta);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
-.gate-left h3 {
+.gate-plan-head .label .dot {
+  width: 6px; height: 6px;
+  background: var(--vp-terracotta);
+  border-radius: 1px;
+}
+.gate-plan-head h3 {
   font-family: var(--vp-font-display);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  margin: 0 0 6px;
+  line-height: 1.15;
 }
-.gate-left p {
+.gate-plan-head h3 .stop { color: var(--vp-terracotta); }
+.gate-plan-head p {
   color: var(--vp-muted-soft);
-  font-size: 13px;
+  font-size: 14px;
+  margin: 0;
 }
-.gate-right {
-  display: flex;
+.gate-plan-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  align-items: stretch;
+  margin-bottom: 22px;
 }
-.gate-right input {
-  background: var(--vp-ink-90);
-  border: 1px solid var(--vp-ink-70);
+.gate-plan-block {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 16px 14px 14px;
+  position: relative;
+}
+.gate-plan-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 28px; height: 2px;
+  background: var(--vp-terracotta);
+  border-radius: 4px 0 4px 0;
+}
+.gate-plan-days {
+  font-family: var(--vp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin: 8px 0 6px;
+}
+.gate-plan-title {
+  font-family: var(--vp-font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.gate-plan-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--vp-muted-soft);
+  margin: 0;
+}
+.gate-plan-form { display: flex; flex-direction: column; gap: 10px; }
+.gate-plan-fields {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+}
+.gate-plan-form input {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.18);
   color: var(--vp-warm-white);
   padding: 13px 16px;
   font-family: var(--vp-font-body);
   font-size: 14px;
-  min-width: 280px;
+  border-radius: 4px;
 }
-.gate-right input::placeholder { color: var(--vp-muted-soft); }
-.gate-right input:focus { outline: none; border-color: var(--vp-terracotta); }
+.gate-plan-form input::placeholder { color: var(--vp-muted-soft); }
+.gate-plan-form input:focus { outline: none; border-color: var(--vp-terracotta); }
+.gate-plan-form button {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.gate-plan-form button .arrow { transition: transform 0.15s; }
+.gate-plan-form button:hover .arrow { transform: translateX(3px); }
+.gate-plan-note {
+  font-size: 11px;
+  color: var(--vp-muted);
+  text-align: center;
+  margin: 4px 0 0;
+}
+.gate-done {
+  text-align: center;
+  padding: 32px 12px 18px;
+}
+.gate-done-check {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+.gate-done-h {
+  font-family: var(--vp-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.gate-done-sub {
+  color: var(--vp-muted-soft);
+  font-size: 14px;
+  margin: 0;
+}
+.gate-done-sub strong { color: var(--vp-warm-white); }
+@media (max-width: 760px) {
+  .gate.gate-plan { padding: 24px 20px 22px; }
+  .gate-plan-head h3 { font-size: 20px; }
+  .gate-plan-timeline { grid-template-columns: 1fr; gap: 8px; }
+  .gate-plan-block { padding: 14px 14px 12px; }
+  .gate-plan-fields { grid-template-columns: 1fr; }
+}
 
 /* FOOTNOTE */
 .footnote {
@@ -784,19 +900,48 @@ footer {
       </div>
     </div>
 
-    <!-- EMAIL GATE -->
-    <div class="gate">
-      <div class="gate-left">
-        <div class="label">YOUR FULL REPORT</div>
-        <h3>Get the breakdown as a PDF<span class="stop">.</span></h3>
-        <p>Your numbers, the math we used, a sample Veerpoint scope. Sent in 60 seconds. Unsubscribe in one click.</p>
+    <!-- 90-day plan teaser · same offer as the fit quiz so the
+         calculator funnels into the same gate flow. The exec
+         comparison above is free; the plan unlocks once we have phone
+         + email. -->
+    <div class="gate gate-plan">
+      <div class="gate-plan-head">
+        <div class="label"><span class="dot"></span>YOUR FREE 90-DAY PLAN</div>
+        <h3>Your go-to-market plan, built around your numbers<span class="stop">.</span></h3>
+        <p>Three months. Three phases. Sent to your inbox alongside the cost breakdown.</p>
       </div>
-      <div class="gate-right" id="gate-form">
-        <input type="email" id="gate-email" placeholder="jordan@yourcompany.com" autocomplete="email" />
-        <button class="btn btn-accent" id="gate-btn" type="button">Send me the PDF →</button>
+
+      <div class="gate-plan-timeline">
+        <div class="gate-plan-block">
+          <div class="gate-plan-days">DAY 1 – 30</div>
+          <div class="gate-plan-title">Foundations</div>
+          <p class="gate-plan-body">Sharpen positioning, calibrate ICP, launch outbound. Pipeline starts moving by week 4.</p>
+        </div>
+        <div class="gate-plan-block">
+          <div class="gate-plan-days">DAY 31 – 60</div>
+          <div class="gate-plan-title">First closes</div>
+          <p class="gate-plan-body">Discovery, demos, structured close motion. First closes by week 8 – 9.</p>
+        </div>
+        <div class="gate-plan-block">
+          <div class="gate-plan-days">DAY 61 – 90</div>
+          <div class="gate-plan-title">Repeatable engine</div>
+          <p class="gate-plan-body">Productise what works. Documented playbook, sequences live, ready to scale.</p>
+        </div>
       </div>
-      <div class="gate-done" id="gate-done" style="display:none; color:var(--vp-warm-white); font-family:var(--vp-font-mono); font-size:13px; letter-spacing:0.06em;">
-        ✓ <span id="gate-done-email"></span> · check your inbox in a minute.
+
+      <div class="gate-plan-form" id="gate-form">
+        <div class="gate-plan-fields">
+          <input type="tel" id="gate-phone" placeholder="+34 600 000 000" autocomplete="tel" inputmode="tel" />
+          <input type="email" id="gate-email" placeholder="jordan@yourcompany.com" autocomplete="email" />
+        </div>
+        <button class="btn btn-accent" id="gate-btn" type="button">Send me the 90-day plan <span class="arrow">→</span></button>
+        <p class="gate-plan-note">Sent in 60 seconds. Unsubscribe in one click.</p>
+      </div>
+
+      <div class="gate-done" id="gate-done" style="display:none;">
+        <div class="gate-done-check">✓</div>
+        <div class="gate-done-h">Your 90-day plan is on the way.</div>
+        <p class="gate-done-sub">Sent to <strong id="gate-done-email"></strong>. Check your inbox in a minute (or your promotions tab).</p>
       </div>
     </div>
 
@@ -922,29 +1067,38 @@ document.querySelectorAll('#bdrSalary, #mgrSalary').forEach(el => {
 
 calculate();
 
-// ============ EMAIL GATE ============
+// ============ 90-DAY PLAN GATE (phone + email) ============
 const gateBtn = document.getElementById('gate-btn');
 const gateEmail = document.getElementById('gate-email');
+const gatePhone = document.getElementById('gate-phone');
 const gateForm = document.getElementById('gate-form');
 const gateDone = document.getElementById('gate-done');
 const gateDoneEmail = document.getElementById('gate-done-email');
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function submitGate() {
-  const val = (gateEmail.value || '').trim();
-  if (!EMAIL_RE.test(val)) {
+  const email = (gateEmail.value || '').trim();
+  const phone = (gatePhone.value || '').trim();
+  if (!EMAIL_RE.test(email)) {
     gateEmail.style.borderColor = 'var(--vp-terracotta)';
     gateEmail.focus();
     return;
   }
-  gateDoneEmail.textContent = val;
+  if ((phone.match(/\d/g) || []).length < 6) {
+    gatePhone.style.borderColor = 'var(--vp-terracotta)';
+    gatePhone.focus();
+    return;
+  }
+  gateDoneEmail.textContent = email;
   gateForm.style.display = 'none';
   gateDone.style.display = 'block';
 }
 
 gateBtn.addEventListener('click', submitGate);
-gateEmail.addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
-gateEmail.addEventListener('input', () => { gateEmail.style.borderColor = ''; });
+[gateEmail, gatePhone].forEach(el => {
+  el.addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+  el.addEventListener('input', () => { el.style.borderColor = ''; });
+});
 
 // ============ MOBILE PULSE ============
 // Briefly pulse each .stop dot when it scrolls into view. CSS animation is

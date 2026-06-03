@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026053114">
+<link rel="stylesheet" href="style.css?v=2026053115">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -1338,6 +1338,159 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .modal-gate-form button:hover { background: var(--vp-terracotta-hover); }
 
+/* 90-day plan teaser · sits in the result step after the exec snapshot.
+   Three-block timeline + phone/email gate so the user trades contact
+   info for the plan. Visually elevated so the offer pops. */
+.plan-teaser {
+  margin-top: 24px;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(160,64,34,0.07) 0%, transparent 65%),
+    var(--vp-paper);
+  border: 1px solid var(--vp-border);
+  border-radius: 6px;
+  padding: 26px 24px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.plan-teaser::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--vp-terracotta) 0%, rgba(160,64,34,0.4) 100%);
+}
+.plan-teaser-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.plan-teaser-eyebrow .dot {
+  width: 6px; height: 6px;
+  background: var(--vp-terracotta);
+  border-radius: 1px;
+}
+.plan-teaser-h {
+  font-family: var(--vp-font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.18;
+  margin: 0 0 6px;
+  color: var(--vp-ink);
+}
+.plan-teaser-h .stop { color: var(--vp-terracotta); }
+.plan-teaser-sub {
+  font-size: 14px;
+  color: var(--vp-ink-70);
+  margin: 0 0 18px;
+}
+.plan-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 22px;
+  position: relative;
+}
+.plan-block {
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  padding: 14px 13px 12px;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.plan-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 24px; height: 2px;
+  background: var(--vp-terracotta);
+  border-radius: 4px 0 4px 0;
+}
+.plan-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.plan-block-days {
+  font-family: var(--vp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin: 6px 0 6px;
+}
+.plan-block-title {
+  font-family: var(--vp-font-display);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--vp-ink);
+  letter-spacing: -0.01em;
+}
+.plan-block-body {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--vp-ink-70);
+  margin: 0;
+}
+.plan-gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.plan-gate-fields {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 8px;
+}
+.plan-gate-form input {
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border-strong, var(--vp-border));
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+.plan-gate-form input:focus { border-color: var(--vp-ink); }
+.plan-gate-form button {
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  border: none;
+  border-radius: 4px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.plan-gate-form button:hover { background: var(--vp-terracotta-hover); }
+.plan-gate-form button .arrow { transition: transform 0.15s; }
+.plan-gate-form button:hover .arrow { transform: translateX(3px); }
+.plan-gate-note {
+  font-size: 11px;
+  color: var(--vp-muted);
+  text-align: center;
+  margin: 4px 0 0;
+}
+@media (max-width: 760px) {
+  .plan-teaser { padding: 22px 18px 18px; }
+  .plan-teaser-h { font-size: 19px; }
+  .plan-timeline { grid-template-columns: 1fr; gap: 8px; margin-bottom: 18px; }
+  .plan-block { padding: 12px 12px 10px; }
+  .plan-gate-fields { grid-template-columns: 1fr; }
+}
+
 /* Q9 · company-info form rendered inside .modal-options. Stacks the
    fields vertically so it doesn't compete with the multi-choice stack
    above it visually. Submit button styled like a primary CTA. */
@@ -2535,13 +2688,37 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       </div>
       <p class="modal-result-text" id="resultText">A six-month Veerpoint cycle would start by sharpening positioning, then move you into a repeatable close pattern. By M6 you'd have a self-sustaining engine.</p>
 
-      <div class="modal-gate">
-        <div class="modal-gate-l">YOUR PERSONALISED REPORT</div>
-        <div class="modal-gate-q">Get the full plan as a PDF<span class="stop">.</span></div>
-        <p class="modal-gate-sub">Your answers, the stage we'd start at, the cycle breakdown, and an indicative scope. Sent in 60 seconds.</p>
-        <form class="modal-gate-form" onsubmit="vpQuizSend(event)">
-          <input type="email" id="quizEmail" placeholder="jordan@yourcompany.com" required autocomplete="email">
-          <button type="submit">Send me the PDF →</button>
+      <!-- 90-day plan teaser · three-block timeline + phone+email gate.
+           The exec snapshot above is free; the full plan unlocks once
+           the user drops phone + email. -->
+      <div class="plan-teaser">
+        <div class="plan-teaser-eyebrow"><span class="dot"></span>YOUR FREE 90-DAY PLAN</div>
+        <div class="plan-teaser-h">Your go-to-market plan, built around your stage<span class="stop">.</span></div>
+        <p class="plan-teaser-sub">Three months. Three phases. Sent to your inbox.</p>
+        <div class="plan-timeline">
+          <div class="plan-block">
+            <div class="plan-block-days">DAY 1 – 30</div>
+            <div class="plan-block-title">Foundations</div>
+            <p class="plan-block-body">Sharpen positioning, calibrate ICP, launch outbound. Pipeline starts moving by week 4.</p>
+          </div>
+          <div class="plan-block">
+            <div class="plan-block-days">DAY 31 – 60</div>
+            <div class="plan-block-title">First closes</div>
+            <p class="plan-block-body">Discovery, demos, structured close motion. First closes by week 8 – 9.</p>
+          </div>
+          <div class="plan-block">
+            <div class="plan-block-days">DAY 61 – 90</div>
+            <div class="plan-block-title">Repeatable engine</div>
+            <p class="plan-block-body">Productise what works. Documented playbook, sequences live, ready to scale.</p>
+          </div>
+        </div>
+        <form class="plan-gate-form" onsubmit="vpQuizSend(event)">
+          <div class="plan-gate-fields">
+            <input type="tel" id="quizPhone" placeholder="+34 600 000 000" required autocomplete="tel" inputmode="tel">
+            <input type="email" id="quizEmail" placeholder="jordan@yourcompany.com" required autocomplete="email">
+          </div>
+          <button type="submit">Send me the 90-day plan <span class="arrow">→</span></button>
+          <p class="plan-gate-note">Sent in 60 seconds. Unsubscribe in one click.</p>
         </form>
       </div>
     </div>
@@ -2549,8 +2726,8 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <!-- DONE -->
     <div id="quizDone" class="modal-done" style="display: none">
       <div class="check">✓</div>
-      <h3>Sent<span class="stop">.</span></h3>
-      <p>Check <strong id="doneEmail"></strong> in a minute. If you don't see it, look in promotions.</p>
+      <h3>Your 90-day plan is on the way<span class="stop">.</span></h3>
+      <p>Sent to <strong id="doneEmail"></strong>. Check your inbox in a minute (or your promotions tab). We'll follow up to walk you through it.</p>
     </div>
   </div>
 </div>
@@ -2663,8 +2840,8 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       q: "Quick context — where can we find you?",
       sub: "We use this to match your six-month plan to your motion.",
       fields: [
-        { name: 'website',  label: 'Company website',     placeholder: 'https://your-company.com',     type: 'url',  required: true  },
-        { name: 'social',   label: 'LinkedIn or social',  placeholder: 'linkedin.com/company/...',     type: 'text', required: false },
+        { name: 'website',  label: 'Company website',     placeholder: 'your-company.com',           type: 'text', required: false },
+        { name: 'social',   label: 'LinkedIn or social',  placeholder: 'linkedin.com/company/...',   type: 'text', required: false },
       ],
     },
   ];
@@ -2806,9 +2983,17 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   };
   window.vpQuizSend = function(e) {
     e.preventDefault();
-    const v = document.getElementById('quizEmail').value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return;
-    document.getElementById('doneEmail').textContent = v;
+    const email = document.getElementById('quizEmail').value.trim();
+    const phone = document.getElementById('quizPhone').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('quizEmail').focus();
+      return;
+    }
+    if ((phone.match(/\d/g) || []).length < 6) {
+      document.getElementById('quizPhone').focus();
+      return;
+    }
+    document.getElementById('doneEmail').textContent = email;
     step++; render();
   };
 
