@@ -2123,12 +2123,16 @@
     position: relative;
     aspect-ratio: 5 / 4;
     background:
-      radial-gradient(ellipse 60% 55% at 45% 65%, rgba(180,150,120,0.06) 0%, transparent 70%),
-      linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 60%),
+      radial-gradient(ellipse 80% 65% at 30% 60%, rgba(160,64,34,0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 100% 80% at 50% 50%, rgba(40,30,28,0) 40%, rgba(0,0,0,0.45) 100%),
       var(--vp-ink);
     border: 1px solid rgba(255,255,255,0.10);
     border-radius: 4px;
     overflow: hidden;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(0,0,0,0.35),
+      0 1px 2px rgba(0,0,0,0.4);
   }
   .map-stage::after {
     /* corner ticks · gives it a "scope/instrument" feel */
@@ -2181,29 +2185,15 @@
 
   .map-svg { width: 100%; height: 100%; display: block; position: relative; z-index: 1; }
   .map-svg .graticule {
-    stroke: rgba(255,255,255,0.10);
-    stroke-width: 0.6;
+    stroke: rgba(255,255,255,0.05);
+    stroke-width: 0.5;
     fill: none;
   }
-  /* Europe landmass fill · sits behind the dot grid so the continent
-     reads as a distinct shape against the dark ocean. Faint cream-tinted
-     stroke gives the coastline definition without dominating. */
-  .map-svg .europe-mass {
-    fill: rgba(244, 242, 238, 0.05);
-    stroke: rgba(244, 242, 238, 0.22);
-    stroke-width: 0.8;
-    stroke-linejoin: round;
-  }
-  .map-stage.vp-in .europe-mass {
-    fill: rgba(244, 242, 238, 0.08);
-    stroke: rgba(244, 242, 238, 0.32);
-  }
-
   .map-svg .land-dot {
-    fill: rgba(255,255,255,0.40);
+    fill: rgba(255,255,255,0.32);
     transition: fill .4s ease;
   }
-  .map-stage.vp-in .land-dot { fill: rgba(255,255,255,0.52); }
+  .map-stage.vp-in .land-dot { fill: rgba(255,255,255,0.44); }
 
   /* Arcs · Barcelona HQ → every city */
   .map-svg .arc {
