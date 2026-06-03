@@ -578,27 +578,34 @@
     path.style.strokeDasharray  = total;
     path.style.strokeDashoffset = total;
 
-    function compute() {
+    // Smoothing: scroll events update pTarget; a rAF loop interpolates
+    // pCurrent toward it with LERP. So the dot/curve glide between
+    // scroll positions instead of snapping each tick — and we only
+    // touch DOM once per frame max.
+    let pTarget  = 0;
+    let pCurrent = 0;
+    let rafRunning = false;
+    const LERP = 0.18;          // 0 = no movement, 1 = no smoothing
+    const EPSILON = 0.0008;
+
+    function readTarget() {
       const rect = section.getBoundingClientRect();
       const vh   = window.innerHeight || document.documentElement.clientHeight;
       // Stretched mapping so the curve draws gradually across more
-      // scroll distance — the user can watch the dot walk from M1-M2
-      // through M3-M4 to M5-M6 instead of it being over in half a
-      // viewport.
+      // scroll distance:
       //   start: top is 200px below the fold (slight early lead-in)
-      //   end:   top is 15% down the viewport (section is well into
-      //          view by the time the dot lands on M5-M6)
-      // Net distance ≈ 1.7-2× the previous range.
+      //   end:   top is 15% down the viewport
       const startTop = vh + 200;
       const endTop   = vh * 0.15;
       const raw      = (startTop - rect.top) / (startTop - endTop);
-      const p        = Math.max(0, Math.min(1, raw));
+      pTarget        = Math.max(0, Math.min(1, raw));
+    }
 
+    function paint(p) {
       path.style.strokeDashoffset = total * (1 - p);
       const pt = path.getPointAtLength(total * p);
       dot.setAttribute('cx', pt.x);
       dot.setAttribute('cy', pt.y);
-
       for (let i = 0; i < stones.length; i++) {
         const active = p >= THRESHOLDS[i];
         stones[i].classList.toggle('is-active', active);
@@ -606,11 +613,39 @@
       }
     }
 
-    // Resize → re-measure path length (responsive SVG)
-    function remeasure() { total = path.getTotalLength(); path.style.strokeDasharray = total; compute(); }
+    function tick() {
+      pCurrent += (pTarget - pCurrent) * LERP;
+      if (Math.abs(pTarget - pCurrent) < EPSILON) {
+        pCurrent = pTarget;
+        paint(pCurrent);
+        rafRunning = false;
+        return;
+      }
+      paint(pCurrent);
+      requestAnimationFrame(tick);
+    }
 
-    compute();
-    window.addEventListener('scroll', compute, { passive: true });
+    function kick() {
+      if (rafRunning) return;
+      rafRunning = true;
+      requestAnimationFrame(tick);
+    }
+
+    function onScroll() { readTarget(); kick(); }
+
+    // Resize → re-measure path length (responsive SVG)
+    function remeasure() {
+      total = path.getTotalLength();
+      path.style.strokeDasharray = total;
+      readTarget();
+      pCurrent = pTarget;
+      paint(pCurrent);
+    }
+
+    readTarget();
+    pCurrent = pTarget;
+    paint(pCurrent);
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', remeasure);
   })();
 
