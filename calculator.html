@@ -472,6 +472,199 @@ h1 {
   margin-top: 4px;
 }
 
+/* DIAGNOSTIC QUIZ + RESULT · 9-question flow that replaces the old
+   two-input comparison. Single column layout overrides the .calc grid. */
+.calc.calc-diagnostic { display: block; max-width: 880px; margin: 0 auto; }
+.calc.calc-diagnostic > .output { display: block; }
+.cd-quiz, .cd-result {
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  padding: 32px;
+  margin-bottom: 24px;
+}
+.cd-step { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.cd-step-label {
+  font-family: var(--vp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--vp-ink-70);
+  white-space: nowrap;
+}
+.cd-step-bar { display: flex; gap: 4px; flex: 1; min-width: 0; max-width: 220px; }
+.cd-step-bar span {
+  flex: 1 1 0;
+  height: 3px;
+  background: var(--vp-border-strong, var(--vp-border));
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+.cd-step-bar span.done { background: var(--vp-terracotta); }
+.cd-q {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 8px;
+  color: var(--vp-ink);
+}
+.cd-sub { font-size: 14px; color: var(--vp-ink-70); margin: 0 0 22px; }
+.cd-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+.cd-opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--vp-warm-white);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: var(--vp-ink);
+  width: 100%;
+  transition: border-color 0.15s, background 0.15s;
+}
+.cd-opt:hover { border-color: var(--vp-terracotta); background: rgba(160, 64, 34, 0.04); }
+.cd-opt.is-active { border-color: var(--vp-terracotta); background: rgba(160, 64, 34, 0.08); }
+.cd-opt .key {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--vp-terracotta);
+  width: 16px;
+  flex: 0 0 auto;
+}
+.cd-opt .lbl { font-size: 14px; line-height: 1.4; }
+.cd-opt-multi.is-active::after {
+  content: '✓';
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--vp-terracotta);
+}
+.cd-nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.cd-back, .cd-next {
+  padding: 12px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cd-back {
+  background: transparent;
+  border: 1px solid var(--vp-border);
+  color: var(--vp-ink-70);
+}
+.cd-back:disabled { opacity: 0.35; cursor: not-allowed; }
+.cd-next {
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cd-next:hover { background: var(--vp-terracotta-hover, #c25a32); }
+.cd-next .arrow { transition: transform 0.15s; }
+.cd-next:hover .arrow { transform: translateX(3px); }
+
+.cd-result-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--vp-terracotta);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.cd-result-eyebrow .dot {
+  width: 6px; height: 6px;
+  background: var(--vp-terracotta);
+  border-radius: 1px;
+}
+.cd-result-lede {
+  font-family: var(--vp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vp-ink-70);
+  margin: 0 0 8px;
+}
+.cd-roi-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+}
+.cd-roi {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 68px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--vp-terracotta);
+  font-variant-numeric: tabular-nums;
+}
+.cd-roi-unit {
+  font-size: 15px;
+  color: var(--vp-ink);
+  max-width: 32ch;
+  line-height: 1.4;
+}
+.cd-roi-unit strong { color: var(--vp-terracotta); }
+.cd-roi-interp {
+  font-size: 16px;
+  color: var(--vp-ink);
+  font-weight: 600;
+  margin: 0 0 24px;
+}
+.cd-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.cd-metric {
+  background: var(--vp-paper);
+  border: 1px solid var(--vp-border);
+  border-radius: 4px;
+  padding: 14px 14px;
+}
+.cd-metric-label {
+  font-family: var(--vp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vp-ink-70);
+  margin-bottom: 6px;
+}
+.cd-metric-value {
+  font-family: var(--vp-font-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--vp-ink);
+}
+.cd-summary {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--vp-ink);
+  margin: 0;
+}
+@media (max-width: 760px) {
+  .cd-quiz, .cd-result { padding: 22px 20px; }
+  .cd-q { font-size: 20px; }
+  .cd-roi { font-size: 52px; }
+  .cd-metrics { grid-template-columns: 1fr; gap: 8px; }
+  .cd-metric-value { font-size: 18px; }
+}
+
 /* 90-DAY PLAN GATE · dark canvas with three timeline blocks +
    phone/email form. Replaces the old single-field email gate. */
 .gate.gate-plan {
@@ -829,81 +1022,40 @@ footer {
   <p class="lede">Nine questions, two minutes. We estimate what your sales engine returns for every €1 invested, where revenue may be leaking, and what should change before the next quarter. Get a free 90-day go-to-market plan with your results.</p>
 </section>
 
-<section class="calc">
-  <!-- INPUTS -->
-  <aside class="inputs">
-    <div class="inputs-hd">YOUR NUMBERS</div>
-    <div class="inputs-title">Two inputs<span class="stop">.</span></div>
-
-    <div class="field">
-      <label for="bdrSalary">BDR annual base salary</label>
-      <div class="input-prefix">
-        <span class="prefix">€</span>
-        <input id="bdrSalary" type="number" value="40000" step="2000" min="20000" max="120000" />
-      </div>
-      <div class="field-help">EU mid-market BDR ~€35–45k base. Adjust for your geography.</div>
-    </div>
-
-    <div class="field">
-      <label for="mgrSalary">Sales manager annual base salary</label>
-      <div class="input-prefix">
-        <span class="prefix">€</span>
-        <input id="mgrSalary" type="number" value="72000" step="2000" min="40000" max="200000" />
-      </div>
-      <div class="field-help">EU mid-market sales manager ~€65–85k base.</div>
-    </div>
-
-    <div class="locked-row">
-      <div class="locked-item"><span class="locked-l">BDRs</span><span class="locked-v">2</span></div>
-      <div class="locked-item"><span class="locked-l">Sales manager</span><span class="locked-v">1</span></div>
-      <div class="locked-item"><span class="locked-l">Engagement window</span><span class="locked-v">6 months</span></div>
-      <div class="locked-item"><span class="locked-l">Veerpoint rate</span><span class="locked-v">€4,000 / mo</span></div>
-    </div>
-  </aside>
-
+<section class="calc calc-diagnostic">
   <!-- OUTPUT -->
   <div class="output">
-    <div class="compare">
-      <!-- HIRE -->
-      <div class="cost-card hire">
-        <div class="cost-tag">OPTION A · HIRE 2 BDRS + 1 MANAGER</div>
-        <div class="cost-name">2 BDRs + 1 sales manager, ramping<span class="stop">.</span></div>
-        <div class="cost-total" id="hireTotal">€76,000<span class="stop">.</span></div>
-        <div class="cost-period">6 MONTHS · BASE SALARY ONLY</div>
-        <div class="cost-breakdown" id="hireBreakdown">
-          <!-- filled by JS -->
-        </div>
+    <!-- 9-question diagnostic quiz · spec: prompts/sales-cost-calculator-summary.md -->
+    <div class="cd-quiz" id="cdQuiz">
+      <div class="cd-step">
+        <span class="cd-step-label" id="cdStepLabel">QUESTION 1 OF 9</span>
+        <span class="cd-step-bar" id="cdStepBar"></span>
       </div>
-
-      <!-- VEERPOINT -->
-      <div class="cost-card veer">
-        <div class="cost-tag">OPTION B · RUN A VEERPOINT CYCLE</div>
-        <div class="cost-name">Senior operators, 6 months<span class="stop">.</span></div>
-        <div class="cost-total" id="veerTotal">€24,000<span class="stop">.</span></div>
-        <div class="cost-period">6-MONTH ENGAGEMENT · KICKOFF DAY 14</div>
-        <div class="cost-breakdown" id="veerBreakdown">
-          <!-- filled by JS -->
-        </div>
+      <h2 class="cd-q" id="cdQ">Loading…</h2>
+      <p class="cd-sub" id="cdSub"></p>
+      <div class="cd-options" id="cdOptions"></div>
+      <div class="cd-nav">
+        <button type="button" class="cd-back" id="cdBack" disabled>← Back</button>
+        <button type="button" class="cd-next" id="cdNext" hidden>Continue <span class="arrow">→</span></button>
       </div>
     </div>
 
-    <!-- ROI -->
-    <div class="roi">
-      <div class="roi-left">
-        <div class="label">SAVINGS DELTA</div>
-        <h3>Hiring costs you <span id="roiNarrative">3.2x</span> more<span class="stop">.</span></h3>
-        <p id="roiSavings">You save €52,000 in cash — and that's base salary only. Add social, bonus, tools, and 90 days of ramp and the gap widens fast.</p>
+    <!-- Sales ROI snapshot · revealed on quiz complete -->
+    <div class="cd-result" id="cdResult" hidden>
+      <div class="cd-result-eyebrow"><span class="dot"></span>YOUR SALES ROI SNAPSHOT</div>
+      <p class="cd-result-lede">Based on your answers, your sales engine appears to generate approximately:</p>
+      <div class="cd-roi-row">
+        <span class="cd-roi" id="cdRoi">€--.--</span>
+        <span class="cd-roi-unit">in new revenue for every <strong>€1</strong> invested into sales</span>
       </div>
-      <div>
-        <div class="roi-big" id="roiMultiple">3.2x<span class="stop">.</span></div>
-        <div class="roi-big-sub">MORE EXPENSIVE</div>
-      </div>
+      <p class="cd-roi-interp" id="cdInterp"></p>
+      <div class="cd-metrics" id="cdMetrics"></div>
+      <p class="cd-summary" id="cdSummary"></p>
     </div>
 
-    <!-- 90-day plan teaser · hype copy + phone+email gate. The cost
-         breakdown above is free; the personalised plan unlocks once
-         we have phone + email. -->
-    <div class="gate gate-plan">
+    <!-- 90-day plan teaser · hype copy + phone+email gate. Hidden
+         until the diagnostic completes. -->
+    <div class="gate gate-plan" id="planGateContainer" hidden>
       <div class="gate-plan-head">
         <div class="label"><span class="dot"></span>YOUR FREE PERSONALISED PLAN</div>
         <h3>Unlock your 90-day go-to-market plan, written for your exact numbers<span class="stop">.</span></h3>
@@ -928,7 +1080,7 @@ footer {
 
     <!-- FOOTNOTE -->
     <div class="footnote">
-      <strong>METHODOLOGY ·</strong> Hire cost models 2 BDRs and 1 sales manager in seat for six months at <b>base salary only</b> — annual base × (6 / 12). Deliberately excludes the 30% employer social security &amp; benefits loading, 5% holiday and sick accrual, tooling, recruiter fees, bonus, and the empirical 30% mis-hire rate against a €50k replacement cost. The real number is materially higher; we're showing the floor. Veerpoint cycle priced at the standard €4,000 monthly retainer × 6 months — no commission, no ramp, off-ramp every 30 days. Compete on price.
+      <strong>METHODOLOGY ·</strong> Revenue is estimated from deal volume × ticket size using midpoint values per band. True sales cost combines paid lead-gen spend, sales labour (estimated from setup), and founder hidden cost (weekly founder sales hours × €100 × 4.33). Revenue per €1 invested is revenue ÷ true cost. Benchmarks are conservative broad-market ranges and depend on industry, lead source, deal size, and sales cycle. The result is a directional snapshot — the full plan is hand-built by our operators.
     </div>
   </div>
 </section>
@@ -976,77 +1128,323 @@ footer {
 </footer>
 
 <script>
-// ============ MATH ============
-// Per spec: 2 BDRs + 1 sales manager at BASE SALARY ONLY for a full
-// 6-month Veerpoint engagement, vs Veerpoint at €4k/mo for those same
-// 6 months. Social / holiday / recruiter / tooling / mis-hire are
-// deliberately excluded so the hire side reflects the floor only —
-// the real number is materially higher.
-const BDR_HEADS          = 2;
-const MGR_HEADS          = 1;
-const ENGAGEMENT_MONTHS  = 6;
-const VP_MONTHLY_RATE    = 4000;
+// ============ SALES TEAM COST CALCULATOR · DIAGNOSTIC ============
+// Spec: prompts/sales-cost-calculator-summary.md
+// 9-question diagnostic, midpoint maths, priority-ordered diagnosis,
+// template-based executive summary.
 
-function fmtEur(n) {
-  if (n >= 1000000) return '€' + (n/1000000).toFixed(2) + 'M';
-  if (n >= 1000) return '€' + Math.round(n/1000) + 'k';
-  return '€' + Math.round(n);
-}
+const QUESTIONS = [
+  { q: "What setup best describes your current sales function?", sub: "Pick the closest match.",
+    opts: [
+      { k: 'A', t: "No real sales setup yet" },
+      { k: 'B', t: "Mostly founder-led" },
+      { k: 'C', t: "Founder + freelancer / part-time support" },
+      { k: 'D', t: "1 full-time salesperson" },
+      { k: 'E', t: "2–3 full-time salespeople" },
+      { k: 'F', t: "4+ full-time salespeople" },
+      { k: 'G', t: "Other" }] },
+  { q: "How much founder or senior leadership time goes into sales each week?", sub: "Best estimate.",
+    opts: [
+      { k: 'A', t: "Almost none" },
+      { k: 'B', t: "1–3 hours" },
+      { k: 'C', t: "4–7 hours" },
+      { k: 'D', t: "8–15 hours" },
+      { k: 'E', t: "15+ hours" },
+      { k: 'F', t: "Sales basically depends on the founder" }] },
+  { q: "Why do good leads usually fall off?", sub: "Pick the closest match.",
+    opts: [
+      { k: 'A', t: "We reply too slowly" },
+      { k: 'B', t: "Follow-up is not consistent enough" },
+      { k: 'C', t: "The pitch does not create enough urgency" },
+      { k: 'D', t: "No one clearly owns the next step" },
+      { k: 'E', t: "The lead was not qualified properly" },
+      { k: 'F', t: "The founder is still needed to build trust or close" },
+      { k: 'G', t: "The proposal does not convert well enough" },
+      { k: 'H', t: "Price, budget, or timing gets in the way" },
+      { k: 'I', t: "We don't have enough good leads to tell" },
+      { k: 'J', t: "I'm not sure" }] },
+  { q: "How long is your usual sales cycle?", sub: "Typical time from first contact to close.",
+    opts: [
+      { k: 'A', t: "Same day / impulse decision" },
+      { k: 'B', t: "A few days" },
+      { k: 'C', t: "1–2 weeks" },
+      { k: 'D', t: "2–4 weeks" },
+      { k: 'E', t: "1–3 months" },
+      { k: 'F', t: "3+ months" },
+      { k: 'G', t: "It varies too much to say" },
+      { k: 'H', t: "I'm not sure" }] },
+  { q: "How many new customers or deals do you close per month?", sub: "Average across the last quarter.",
+    opts: [
+      { k: 'A', t: "0–1" },
+      { k: 'B', t: "2–5" },
+      { k: 'C', t: "6–10" },
+      { k: 'D', t: "11–20" },
+      { k: 'E', t: "21–50" },
+      { k: 'F', t: "50+" },
+      { k: 'G', t: "I'm not sure" }] },
+  { q: "Is your offer low-ticket or high-ticket?", sub: "Average deal size.",
+    opts: [
+      { k: 'A', t: "Under €500" },
+      { k: 'B', t: "€500–€2,000" },
+      { k: 'C', t: "€2,000–€10,000" },
+      { k: 'D', t: "€10,000–€50,000" },
+      { k: 'E', t: "€50,000+" },
+      { k: 'F', t: "It varies too much" }] },
+  { q: "Which channels currently bring you sales leads?", sub: "Select all that apply.", multi: true,
+    opts: [
+      { k: 'A', t: "Meta Ads" },
+      { k: 'B', t: "Google Ads" },
+      { k: 'C', t: "LinkedIn Ads" },
+      { k: 'D', t: "TikTok Ads" },
+      { k: 'E', t: "YouTube Ads" },
+      { k: 'F', t: "SEO / organic content" },
+      { k: 'G', t: "Referrals / word of mouth" },
+      { k: 'H', t: "Events / partnerships" },
+      { k: 'I', t: "Cold outreach" },
+      { k: 'J', t: "Agencies / lead providers" },
+      { k: 'K', t: "Other" },
+      { k: 'L', t: "We don't have a clear lead source" }] },
+  { q: "Roughly how much do you invest per month across paid lead generation?", sub: "Ads, agencies, sponsored campaigns, events, lead providers, paid partnerships.",
+    opts: [
+      { k: 'A', t: "€0" },
+      { k: 'B', t: "€1–€1,000" },
+      { k: 'C', t: "€1,000–€3,000" },
+      { k: 'D', t: "€3,000–€7,000" },
+      { k: 'E', t: "€7,000–€15,000" },
+      { k: 'F', t: "€15,000–€30,000" },
+      { k: 'G', t: "€30,000+" },
+      { k: 'H', t: "I'm not sure" }] },
+  { q: "Roughly how many new leads or enquiries do you receive per month?", sub: "Across all channels combined.",
+    opts: [
+      { k: 'A', t: "0–10" },
+      { k: 'B', t: "11–30" },
+      { k: 'C', t: "31–75" },
+      { k: 'D', t: "76–150" },
+      { k: 'E', t: "151–300" },
+      { k: 'F', t: "300+" },
+      { k: 'G', t: "I'm not sure" }] },
+];
+
+// Midpoint tables per spec
+const SETUP_LABOR    = { A: 0,   B: 500, C: 1500,D: 4000,E: 10000,F: 18000,G: 1000 };
+const FOUNDER_HOURS  = { A: 0,   B: 2,   C: 5.5, D: 11.5,E: 17.5, F: 20 };
+const DEALS_MIDPOINT = { A: 0.5, B: 3.5, C: 8,   D: 15.5,E: 35.5, F: 60,   G: 1 };
+const TICKET_MIDPOINT= { A: 250, B: 1250,C: 6000,D: 30000,E: 75000,F: 5000 };
+const SPEND_MIDPOINT = { A: 0,   B: 500, C: 2000,D: 5000,E: 11000,F: 22500,G: 35000,H: 1000 };
+const LEADS_MIDPOINT = { A: 5,   B: 20.5,C: 53,  D: 113, E: 225,  F: 350,  G: 20 };
+
+// Index map · 0=Q1 setup, 1=Q2 founder hrs, 2=Q3 bottleneck, 3=Q4 cycle,
+// 4=Q5 deals, 5=Q6 ticket, 6=Q7 channels (multi), 7=Q8 spend, 8=Q10 leads
+let qIdx = 0;
+let qAnswers = [];
+
 function fmtEurFull(n) {
+  if (!isFinite(n) || n <= 0) return '€0';
   return '€' + Math.round(n).toLocaleString('en-US');
 }
-
-function calculate() {
-  const bdrSalary = +document.getElementById('bdrSalary').value || 0;
-  const mgrSalary = +document.getElementById('mgrSalary').value || 0;
-
-  // ----- HIRE: base salary only, full 6-month engagement -----
-  const bdrCost   = BDR_HEADS * bdrSalary * (ENGAGEMENT_MONTHS / 12);
-  const mgrCost   = MGR_HEADS * mgrSalary * (ENGAGEMENT_MONTHS / 12);
-  const hireTotal = bdrCost + mgrCost;
-
-  // ----- VEERPOINT: flat retainer × 6 months -----
-  const veerTotal = VP_MONTHLY_RATE * ENGAGEMENT_MONTHS;
-
-  // ----- COMPARISON -----
-  const multiple = veerTotal > 0 ? hireTotal / veerTotal : 0;
-  const savings  = hireTotal - veerTotal;
-
-  // ----- RENDER -----
-  document.getElementById('hireTotal').innerHTML = fmtEurFull(hireTotal) + '<span class="stop">.</span>';
-  document.getElementById('veerTotal').innerHTML = fmtEurFull(veerTotal) + '<span class="stop">.</span>';
-  document.getElementById('roiMultiple').innerHTML = multiple.toFixed(1) + 'x<span class="stop">.</span>';
-  document.getElementById('roiNarrative').textContent = multiple.toFixed(1) + 'x';
-  document.getElementById('roiSavings').textContent =
-    'You save ' + fmtEur(savings) + ' in cash — and that’s base salary only. Add social, bonus, tools, and 90 days of ramp and the gap widens fast.';
-
-  document.getElementById('hireBreakdown').innerHTML =
-    line('BDR base · 2 × 6 mo', bdrCost) +
-    line('Manager base · 1 × 6 mo', mgrCost) +
-    line('Social security & benefits · 30%', 0, 'NOT INCLUDED') +
-    line('Holiday + sick accrual · 5%', 0, 'NOT INCLUDED') +
-    line('Bonus, tooling, recruiter fees', 0, 'NOT INCLUDED') +
-    line('Mis-hire risk · 30% × €50k', 0, 'NOT INCLUDED');
-
-  document.getElementById('veerBreakdown').innerHTML =
-    line('Retainer · €4k × 6 months', veerTotal) +
-    line('Ramp', 0, 'NONE · DAY 14') +
-    line('Recruiter fees, tooling', 0, 'INCLUDED') +
-    line('Mis-hire risk', 0, 'OFF-RAMP EVERY 30 DAYS') +
-    line('Founder management', 0, 'WEEKLY REVIEW ONLY');
+function fmtEur(n) {
+  if (!isFinite(n) || n <= 0) return '€0';
+  if (n >= 1e6)   return '€' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 10000) return '€' + Math.round(n / 1000) + 'k';
+  if (n >= 1000)  return '€' + (n / 1000).toFixed(1) + 'k';
+  return '€' + Math.round(n);
 }
 
-function line(lbl, val, override) {
-  const right = override ? `<span class="val">${override}</span>` : `<span class="val">${fmtEur(val)}</span>`;
-  return `<div class="cost-line"><span class="lbl">${lbl}</span>${right}</div>`;
+function calcMetrics() {
+  const a = qAnswers;
+  const setupCost   = SETUP_LABOR[a[0]] ?? 0;
+  const founderHrs  = FOUNDER_HOURS[a[1]] ?? 0;
+  const founderCost = founderHrs * 100 * 4.33;
+  const deals       = DEALS_MIDPOINT[a[4]] ?? 1;
+  const ticket      = TICKET_MIDPOINT[a[5]] ?? 5000;
+  const spend       = SPEND_MIDPOINT[a[7]] ?? 1000;
+  const leads       = LEADS_MIDPOINT[a[8]] ?? 20;
+
+  const monthlyRev  = deals * ticket;
+  const totalCost   = spend + setupCost + founderCost;
+  const roi         = totalCost > 0 ? monthlyRev / totalCost : 0;
+  const conversion  = leads > 0 ? deals / leads : 0;
+  const costPerLead = leads > 0 ? spend / leads : 0;
+  const costPerDeal = deals > 0 ? totalCost / deals : 0;
+
+  return {
+    Q1: a[0], Q3: a[2], Q4: a[3], Q7: a[6] || [],
+    setupCost, founderHrs, founderCost,
+    deals, ticket, spend, leads,
+    monthlyRev, totalCost, roi, conversion, costPerLead, costPerDeal,
+    hasTeam: ['D', 'E', 'F'].includes(a[0]),
+  };
 }
 
-document.querySelectorAll('#bdrSalary, #mgrSalary').forEach(el => {
-  el.addEventListener('input', calculate);
-  el.addEventListener('change', calculate);
+function pickDiagnosis(m) {
+  // Exception: ROI strong but founder heavy
+  if (m.roi >= 8 && m.founderHrs >= 4) return 'healthy_unscalable';
+  if (m.roi < 1) return 'not_paying';
+  if (m.roi < 2 && m.founderHrs >= 4) return 'not_paying';
+  if (m.deals > 0 && m.costPerDeal > m.ticket * 0.6) return 'not_paying';
+  if (m.founderHrs >= 8) return 'founder_bottleneck';
+  if (qAnswers[1] === 'F') return 'founder_bottleneck';
+  if (m.Q3 === 'F') return 'founder_bottleneck';
+  const leakageQ3 = ['A','B','C','D','E','G'];
+  if (m.leads >= 31 && m.deals <= 10) return 'leakage';
+  if (leakageQ3.includes(m.Q3)) return 'leakage';
+  if (m.conversion < 0.02 && m.leads >= 30) return 'leakage';
+  if (m.spend >= 7000) return 'paid_inefficiency';
+  if (m.spend > 0 && m.conversion < 0.02) return 'paid_inefficiency';
+  if (m.hasTeam && m.deals <= 5 && m.roi < 4) return 'productivity_gap';
+  if (m.leads <= 30 && m.deals <= 5 && m.spend <= 500) return 'lead_volume';
+  if (m.roi >= 8) return 'healthy_unscalable';
+  return 'not_paying';
+}
+
+const DIAGNOSES = {
+  not_paying: {
+    verdict: "your sales setup may be creating activity, but not enough revenue for every €1 invested.",
+    hook: "In the full report, we'll break down what would need to change for your sales engine to become profitable — whether that's lowering cost per lead, improving close rate, shortening the sales cycle, or replacing manual sales effort with a managed process.",
+  },
+  founder_bottleneck: {
+    verdict: "your sales process may be profitable, but founder-dependent sales is expensive sales.",
+    hook: "In the full report, we'll estimate how much founder time could potentially be removed, where handoff should happen, and how a managed sales team could protect conversion while reducing senior leadership involvement.",
+  },
+  leakage: {
+    verdict: "you may not need more leads first — you may need to stop losing the leads already entering your pipeline.",
+    hook: "In the full report, we'll show where leads may be dropping off, what that could be costing each month, and how a managed sales process could help convert more of the demand already created.",
+  },
+  paid_inefficiency: {
+    verdict: "you are already paying for demand — the risk is that your sales process is not extracting enough revenue from it.",
+    hook: "In the full report, we'll estimate where paid demand may be under-monetised and whether better response speed, follow-up, qualification, or outsourcing could improve revenue per €1 spent.",
+  },
+  productivity_gap: {
+    verdict: "the question is not whether you have salespeople — it is whether each sales euro is producing enough pipeline and closed revenue.",
+    hook: "In the full report, we'll compare your current sales output against team cost and show whether better management, stronger follow-up, clearer ownership, or outsourcing could improve performance.",
+  },
+  lead_volume: {
+    verdict: "before scaling sales headcount, you may need a more predictable lead engine.",
+    hook: "In the full report, we'll estimate how much qualified lead volume may be needed for sales to pay for itself predictably — and whether internal hiring or a managed sales model makes more sense at this stage.",
+  },
+  healthy_unscalable: {
+    verdict: "your sales engine appears profitable — now the opportunity is making that performance repeatable without founder pressure.",
+    hook: "In the full report, we'll show what is already working, what may break as volume increases, and where a managed sales process could help scale without unnecessary internal cost.",
+  },
+};
+
+function pickBenchmark(m, diag) {
+  if (diag === 'founder_bottleneck' || (m.founderHrs >= 4)) {
+    return `At roughly ${m.founderHrs} hours/week, founder sales involvement may represent around ${fmtEurFull(m.founderCost)}/month in hidden sales cost.`;
+  }
+  if (diag === 'leakage' && m.leads > 0) {
+    const convPct = (m.conversion * 100).toFixed(1);
+    const cmp = m.conversion < 0.02 ? 'below' : m.conversion < 0.05 ? 'around' : m.conversion < 0.10 ? 'above' : 'well above';
+    return `Your estimated lead-to-customer conversion is around ${convPct}%, which appears ${cmp} broad B2B benchmark ranges of roughly 2–5%, depending on industry, lead source, and sales cycle.`;
+  }
+  if (diag === 'paid_inefficiency' && m.spend > 0 && m.leads > 0) {
+    return `Your estimated cost per lead is around ${fmtEurFull(m.costPerLead)}. For your ticket size, that may be acceptable — but only if response speed, qualification, and follow-up are strong.`;
+  }
+  if (diag === 'not_paying') {
+    return "Sales engines tend to become commercially interesting once they generate €3–€5 back for every €1 invested. The current spread suggests the system has not yet crossed that line.";
+  }
+  if (diag === 'productivity_gap') {
+    return `With ${m.deals} deals/month against ${fmtEurFull(m.totalCost)} in true sales cost, the cost per closed deal appears around ${fmtEurFull(m.costPerDeal)} — high enough to question whether each sales euro is producing enough pipeline.`;
+  }
+  if (diag === 'lead_volume') {
+    return `At roughly ${Math.round(m.leads)} leads/month, the sample size is small enough that a single weak month skews everything. Sales engines tend to need predictable lead volume before headcount or paid spend can be optimised.`;
+  }
+  return "Sales engines tend to become commercially interesting once they generate €3–€5 back for every €1 invested. Yours appears above that range — the open question is whether the system scales without the founder.";
+}
+
+function getInterpretation(roi) {
+  if (roi < 1)  return "That suggests sales is not yet paying for itself.";
+  if (roi < 2)  return "That's a weak and fragile ratio — the economics may break under stress.";
+  if (roi < 4)  return "That's acceptable but suggests there's room to optimise.";
+  if (roi < 8)  return "That reads as a healthy commercial engine.";
+  return "That's strong — but the question becomes whether it scales without breaking.";
+}
+
+function buildSummary(m, diag) {
+  return [
+    getInterpretation(m.roi),
+    pickBenchmark(m, diag),
+    'Executive verdict: ' + DIAGNOSES[diag].verdict,
+    DIAGNOSES[diag].hook,
+  ].join(' ');
+}
+
+function renderQ() {
+  const Q = QUESTIONS[qIdx];
+  document.getElementById('cdStepLabel').textContent = 'QUESTION ' + (qIdx + 1) + ' OF ' + QUESTIONS.length;
+  document.getElementById('cdStepBar').innerHTML = QUESTIONS.map((_, i) =>
+    '<span class="' + (i <= qIdx ? 'done' : '') + '"></span>').join('');
+  document.getElementById('cdQ').textContent = Q.q;
+  document.getElementById('cdSub').textContent = Q.sub || '';
+
+  const optsEl = document.getElementById('cdOptions');
+  const nextBtn = document.getElementById('cdNext');
+  const isLast = qIdx === QUESTIONS.length - 1;
+
+  if (Q.multi) {
+    const cur = qAnswers[qIdx] || [];
+    optsEl.innerHTML = Q.opts.map(o =>
+      '<button type="button" class="cd-opt cd-opt-multi ' + (cur.indexOf(o.k) >= 0 ? 'is-active' : '') + '" onclick="cdToggle(\'' + o.k + '\')">' +
+        '<span class="key">' + o.k + '</span><span class="lbl">' + o.t + '</span>' +
+      '</button>').join('');
+    nextBtn.hidden = false;
+    nextBtn.innerHTML = (isLast ? 'See my result' : 'Continue') + ' <span class="arrow">→</span>';
+  } else {
+    const cur = qAnswers[qIdx];
+    optsEl.innerHTML = Q.opts.map(o =>
+      '<button type="button" class="cd-opt ' + (cur === o.k ? 'is-active' : '') + '" onclick="cdPick(\'' + o.k + '\')">' +
+        '<span class="key">' + o.k + '</span><span class="lbl">' + o.t + '</span>' +
+      '</button>').join('');
+    nextBtn.hidden = true;
+  }
+  document.getElementById('cdBack').disabled = qIdx === 0;
+}
+
+window.cdPick = function (k) {
+  qAnswers[qIdx] = k;
+  if (qIdx < QUESTIONS.length - 1) { qIdx++; renderQ(); }
+  else { showResult(); }
+};
+window.cdToggle = function (k) {
+  if (!Array.isArray(qAnswers[qIdx])) qAnswers[qIdx] = [];
+  const arr = qAnswers[qIdx];
+  const i = arr.indexOf(k);
+  if (i >= 0) arr.splice(i, 1); else arr.push(k);
+  renderQ();
+};
+
+function showResult() {
+  const m = calcMetrics();
+  const diag = pickDiagnosis(m);
+
+  document.getElementById('cdQuiz').hidden = true;
+  document.getElementById('cdResult').hidden = false;
+  document.getElementById('planGateContainer').hidden = false;
+
+  document.getElementById('cdRoi').textContent = '€' + m.roi.toFixed(2);
+  document.getElementById('cdInterp').textContent = getInterpretation(m.roi);
+
+  const metrics = [
+    { label: 'Monthly revenue (est.)', value: fmtEur(m.monthlyRev) },
+    { label: 'True sales cost (est.)', value: fmtEur(m.totalCost) },
+    { label: 'Cost per closed deal',   value: fmtEur(m.costPerDeal) },
+  ];
+  document.getElementById('cdMetrics').innerHTML = metrics.map(s =>
+    '<div class="cd-metric"><div class="cd-metric-label">' + s.label + '</div>' +
+    '<div class="cd-metric-value">' + s.value + '</div></div>').join('');
+
+  document.getElementById('cdSummary').textContent = buildSummary(m, diag);
+
+  setTimeout(() => document.getElementById('cdResult').scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+}
+
+document.getElementById('cdBack').addEventListener('click', () => {
+  if (qIdx > 0) { qIdx--; renderQ(); }
 });
-
-calculate();
+document.getElementById('cdNext').addEventListener('click', () => {
+  if (qIdx < QUESTIONS.length - 1) { qIdx++; renderQ(); } else { showResult(); }
+});
+renderQ();
 
 // ============ 90-DAY PLAN GATE (phone + email) ============
 const gateBtn = document.getElementById('gate-btn');
