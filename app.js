@@ -581,13 +581,16 @@
     function compute() {
       const rect = section.getBoundingClientRect();
       const vh   = window.innerHeight || document.documentElement.clientHeight;
-      // Front-loaded mapping: animation starts BEFORE the section fully
-      // enters the viewport (top is still 100px below the fold) and is
-      // already DONE by the time the section reaches the viewport's
-      // vertical middle. So the dot lands on M5-M6 around the moment
-      // the headline is centred on screen — not later.
-      const startTop = vh + 100;
-      const endTop   = vh * 0.5;
+      // Stretched mapping so the curve draws gradually across more
+      // scroll distance — the user can watch the dot walk from M1-M2
+      // through M3-M4 to M5-M6 instead of it being over in half a
+      // viewport.
+      //   start: top is 200px below the fold (slight early lead-in)
+      //   end:   top is 15% down the viewport (section is well into
+      //          view by the time the dot lands on M5-M6)
+      // Net distance ≈ 1.7-2× the previous range.
+      const startTop = vh + 200;
+      const endTop   = vh * 0.15;
       const raw      = (startTop - rect.top) / (startTop - endTop);
       const p        = Math.max(0, Math.min(1, raw));
 
