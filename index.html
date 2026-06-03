@@ -2437,6 +2437,10 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
           <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="jordan@yourcompany.com" required />
         </div>
         <div class="field">
+          <label for="f-phone">Phone</label>
+          <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+34 600 000 000" required />
+        </div>
+        <div class="field">
           <label for="f-company">Company · stage</label>
           <input id="f-company" name="company" type="text" autocomplete="organization" placeholder="Lumen · Series A · B2B SaaS" />
         </div>
@@ -2901,9 +2905,9 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       var payload = {
         name:    form.elements['name'].value.trim(),
         email:   form.elements['email'].value.trim(),
+        phone:   form.elements['phone'].value.trim(),
         company: form.elements['company'].value.trim(),
         icp:     form.elements['icp'].value,
-        stage:   form.elements['stage'].value,
         note:    form.elements['note'].value.trim(),
         source:  leadSource(),
         ts:      new Date().toISOString(),
@@ -2911,7 +2915,9 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 
       if (!payload.name)  return showError('Please add your name so we know who we’re talking to.');
       if (!payload.email) return showError('We need a work email to send the diagnostic back.');
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return showError('That email doesn’t look right — double-check it.');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) return showError('That email doesn’t look right, double-check it.');
+      if (!payload.phone) return showError('A phone number helps us reach you faster, please add one.');
+      if ((payload.phone.match(/\d/g) || []).length < 6) return showError('That phone number looks too short, double-check it.');
 
       track('form_submit_attempt', { form: 'discovery' });
       submitBtn.disabled = true;
