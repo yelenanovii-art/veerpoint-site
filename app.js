@@ -570,9 +570,13 @@
     const dot     = document.getElementById('scrollCurveDot');
     if (!section || !path || !dot) return;
 
-    const stones = Array.from(section.querySelectorAll('.scroll-curve-svg .ms'));
-    const labels = Array.from(section.querySelectorAll('.ms-label'));
-    const THRESHOLDS = [0.20, 0.55, 0.90];
+    const stones      = Array.from(section.querySelectorAll('.scroll-curve-svg .ms'));
+    const labels      = Array.from(section.querySelectorAll('.ms-label'));
+    const phaseTexts  = Array.from(section.querySelectorAll('.phase-text'));
+    const THRESHOLDS  = [0.20, 0.55, 0.90];
+    // Where the description swaps: just past each milestone so the
+    // text update reads as a consequence of crossing it.
+    const PHASE_BREAKS = [0.55, 0.90];
 
     let total = path.getTotalLength();
     path.style.strokeDasharray  = total;
@@ -610,6 +614,11 @@
         const active = p >= THRESHOLDS[i];
         stones[i].classList.toggle('is-active', active);
         labels[i].classList.toggle('is-active', active);
+      }
+      // Phase index: 0 by default, → 1 past PHASE_BREAKS[0], → 2 past [1]
+      const phase = p >= PHASE_BREAKS[1] ? 2 : p >= PHASE_BREAKS[0] ? 1 : 0;
+      for (let i = 0; i < phaseTexts.length; i++) {
+        phaseTexts[i].classList.toggle('is-active', i === phase);
       }
     }
 

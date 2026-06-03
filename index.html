@@ -418,6 +418,30 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   margin-top: 4px;
   letter-spacing: -0.01em;
 }
+
+/* Phase description · three stacked p tags, only one .is-active at a
+   time. Absolute-positioned so they overlay each other; container holds
+   a min-height so the section doesn't jump as the text swaps. */
+.phase-text-stack {
+  position: relative;
+  margin: 28px auto 0;
+  max-width: 54ch;
+  min-height: 56px;
+  text-align: center;
+}
+.phase-text {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--vp-ink-70);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.phase-text.is-active { opacity: 1; transform: translateY(0); }
+
 @media (max-width: 760px) {
   .scroll-curve { padding: 32px 0 0; }
   .scroll-curve-hd { margin-bottom: 20px; }
@@ -425,6 +449,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .scroll-curve-labels { gap: 8px; margin-top: 12px; }
   .ms-label .m { font-size: 9px; letter-spacing: 0.18em; }
   .ms-label .t { font-size: 12px; line-height: 1.2; }
+  .phase-text-stack { margin-top: 18px; min-height: 78px; max-width: 36ch; }
+  .phase-text { font-size: 14px; }
 }
 
 /* Inter-section CTA between the scroll-curve and the showdown card */
@@ -2072,15 +2098,16 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   </div>
 </section>
 
-<!-- Six-month progression · scroll-driven curve. As the user scrolls
-     through .scroll-curve, a 0-1 progress value walks the YOU dot
-     along an SVG growth path and lights up M1-2 / M3-4 / M5-6 stages
-     in turn. Small and concise — replaces the old scroll-scrub
-     dashboard with something a quarter the height. -->
+<!-- Progression curve · scroll-driven. As the user scrolls through
+     .scroll-curve, a 0-1 progress value walks the YOU dot along an
+     SVG growth path, lights up the three stage milestones in turn,
+     and swaps the phase description text below the labels. The
+     stages are phase-coded (no months) so the page doesn't commit
+     to a timeline. -->
 <section class="scroll-curve" id="approach">
   <div class="wrap">
     <div class="scroll-curve-hd">
-      <div class="eyebrow"><span class="dot"></span>THE SHAPE OF SIX MONTHS</div>
+      <div class="eyebrow"><span class="dot"></span>THE PROGRESSION CURVE</div>
       <h2>From foundations to a self-sustaining engine<span class="stop">.</span></h2>
     </div>
     <div class="scroll-curve-stage" id="scrollCurveStage">
@@ -2093,9 +2120,15 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <circle class="you" id="scrollCurveDot" cx="20" cy="175" r="8"/>
       </svg>
       <div class="scroll-curve-labels">
-        <div class="ms-label" data-stage="1"><div class="m">M1 – M2</div><div class="t">Foundations</div></div>
-        <div class="ms-label" data-stage="2"><div class="m">M3 – M4</div><div class="t">Repeatable closes</div></div>
-        <div class="ms-label" data-stage="3"><div class="m">M5 – M6</div><div class="t">Self-sustaining</div></div>
+        <div class="ms-label" data-stage="1"><div class="m">PHASE 1</div><div class="t">Foundations</div></div>
+        <div class="ms-label" data-stage="2"><div class="m">PHASE 2</div><div class="t">Repeatable closes</div></div>
+        <div class="ms-label" data-stage="3"><div class="m">PHASE 3</div><div class="t">Self-sustaining</div></div>
+      </div>
+      <!-- Phase description · text swaps as the dot crosses each milestone. -->
+      <div class="phase-text-stack" id="phaseTextStack">
+        <p class="phase-text is-active" data-phase="1">Build the systems, positioning, and outreach needed to create consistent opportunities.</p>
+        <p class="phase-text" data-phase="2">Turn early wins into a repeatable sales process to consistently generate revenue.</p>
+        <p class="phase-text" data-phase="3">Create a pipeline that compounds through conversations and market presence.</p>
       </div>
     </div>
   </div>
@@ -2778,7 +2811,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 })();
 </script>
 
-<script src="app.js?v=2026053109" defer></script>
+<script src="app.js?v=2026053110" defer></script>
 
 </body>
 </html>
