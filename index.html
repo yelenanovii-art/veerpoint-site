@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026060101">
+<link rel="stylesheet" href="style.css?v=2026060105">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -2781,64 +2781,53 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       <p class="result-placement">That places you in <strong class="result-category" id="resultCategory">--</strong>.</p>
       <p class="result-summary" id="resultSummary"></p>
 
-      <!-- Six-step Founder-to-Scale curve. YOU dot positioned by JS
-           based on category.curveX. -->
+      <!-- Six-step Founder-to-Scale curve · actual growth curve, not a
+           flat line. Stages sit on the curve at increasing height. YOU
+           dot positioned by JS using category.curveX / curveY. -->
       <div class="result-curve">
-        <svg viewBox="0 0 600 90" preserveAspectRatio="xMidYMid meet">
-          <line x1="30" y1="55" x2="570" y2="55" stroke="rgba(0,0,0,0.12)" stroke-width="1.2" stroke-linecap="round"/>
+        <svg viewBox="0 0 600 130" preserveAspectRatio="xMidYMid meet">
+          <path d="M 30 95 Q 100 92, 138 86 T 246 68 T 354 48 T 462 28 T 570 18"
+                fill="none"
+                stroke="rgba(160, 64, 34, 0.3)"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
           <g class="curve-ticks">
-            <circle cx="30"  cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
-            <circle cx="138" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
-            <circle cx="246" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
-            <circle cx="354" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
-            <circle cx="462" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
-            <circle cx="570" cy="55" r="3" fill="rgba(0,0,0,0.15)"/>
+            <circle cx="30"  cy="95" r="3.5" fill="rgba(0,0,0,0.18)"/>
+            <circle cx="138" cy="86" r="3.5" fill="rgba(0,0,0,0.18)"/>
+            <circle cx="246" cy="68" r="3.5" fill="rgba(0,0,0,0.18)"/>
+            <circle cx="354" cy="48" r="3.5" fill="rgba(0,0,0,0.18)"/>
+            <circle cx="462" cy="28" r="3.5" fill="rgba(0,0,0,0.18)"/>
+            <circle cx="570" cy="18" r="3.5" fill="rgba(0,0,0,0.18)"/>
           </g>
           <g class="curve-labels">
-            <text x="30"  y="78" text-anchor="middle">Validation</text>
-            <text x="138" y="78" text-anchor="middle">Foundations</text>
-            <text x="246" y="78" text-anchor="middle">First Meetings</text>
-            <text x="354" y="78" text-anchor="middle">Repeatable</text>
-            <text x="462" y="78" text-anchor="middle">Optimisation</text>
-            <text x="570" y="78" text-anchor="middle">Scale</text>
+            <text x="30"  y="120" text-anchor="middle">Validation</text>
+            <text x="138" y="120" text-anchor="middle">Foundations</text>
+            <text x="246" y="120" text-anchor="middle">First Meetings</text>
+            <text x="354" y="120" text-anchor="middle">Repeatable</text>
+            <text x="462" y="120" text-anchor="middle">Optimisation</text>
+            <text x="570" y="120" text-anchor="middle">Scale</text>
           </g>
-          <circle id="resultDot2" cx="180" cy="55" r="16" fill="none" stroke="#A04022" stroke-width="1.5" opacity="0.35"/>
-          <circle id="resultDot"  cx="180" cy="55" r="8"  fill="#A04022"/>
-          <text id="resultDotLabel" x="180" y="32" text-anchor="middle" class="curve-you-label">YOU ARE HERE</text>
+          <circle id="resultDot2" cx="246" cy="68" r="16" fill="none" stroke="#A04022" stroke-width="1.5" opacity="0.35"/>
+          <circle id="resultDot"  cx="246" cy="68" r="8"  fill="#A04022"/>
+          <text id="resultDotLabel" x="246" y="50" text-anchor="middle" class="curve-you-label">YOU ARE HERE</text>
         </svg>
       </div>
 
-      <!-- 90-day plan teaser · three-block timeline + phone+email gate.
-           The exec snapshot above is free; the full plan unlocks once
+      <!-- 90-day plan teaser · hype copy + phone+email gate. The exec
+           snapshot above is free; the personalised plan unlocks once
            the user drops phone + email. -->
       <div class="plan-teaser">
-        <div class="plan-teaser-eyebrow"><span class="dot"></span>YOUR FREE 90-DAY PLAN</div>
-        <div class="plan-teaser-h">Your go-to-market plan, built around your stage<span class="stop">.</span></div>
-        <p class="plan-teaser-sub">Three months. Three phases. Sent to your inbox.</p>
-        <div class="plan-timeline">
-          <div class="plan-block">
-            <div class="plan-block-days">DAY 1 – 30</div>
-            <div class="plan-block-title">Foundations</div>
-            <p class="plan-block-body">Sharpen positioning, calibrate ICP, launch outbound. Pipeline starts moving by week 4.</p>
-          </div>
-          <div class="plan-block">
-            <div class="plan-block-days">DAY 31 – 60</div>
-            <div class="plan-block-title">First closes</div>
-            <p class="plan-block-body">Discovery, demos, structured close motion. First closes by week 8 – 9.</p>
-          </div>
-          <div class="plan-block">
-            <div class="plan-block-days">DAY 61 – 90</div>
-            <div class="plan-block-title">Repeatable engine</div>
-            <p class="plan-block-body">Productise what works. Documented playbook, sequences live, ready to scale.</p>
-          </div>
-        </div>
+        <div class="plan-teaser-eyebrow"><span class="dot"></span>YOUR FREE PERSONALISED PLAN</div>
+        <div class="plan-teaser-h">Unlock your 90-day go-to-market plan, written for your exact results<span class="stop">.</span></div>
+        <p class="plan-teaser-sub">Our operators read your answers, map the next 90 days for your specific stage, and send it back within 2 working days. Personalised. Actionable. Free.</p>
         <form class="plan-gate-form" onsubmit="vpQuizSend(event)">
           <div class="plan-gate-fields">
             <input type="tel" id="quizPhone" placeholder="+34 600 000 000" required autocomplete="tel" inputmode="tel">
             <input type="email" id="quizEmail" placeholder="jordan@yourcompany.com" required autocomplete="email">
           </div>
-          <button type="submit">Send me the 90-day plan <span class="arrow">→</span></button>
-          <p class="plan-gate-note">Sent in 60 seconds. Unsubscribe in one click.</p>
+          <button type="submit">Send me my 90-day plan <span class="arrow">→</span></button>
+          <p class="plan-gate-note">Built by humans, not templates. Reply within 2 working days.</p>
         </form>
       </div>
     </div>
@@ -2846,8 +2835,8 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <!-- DONE -->
     <div id="quizDone" class="modal-done" style="display: none">
       <div class="check">✓</div>
-      <h3>Your 90-day plan is on the way<span class="stop">.</span></h3>
-      <p>Sent to <strong id="doneEmail"></strong>. Check your inbox in a minute (or your promotions tab). We'll follow up to walk you through it.</p>
+      <h3>Got it<span class="stop">.</span></h3>
+      <p>Our team is creating a personalised plan based on your product and answers to the quiz. We'll get back to you at <strong id="doneEmail"></strong> within 2 working days.</p>
     </div>
   </div>
 </div>
@@ -2969,12 +2958,15 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
   /* Founder-to-Scale Curve · 5 categories keyed off the normalised
      /10 score. See prompts/fit-quiz-summary.md for the full spec
      this implements. */
+  /* curveX is the fraction along x = 30 → 570. curveY is the matching
+     y on the growth curve so the YOU dot sits ON the curve, not above
+     it. Anchor values mirror the stage-dot coordinates in the SVG. */
   const CATEGORIES = [
-    { min: 0,   max: 2.9, key: 'demand',     label: 'Market Demand Discovery', curveX: 0.08 },
-    { min: 3,   max: 4.9, key: 'validation', label: 'Validation Sprint Ready', curveX: 0.25 },
-    { min: 5,   max: 6.9, key: 'founder',    label: 'Founder Bottleneck Stage', curveX: 0.45 },
-    { min: 7,   max: 8.4, key: 'sprint',     label: 'Sales Sprint Ready',       curveX: 0.62 },
-    { min: 8.5, max: 10,  key: 'scale',      label: 'Scale Ready',              curveX: 0.92 },
+    { min: 0,   max: 2.9, key: 'demand',     label: 'Market Demand Discovery', curveX: 0.08, curveY: 93 },
+    { min: 3,   max: 4.9, key: 'validation', label: 'Validation Sprint Ready', curveX: 0.25, curveY: 83 },
+    { min: 5,   max: 6.9, key: 'founder',    label: 'Founder Bottleneck Stage', curveX: 0.45, curveY: 60 },
+    { min: 7,   max: 8.4, key: 'sprint',     label: 'Sales Sprint Ready',       curveX: 0.62, curveY: 38 },
+    { min: 8.5, max: 10,  key: 'scale',      label: 'Scale Ready',              curveX: 0.92, curveY: 18 },
   ];
 
   const VERDICTS = {
@@ -3162,16 +3154,15 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       document.getElementById('resultCategory').textContent = category.label;
       document.getElementById('resultSummary').textContent  = summary;
 
-      // Position the YOU dot on the 6-step curve. The curve <line>
-      // spans x = 30 → 570 in a 600-wide viewBox; map curveX (0–1)
-      // into that span.
+      // Position the YOU dot on the curve at (curveX, curveY).
       const dotX = 30 + category.curveX * 540;
+      const dotY = category.curveY;
       const dot  = document.getElementById('resultDot');
       const dot2 = document.getElementById('resultDot2');
       const lbl  = document.getElementById('resultDotLabel');
-      if (dot)  { dot.setAttribute('cx',  dotX); }
-      if (dot2) { dot2.setAttribute('cx', dotX); }
-      if (lbl)  { lbl.setAttribute('x',   dotX); }
+      if (dot)  { dot.setAttribute('cx',  dotX); dot.setAttribute('cy',  dotY); }
+      if (dot2) { dot2.setAttribute('cx', dotX); dot2.setAttribute('cy', dotY); }
+      if (lbl)  { lbl.setAttribute('x',   dotX); lbl.setAttribute('y',   dotY - 18); }
     }
   }
 
