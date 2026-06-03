@@ -2189,11 +2189,26 @@
     stroke-width: 0.5;
     fill: none;
   }
-  .map-svg .land-dot {
-    fill: rgba(255,255,255,0.32);
-    transition: fill .4s ease;
+  /* Europe landmass · the actual continent shape behind the markers.
+     Warm parchment fill + cream coastline stroke give it a printed-map
+     feel; the terracotta drop-shadow is the 'slight orange shadow'
+     the design asked for. A second softer black drop-shadow lifts it
+     off the dark ocean. */
+  .map-svg .europe-landmass {
+    fill: rgba(220, 200, 170, 0.14);
+    stroke: rgba(245, 225, 195, 0.45);
+    stroke-width: 1;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter:
+      drop-shadow(0 0 16px rgba(160, 64, 34, 0.42))
+      drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5));
+    transition: fill .4s ease, stroke .4s ease;
   }
-  .map-stage.vp-in .land-dot { fill: rgba(255,255,255,0.44); }
+  .map-stage.vp-in .europe-landmass {
+    fill: rgba(220, 200, 170, 0.22);
+    stroke: rgba(245, 225, 195, 0.62);
+  }
 
   /* Arcs · Barcelona HQ → every city */
   .map-svg .arc {
