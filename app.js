@@ -659,6 +659,104 @@
       }
     }
 
+    /* City coordinates · lng / lat in the order d3 expects. Used to
+       reposition every overlay (markers, HQ arcs, LIVE pills) on the
+       same projection as the country fills so they track together
+       when the user drags or the map auto-drifts. */
+    const CITY_COORDS = {
+      barcelona: [2.1734, 41.3851],
+      madrid:    [-3.7038, 40.4168],
+      dublin:    [-6.2603, 53.3498],
+      london:    [-0.1278, 51.5074],
+      paris:     [2.3522, 48.8566],
+      brussels:  [4.3517, 50.8503],
+      amsterdam: [4.9041, 52.3676],
+      milan:     [9.1900, 45.4642],
+      athens:    [23.7275, 37.9838],
+      nicosia:   [33.3823, 35.1856],
+    };
+
+    const VB_W = 760, VB_H = 600;
+    const markers = Array.from(svg.querySelectorAll('.marker[data-city]'));
+    const arcs    = Array.from(svg.querySelectorAll('.arc[data-city]'));
+    const pills   = Array.from(document.querySelectorAll('.globe-pill[data-city]'));
+
+    /* One-time normalise of the static markers: shift every child cx/cy
+       (and text x/y) by the existing dot anchor so the parent <g>'s
+       transform becomes the single source of truth for position. After
+       this, repositionOverlays() just sets transform=translate(x,y). */
+    markers.forEach(g => {
+      if (g.dataset.normalised === 'true') return;
+      const dot = g.querySelector('.marker-dot');
+      if (!dot) return;
+      const ax = parseFloat(dot.getAttribute('cx') || '0');
+      const ay = parseFloat(dot.getAttribute('cy') || '0');
+      g.querySelectorAll('[cx]').forEach(el => {
+        el.setAttribute('cx', parseFloat(el.getAttribute('cx') || '0') - ax);
+        el.setAttribute('cy', parseFloat(el.getAttribute('cy') || '0') - ay);
+      });
+      g.querySelectorAll('text').forEach(el => {
+        el.setAttribute('x', parseFloat(el.getAttribute('x') || '0') - ax);
+        el.setAttribute('y', parseFloat(el.getAttribute('y') || '0') - ay);
+      });
+      g.dataset.normalised = 'true';
+    });
+
+    function repositionOverlays() {
+      // Markers: simple translate of the group origin.
+      markers.forEach(g => {
+        const coords = CITY_COORDS[g.dataset.city];
+        if (!coords) return;
+        const pt = projection(coords);
+        if (!pt || !isFinite(pt[0]) || !isFinite(pt[1])) return;
+        g.setAttribute('transform', `translate(${pt[0]}, ${pt[1]})`);
+      });
+
+      // Arcs from Barcelona HQ to each other city · quadratic with the
+      // control point lifted off the midpoint so the arc reads as a
+      // 'flight path'. Path length recalculated so the stroke-dasharray
+      // draw-in animation still works.
+      const hq = projection(CITY_COORDS.barcelona);
+      if (hq && isFinite(hq[0])) {
+        arcs.forEach(p => {
+          const coords = CITY_COORDS[p.dataset.city];
+          if (!coords) return;
+          const target = projection(coords);
+          if (!target || !isFinite(target[0])) return;
+          const mx = (hq[0] + target[0]) / 2;
+          const my = (hq[1] + target[1]) / 2;
+          const dx = target[0] - hq[0];
+          const dy = target[1] - hq[1];
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const arch = Math.min(38, dist * 0.18);
+          const cpx = mx;
+          const cpy = my - arch;
+          p.setAttribute('d', `M ${hq[0]} ${hq[1]} Q ${cpx} ${cpy} ${target[0]} ${target[1]}`);
+          // Keep --len roughly accurate so the stroke-dasharray draw-in
+          // animation lands cleanly even after the path changes.
+          try {
+            const len = p.getTotalLength();
+            if (isFinite(len) && len > 0) p.style.setProperty('--len', len.toFixed(0));
+          } catch (_) { /* getTotalLength can throw on degenerate paths */ }
+        });
+      }
+
+      // LIVE pills: percentages of the SVG viewBox, which the .map-stage
+      // closely matches at the existing 5:4 aspect.
+      pills.forEach(pill => {
+        const coords = CITY_COORDS[pill.dataset.city];
+        if (!coords) return;
+        const pt = projection(coords);
+        if (!pt || !isFinite(pt[0])) return;
+        pill.style.setProperty('--x', ((pt[0] / VB_W) * 100).toFixed(2) + '%');
+        pill.style.setProperty('--y', ((pt[1] / VB_H) * 100).toFixed(2) + '%');
+      });
+    }
+
+    // Re-render everything on every projection update.
+    const _renderCountries = renderCountries;
+    renderCountries = function () { _renderCountries(); repositionOverlays(); };
+
     renderCountries();
 
     // Hide the hand-traced landmass now that the real one is live.
