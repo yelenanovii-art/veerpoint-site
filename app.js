@@ -829,7 +829,10 @@
     // map a faint 'breathing' feel without being distracting.
     let lastDrift = performance.now();
     function driftFrame(now) {
-      const dt = now - lastDrift;
+      // dt clamped to 100ms · without this, returning from a hidden
+      // tab dumps the entire away-time into phi at once (huge dt ×
+      // 0.0008 rad) and the map snaps to a garbage orientation.
+      const dt = Math.min(now - lastDrift, 100);
       lastDrift = now;
       if (!dragging) {
         phi += dt * 0.0008;  // ~1.7°/sec drift, very slow
@@ -839,6 +842,11 @@
       }
       requestAnimationFrame(driftFrame);
     }
+    // Also reset lastDrift on tab-visible so the first frame after
+    // returning isn't an outlier even before the clamp kicks in.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) lastDrift = performance.now();
+    });
     // Only drift if the user prefers motion.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       requestAnimationFrame(driftFrame);
@@ -861,14 +869,12 @@
 
     const stones      = Array.from(section.querySelectorAll('.scroll-curve-svg .ms'));
     const labels      = Array.from(section.querySelectorAll('.ms-label'));
-    const phaseTexts  = Array.from(section.querySelectorAll('.phase-text'));
     // Marker positions along the path: Phase 1 sits at ~p=0.18,
     // Phase 2 at ~p=0.55, Phase 3 at ~p=0.93. Thresholds match those
-    // so the dots light up exactly when the ball arrives.
+    // so the dots light up exactly when the ball arrives. Each
+    // .ms-label now contains its own description inline, so we no
+    // longer need a separate phase-text swap.
     const THRESHOLDS  = [0.18, 0.55, 0.93];
-    // Description swaps the moment the ball crosses Phase 2 then
-    // Phase 3 — so the text reads as the consequence of arrival.
-    const PHASE_BREAKS = [0.55, 0.92];
 
     let total = path.getTotalLength();
     path.style.strokeDasharray  = total;
@@ -917,11 +923,6 @@
         const active = p >= THRESHOLDS[i];
         stones[i].classList.toggle('is-active', active);
         labels[i].classList.toggle('is-active', active);
-      }
-      // Phase index: 0 by default, → 1 past PHASE_BREAKS[0], → 2 past [1]
-      const phase = p >= PHASE_BREAKS[1] ? 2 : p >= PHASE_BREAKS[0] ? 1 : 0;
-      for (let i = 0; i < phaseTexts.length; i++) {
-        phaseTexts[i].classList.toggle('is-active', i === phase);
       }
     }
 

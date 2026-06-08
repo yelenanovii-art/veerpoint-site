@@ -499,39 +499,27 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   margin-top: 4px;
   letter-spacing: -0.01em;
 }
-
-/* Phase description · three stacked p tags, only one .is-active at a
-   time. Absolute-positioned so they overlay each other; container holds
-   a min-height so the section doesn't jump as the text swaps. */
-.phase-text-stack {
-  position: relative;
-  margin: 28px auto 0;
-  max-width: 54ch;
-  min-height: 56px;
-  text-align: center;
-}
-.phase-text {
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
+/* Each phase column carries its own description inline now — three
+   short paragraphs visible at once, the active one lifts as the
+   YOU dot reaches it. */
+.ms-label .ms-body {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
   color: var(--vp-ink-70);
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
 }
-.phase-text.is-active { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 760px) {
   .scroll-curve { padding: 32px 0 0; }
   .scroll-curve-hd { margin-bottom: 20px; }
   .scroll-curve-stage { padding: 0 4px; }
-  .scroll-curve-labels { gap: 8px; margin-top: 12px; }
+  .scroll-curve-labels { gap: 10px; margin-top: 14px; }
   .ms-label .m { font-size: 9px; letter-spacing: 0.18em; }
   .ms-label .t { font-size: 12px; line-height: 1.2; }
-  .phase-text-stack { margin-top: 18px; min-height: 78px; max-width: 36ch; }
-  .phase-text { font-size: 14px; }
+  .ms-label .ms-body { font-size: 11.5px; margin-top: 6px; max-width: none; }
 }
 
 /* Inter-section CTA between the scroll-curve and the showdown card */
@@ -1269,6 +1257,75 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 .modal-option .lbl-main { font-weight: 600; line-height: 1.2; }
 .modal-option .lbl-sub { font-size: 12px; color: var(--vp-muted); margin-top: 3px; }
+
+/* Multi-select option · Q3 lets the user pick more than one bottleneck */
+.modal-option-multi {
+  position: relative;
+  padding-right: 44px;
+}
+.modal-option-multi .multi-check {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--vp-border-strong, var(--vp-border));
+  border-radius: 3px;
+  background: var(--vp-warm-white);
+  transition: background 0.15s, border-color 0.15s;
+}
+.modal-option-multi.is-active {
+  border-color: var(--vp-terracotta);
+  background: rgba(160,64,34,0.06);
+}
+.modal-option-multi.is-active .multi-check {
+  border-color: var(--vp-terracotta);
+  background: var(--vp-terracotta);
+}
+.modal-option-multi.is-active .multi-check::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid var(--vp-warm-white);
+  border-bottom: 2px solid var(--vp-warm-white);
+  transform: rotate(45deg);
+}
+
+/* Continue button at the end of a multi-select question */
+.modal-option-continue {
+  margin-top: 8px;
+  padding: 14px 22px;
+  border: none;
+  border-radius: 4px;
+  background: var(--vp-terracotta);
+  color: var(--vp-warm-white);
+  font: 600 14px/1 var(--vp-font-body, inherit);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  transition: background 0.15s, opacity 0.15s;
+}
+.modal-option-continue:hover { background: var(--vp-terracotta-hover, #c25a32); }
+.modal-option-continue:disabled { opacity: 0.4; cursor: not-allowed; }
+.modal-option-continue .arrow { transition: transform 0.15s; }
+.modal-option-continue:hover:not(:disabled) .arrow { transform: translateX(3px); }
+
+/* Result CTA highlight · pulls the '90-Day Sales Growth Plan' phrase
+   out of the executive summary so the offer is impossible to miss. */
+.result-cta-highlight {
+  display: inline;
+  font-weight: 700;
+  color: var(--vp-terracotta);
+  background: linear-gradient(180deg, transparent 60%, rgba(160,64,34,0.16) 60%);
+  padding: 1px 2px;
+  border-radius: 2px;
+}
 
 /* Result screen */
 .modal-result h2 {
@@ -2525,15 +2582,21 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         <circle class="you" id="scrollCurveDot" cx="20" cy="175" r="8"/>
       </svg>
       <div class="scroll-curve-labels">
-        <div class="ms-label" data-stage="1"><div class="m">PHASE 1</div><div class="t">Foundations</div></div>
-        <div class="ms-label" data-stage="2"><div class="m">PHASE 2</div><div class="t">Repeatable closes</div></div>
-        <div class="ms-label" data-stage="3"><div class="m">PHASE 3</div><div class="t">Self-sustaining</div></div>
-      </div>
-      <!-- Phase description · text swaps as the dot crosses each milestone. -->
-      <div class="phase-text-stack" id="phaseTextStack">
-        <p class="phase-text is-active" data-phase="1">Build the systems, positioning, and outreach needed to create consistent opportunities.</p>
-        <p class="phase-text" data-phase="2">Turn early wins into a repeatable sales process to consistently generate revenue.</p>
-        <p class="phase-text" data-phase="3">Create a pipeline that compounds through conversations and market presence.</p>
+        <div class="ms-label" data-stage="1">
+          <div class="m">PHASE 1</div>
+          <div class="t">Foundations</div>
+          <p class="ms-body">Build the systems, positioning, and outreach needed to create consistent opportunities.</p>
+        </div>
+        <div class="ms-label" data-stage="2">
+          <div class="m">PHASE 2</div>
+          <div class="t">Repeatable closes</div>
+          <p class="ms-body">Turn early wins into a repeatable sales process to consistently generate revenue.</p>
+        </div>
+        <div class="ms-label" data-stage="3">
+          <div class="m">PHASE 3</div>
+          <div class="t">Self-sustaining</div>
+          <p class="ms-body">Create a pipeline that compounds through conversations and market presence.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -2756,9 +2819,9 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <!-- QUESTIONS -->
     <div id="quizQuestion">
       <div class="modal-step">
-        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 9</span>
+        <span class="modal-step-label" id="qStepLabel">QUESTION 1 OF 7</span>
         <span class="modal-step-bar" id="qStepBar">
-          <span class="done"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          <span class="done"></span><span></span><span></span><span></span><span></span><span></span><span></span>
         </span>
       </div>
       <h2 class="modal-q" id="quizQ">Which best describes your business today?</h2>
@@ -2855,11 +2918,12 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       q: "Which best describes your business today?",
       sub: "Pick the closest match.",
       opts: [
-        { k: 'A', t: "Still validating the idea",                          score: 0 },
-        { k: 'B', t: "Getting first customers consistently",               score: 1 },
-        { k: 'C', t: "Founder-led sales with steady growth",               score: 2 },
-        { k: 'D', t: "Growing company with repeatable demand",             score: 2.5 },
-        { k: 'E', t: "Established company, scaling sales aggressively",    score: 3 },
+        { k: 'A', t: "Exploring an idea",                                  score: 0 },
+        { k: 'B', t: "Have an MVP and first demo customers",               score: 0.5 },
+        { k: 'C', t: "Getting first customers",                            score: 1 },
+        { k: 'D', t: "Founder-led sales with steady growth",               score: 2 },
+        { k: 'E', t: "Product in market and 2 – 3 in-house sales reps",    score: 2.5 },
+        { k: 'F', t: "Growing in market with in-house sales department",   score: 3 },
       ]
     },
     {
@@ -2875,7 +2939,8 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     },
     {
       q: "What's your biggest growth bottleneck right now?",
-      sub: "The thing that's been stuck the longest.",
+      sub: "Select all that apply.",
+      multi: true,
       opts: [
         { k: 'A', t: "Not enough qualified leads",                  score: 1 },
         { k: 'B', t: "Leads come in, but we struggle to close",     score: 1.2 },
@@ -2895,19 +2960,6 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
         { k: 'C', t: "Founder + freelancers / agencies",            score: 1.5 },
         { k: 'D', t: "Small internal sales team (1 – 3 people)",    score: 2 },
         { k: 'E', t: "Structured sales team (4+ people)",           score: 2 },
-      ]
-    },
-    {
-      q: "What have you already tried to grow sales?",
-      sub: "Pick the channel you've leaned on most.",
-      opts: [
-        { k: 'A', t: "Mostly organic / referrals",                  score: 0.5 },
-        { k: 'B', t: "Content and social media",                    score: 0.7 },
-        { k: 'C', t: "Paid ads",                                    score: 1 },
-        { k: 'D', t: "Outbound sales / cold outreach",              score: 1 },
-        { k: 'E', t: "Consultants or agencies",                     score: 1 },
-        { k: 'F', t: "Events and partnerships",                     score: 0.8 },
-        { k: 'G', t: "Multiple channels with mixed results",        score: 1.2 },
       ]
     },
     {
@@ -2934,23 +2986,11 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       ]
     },
     {
-      q: "Which best describes your mindset today?",
-      sub: "Where your head is at this quarter.",
-      opts: [
-        { k: 'A', t: "Just exploring options",                       score: 0.2 },
-        { k: 'B', t: "Looking for clarity and direction",            score: 0.5 },
-        { k: 'C', t: "Actively trying to fix growth bottlenecks",    score: 1 },
-        { k: 'D', t: "Ready to build a scalable sales system",       score: 1.5 },
-        { k: 'E', t: "Ready to hire or expand a sales team now",     score: 1.5 },
-      ]
-    },
-    {
       kind: 'form',
-      q: "Quick context — where can we find you?",
-      sub: "We use this to match your six-month plan to your motion.",
+      q: "Where can we find you?",
+      sub: "Company website or LinkedIn — whichever's quickest.",
       fields: [
-        { name: 'website',  label: 'Company website',     placeholder: 'your-company.com',           type: 'text', required: false },
-        { name: 'social',   label: 'LinkedIn or social',  placeholder: 'linkedin.com/company/...',   type: 'text', required: false },
+        { name: 'website',  label: 'Company website or LinkedIn',  placeholder: 'your-company.com  ·  linkedin.com/company/...',  type: 'text', required: true },
       ],
     },
   ];
@@ -3011,53 +3051,69 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     return CATEGORIES[CATEGORIES.length - 1];
   }
 
-  /* Raw sum across Q1–Q8, normalised to /10 via raw / 16.2 * 10. */
+  /* Raw sum across the scored questions, normalised to /10 via the
+     theoretical max of 11.5 (Q1=3 + Q2=2 + Q3=1.5 + Q4=2 + Q6=1.5 +
+     Q7=1.5). Q3 is multi-select; we take the highest score among the
+     selected options so picking more boxes doesn't inflate the
+     total. */
   function computeRawScore() {
     let total = 0;
     for (let i = 0; i < answers.length; i++) {
       const Q = QS[i];
-      if (!Q || !Q.opts) continue;            // skips Q9 (form)
-      const opt = Q.opts.find(o => o.k === answers[i]);
-      if (opt) total += opt.score;
+      if (!Q || !Q.opts) continue;            // skips the form question
+      const a = answers[i];
+      if (Q.multi && Array.isArray(a)) {
+        let best = 0;
+        a.forEach(k => {
+          const opt = Q.opts.find(o => o.k === k);
+          if (opt && opt.score > best) best = opt.score;
+        });
+        total += best;
+      } else {
+        const opt = Q.opts.find(o => o.k === a);
+        if (opt) total += opt.score;
+      }
     }
     return total;
   }
   function computeScore10() {
-    return Math.round((computeRawScore() / 16.2) * 10 * 10) / 10;
+    return Math.round((computeRawScore() / 11.5) * 10 * 10) / 10;
   }
 
   /* Pick one relevant benchmark line based on the trigger rules in the
      prompt spec. Checked in priority order — founder-led + paid risks
      beat the broader demand-survival lines if both fire. */
   function pickBenchmark() {
-    const Q1 = answers[0], Q3 = answers[2], Q4 = answers[3];
-    const Q5 = answers[4], Q6 = answers[5], Q7 = answers[6], Q8 = answers[7];
+    // New index map after Q5 + Q8 removed:
+    //   0=Q1 stage · 1=Q2 revenue · 2=Q3 bottleneck (multi-array)
+    //   3=Q4 sales handling · 4=Q6 monthly investment · 5=Q7 success goal
+    const Q1 = answers[0], Q2 = answers[1];
+    const Q3 = Array.isArray(answers[2]) ? answers[2] : [];
+    const Q4 = answers[3], Q6 = answers[4], Q7 = answers[5];
+    const has = (k) => Q3.indexOf(k) >= 0;
+
     // Founder-led sales risk
-    if (Q3 === 'C' && (Q4 === 'B' || Q4 === 'C')) {
+    if (has('C') && (Q4 === 'B' || Q4 === 'C')) {
       return 'If only a small percentage of leads typically convert, and the founder is still qualifying and chasing most of them manually, the company may look busy while the real system stays weak.';
     }
     // Sales productivity benchmark
-    if ((Q4 === 'D' || Q4 === 'E') && (Q8 === 'E' || Q3 === 'E' || Q6 === 'D' || Q6 === 'E')) {
+    if ((Q4 === 'D' || Q4 === 'E') && (has('E') || Q6 === 'D' || Q6 === 'E')) {
       return 'Sales research has shown reps may spend only around 28% of their week actually selling — so without a clean process, new headcount can quickly become expensive activity.';
     }
     // Paid acquisition risk
-    if (Q5 === 'C' && (Q6 === 'C' || Q6 === 'D' || Q6 === 'E')) {
+    if (has('F') && (Q6 === 'C' || Q6 === 'D' || Q6 === 'E')) {
       return 'If you are already paying for demand, weak qualification or follow-up does not just hurt conversion — it burns budget while competitors with cleaner sales operations learn faster.';
     }
-    // Outbound risk
-    if (Q5 === 'D' && (Q3 === 'A' || Q3 === 'B' || Q3 === 'D' || Q3 === 'G')) {
-      return 'Outbound is not a volume game when positioning is weak. Without tight targeting and a clear pain trigger, more outreach usually creates more rejection, not more pipeline.';
-    }
     // Low B2B conversion benchmark
-    if ((Q3 === 'A' || Q3 === 'B' || Q3 === 'D') && (Q7 === 'B' || Q7 === 'D')) {
+    if ((has('A') || has('B') || has('D')) && (Q7 === 'B' || Q7 === 'D')) {
       return 'In broad B2B funnels, only around 2–6% of leads may become customers. That means vague targeting does not just reduce performance — it can make the whole sales motion look broken.';
     }
     // Market demand / PMF risk
-    if (Q1 === 'A' && (Q7 === 'A' || Q3 === 'G' || Q8 === 'A' || Q8 === 'B')) {
+    if ((Q1 === 'A' || Q1 === 'B') && (Q7 === 'A' || has('G'))) {
       return 'Most early companies do not die because the founder lacked effort. They die because the market never cared enough. Your answers suggest demand testing is more urgent than sales hiring.';
     }
     // Business survival (low-score default)
-    if ((Q1 === 'A' || Q1 === 'B') || (Q7 === 'A' && Q8 === 'A')) {
+    if ((Q1 === 'A' || Q1 === 'B') || (Q2 === 'A' || Q2 === 'B')) {
       return 'European business survival data is brutal: close to half of new firms do not make it past the first few years. At your stage, the risk is not weak sales execution — it is building before the market proves it cares.';
     }
     return null;
@@ -3077,16 +3133,32 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     return CTA.mid;
   }
 
-  /* Assembles a 130–190 word executive summary from spec fragments */
+  /* Q3 risk lookup order: founder-dependency > process > accountability >
+     closing > lead vol > CAC > unsure. Picks the most commercially
+     interesting risk among the selected bottlenecks. */
+  const Q3_RISK_PRIORITY = ['C', 'D', 'E', 'B', 'A', 'F', 'G'];
+  function pickQ3Risk() {
+    const sel = Array.isArray(answers[2]) ? answers[2] : (answers[2] ? [answers[2]] : []);
+    for (const k of Q3_RISK_PRIORITY) {
+      if (sel.indexOf(k) >= 0 && Q3_RISKS[k]) return Q3_RISKS[k];
+    }
+    return '';
+  }
+
+  /* Assembles a 130–190 word executive summary from spec fragments.
+     Returns HTML so the CTA phrase can be highlighted; the result
+     panel uses innerHTML below. */
   function buildExecSummary(score10, category) {
-    const Q3 = answers[2];
     const maturity = getMaturityLine();
-    const risk = Q3_RISKS[Q3] || '';
+    const risk = pickQ3Risk();
     const benchmark = pickBenchmark() || '';
     const fomo = FOMO[category.key] || '';
     const verdict = VERDICTS[category.key] || '';
-    const cta = getCta(score10);
-    // Join with single spaces; period/comma rhythm comes from each fragment.
+    let cta = getCta(score10);
+    cta = cta.replace(
+      'free, fully personalised 90-Day Sales Growth Plan',
+      '<strong class="result-cta-highlight">free, fully personalised 90-Day Sales Growth Plan</strong>'
+    );
     return [maturity, risk, benchmark, fomo, 'Executive verdict: ' + verdict, cta]
       .filter(Boolean).join(' ');
   }
@@ -3132,6 +3204,23 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
             <button type="submit" class="modal-quiz-submit">See my result <span class="arrow">→</span></button>
           </form>
         `;
+      } else if (Q.multi) {
+        // Multi-select · toggle buttons + Continue. Answer stored as
+        // an array of keys.
+        const cur = Array.isArray(answers[step]) ? answers[step] : [];
+        optsEl.innerHTML = Q.opts.map(o => `
+          <button class="modal-option modal-option-multi${cur.indexOf(o.k) >= 0 ? ' is-active' : ''}" onclick="vpQuizToggle('${o.k}')" type="button">
+            <span class="key">${o.k}</span>
+            <span>
+              <span class="lbl-main">${o.t}</span>
+            </span>
+            <span class="multi-check" aria-hidden="true"></span>
+          </button>
+        `).join('') + `
+          <button class="modal-option-continue" onclick="vpQuizContinue()" type="button"${cur.length === 0 ? ' disabled' : ''}>
+            Continue <span class="arrow">→</span>
+          </button>
+        `;
       } else {
         optsEl.innerHTML = Q.opts.map(o => `
           <button class="modal-option" onclick="vpQuizPick('${o.k}')">
@@ -3152,7 +3241,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
 
       document.getElementById('resultScore').textContent    = score10.toFixed(1);
       document.getElementById('resultCategory').textContent = category.label;
-      document.getElementById('resultSummary').textContent  = summary;
+      document.getElementById('resultSummary').innerHTML    = summary;
 
       // Position the YOU dot on the curve at (curveX, curveY).
       const dotX = 30 + category.curveX * 540;
@@ -3178,17 +3267,38 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     document.body.style.overflow = '';
   };
   window.vpQuizPick = function(k) {
-    answers.push(k);
+    answers[step] = k;
+    step++;
+    render();
+  };
+  window.vpQuizToggle = function(k) {
+    const cur = Array.isArray(answers[step]) ? answers[step].slice() : [];
+    const idx = cur.indexOf(k);
+    if (idx >= 0) cur.splice(idx, 1); else cur.push(k);
+    answers[step] = cur;
+    render();
+  };
+  window.vpQuizContinue = function() {
+    const cur = Array.isArray(answers[step]) ? answers[step] : [];
+    if (cur.length === 0) return;
     step++;
     render();
   };
   window.vpQuizFormSubmit = function(e) {
     e.preventDefault();
+    const form = e.currentTarget;
     const data = {};
-    Array.from(e.currentTarget.elements).forEach(el => {
+    Array.from(form.elements).forEach(el => {
       if (el.name) data[el.name] = el.value.trim();
     });
-    answers.push(data);
+    // Required-field guard · website is mandatory now.
+    const websiteEl = form.querySelector('input[name="website"]');
+    if (websiteEl && !data.website) {
+      websiteEl.style.borderColor = 'var(--vp-terracotta)';
+      websiteEl.focus();
+      return;
+    }
+    answers[step] = data;
     step++;
     render();
   };
@@ -3386,7 +3496,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
      back to the hand-traced SVG path if either CDN is unreachable. -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" defer></script>
-<script src="app.js?v=2026060105" defer></script>
+<script src="app.js?v=2026060801" defer></script>
 
 </body>
 </html>
