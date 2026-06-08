@@ -677,6 +677,10 @@ h1 {
   position: relative;
   overflow: hidden;
 }
+/* Honour the HTML hidden attribute · the class-based display: block
+   above otherwise wins over the UA stylesheet rule, leaving the
+   gate visible during the question phase before results exist. */
+.gate.gate-plan[hidden] { display: none; }
 .gate.gate-plan::before {
   content: '';
   position: absolute;
@@ -1361,8 +1365,10 @@ function getInterpretation(roi) {
 }
 
 function buildSummary(m, diag) {
+  // getInterpretation is already rendered standalone in #cdInterp
+  // above the metric strip — skipping it here so the paragraph
+  // doesn't start with the same 'That suggests...' sentence twice.
   return [
-    getInterpretation(m.roi),
     pickBenchmark(m, diag),
     'Executive verdict: ' + DIAGNOSES[diag].verdict,
     DIAGNOSES[diag].hook,

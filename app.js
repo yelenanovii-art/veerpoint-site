@@ -994,17 +994,29 @@
   if (quotes.length < 2) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const INTERVAL = 6500;
+  const INTERVAL = 5000;
   let idx = quotes.findIndex(q => q.classList.contains('is-active'));
   if (idx < 0) { idx = 0; quotes[0].classList.add('is-active'); }
   let timer = null;
-  function tick() {
+  function show(next) {
     quotes[idx].classList.remove('is-active');
-    idx = (idx + 1) % quotes.length;
+    idx = (next + quotes.length) % quotes.length;
     quotes[idx].classList.add('is-active');
   }
+  function tick() { show(idx + 1); }
   function start() { if (!timer) timer = setInterval(tick, INTERVAL); }
   function stop()  { if (timer) { clearInterval(timer); timer = null; } }
+  // Click a chevron · advance immediately and reset the auto-rotate
+  // timer so the next auto-tick is a full INTERVAL away, never an
+  // instant double-advance feeling.
+  function step(delta) {
+    show(idx + delta);
+    if (timer) { clearInterval(timer); timer = setInterval(tick, INTERVAL); }
+  }
+  const prevBtn = document.getElementById('quotesPrev');
+  const nextBtn = document.getElementById('quotesNext');
+  if (prevBtn) prevBtn.addEventListener('click', () => step(-1));
+  if (nextBtn) nextBtn.addEventListener('click', () => step(1));
 
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => e.isIntersecting ? start() : stop());

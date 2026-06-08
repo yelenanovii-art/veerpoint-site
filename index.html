@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026060105">
+<link rel="stylesheet" href="style.css?v=2026060802">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -558,12 +558,50 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   border-top: 1px solid var(--vp-border);
   border-bottom: 1px solid var(--vp-border);
 }
+/* Outer frame · centres the quote stage between two arrow buttons.
+   Stage width still capped at 64ch; arrows sit just outside it on
+   desktop, drop in tight to the stage on mobile. */
+.quotes-frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  max-width: 78ch;
+  margin: 0 auto;
+}
 .quotes-stage {
   position: relative;
   min-height: 82px;
   max-width: 64ch;
-  margin: 0 auto;
+  flex: 1 1 auto;
   text-align: center;
+}
+.quotes-arrow {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--vp-border);
+  background: var(--vp-warm-white);
+  color: var(--vp-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.quotes-arrow:hover {
+  opacity: 1;
+  border-color: var(--vp-terracotta);
+  color: var(--vp-terracotta);
+}
+.quotes-arrow:active { transform: scale(0.94); }
+.quotes-arrow:focus-visible {
+  outline: 2px solid var(--vp-terracotta);
+  outline-offset: 2px;
 }
 .quote {
   position: absolute;
@@ -583,8 +621,11 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 .quote.is-active { opacity: 1; transform: translateY(0); }
 @media (max-width: 760px) {
   .quotes-band { padding: 22px 0; }
-  .quotes-stage { min-height: 132px; max-width: 38ch; padding: 0 12px; }
+  .quotes-frame { gap: 8px; }
+  .quotes-stage { min-height: 132px; max-width: 38ch; padding: 0 8px; }
   .quote { font-size: 16px; line-height: 1.4; }
+  .quotes-arrow { width: 32px; height: 32px; }
+  .quotes-arrow svg { width: 16px; height: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .quote { transition: opacity .2s ease; transform: none; }
@@ -2640,11 +2681,19 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
      .is-active class every ~6.5s with a brief cross-fade. -->
 <section class="quotes-band">
   <div class="wrap">
-    <div class="quotes-stage" id="quotesStage">
-      <p class="quote is-active">&ldquo;I&rsquo;ve seen a lot of startups die because they were too slow to release stuff, and none because they were too quick.&rdquo;</p>
-      <p class="quote">&ldquo;For weeks I was focused on improving the product. The growth only came when I spent the time getting in front of the people who actually needed it.&rdquo;</p>
-      <p class="quote">&ldquo;Every week you delay selling, you are not reducing risk. You are postponing the truth.&rdquo;</p>
-      <p class="quote">&ldquo;The longer you keep perfecting the product, the longer you delay finding out if the market actually wants it.&rdquo;</p>
+    <div class="quotes-frame">
+      <button class="quotes-arrow quotes-arrow-prev" id="quotesPrev" type="button" aria-label="Previous quote">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="quotes-stage" id="quotesStage">
+        <p class="quote is-active">&ldquo;I&rsquo;ve seen a lot of startups die because they were too slow to release stuff, and none because they were too quick.&rdquo;</p>
+        <p class="quote">&ldquo;For weeks I was focused on improving the product. The growth only came when I spent the time getting in front of the people who actually needed it.&rdquo;</p>
+        <p class="quote">&ldquo;Every week you delay selling, you are not reducing risk. You are postponing the truth.&rdquo;</p>
+        <p class="quote">&ldquo;The longer you keep perfecting the product, the longer you delay finding out if the market actually wants it.&rdquo;</p>
+      </div>
+      <button class="quotes-arrow quotes-arrow-next" id="quotesNext" type="button" aria-label="Next quote">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
   </div>
 </section>
@@ -3519,7 +3568,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
      back to the hand-traced SVG path if either CDN is unreachable. -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" defer></script>
-<script src="app.js?v=2026060801" defer></script>
+<script src="app.js?v=2026060802" defer></script>
 
 </body>
 </html>
