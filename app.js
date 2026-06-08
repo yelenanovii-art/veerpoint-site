@@ -826,26 +826,43 @@
     svg.addEventListener('pointercancel', onPointerUp);
 
     // Subtle auto-drift while the user isn't interacting — gives the
-    // map a faint 'breathing' feel without being distracting.
+    // map a faint 'breathing' feel without being distracting. The
+    // drift now OSCILLATES between ±DRIFT_BOUND degrees so phi never
+    // accumulates past where Europe still reads as the focus, no
+    // matter how long the tab stays open.
+    const DRIFT_BOUND = 18;        // degrees of longitude around -15° centre
+    let driftDir = 1;
     let lastDrift = performance.now();
     function driftFrame(now) {
       // dt clamped to 100ms · without this, returning from a hidden
-      // tab dumps the entire away-time into phi at once (huge dt ×
-      // 0.0008 rad) and the map snaps to a garbage orientation.
+      // tab dumps the entire away-time into phi at once and the map
+      // snaps to a garbage orientation.
       const dt = Math.min(now - lastDrift, 100);
       lastDrift = now;
       if (!dragging) {
-        phi += dt * 0.0008;  // ~1.7°/sec drift, very slow
+        phi += dt * 0.0008 * driftDir;             // ~1.7°/sec
+        if (phi >= DRIFT_BOUND) { phi = DRIFT_BOUND; driftDir = -1; }
+        if (phi <= -DRIFT_BOUND) { phi = -DRIFT_BOUND; driftDir = 1; }
         projection = makeProjection();
         pathGen = window.d3.geoPath(projection);
         renderCountries();
       }
       requestAnimationFrame(driftFrame);
     }
-    // Also reset lastDrift on tab-visible so the first frame after
-    // returning isn't an outlier even before the clamp kicks in.
+    // On tab-return, reset projection state so the map shows the
+    // default Europe-centred view (instead of a stale rotation the
+    // user drifted into earlier) and reset lastDrift so the first
+    // post-return frame isn't an outlier even before the clamp.
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) lastDrift = performance.now();
+      if (!document.hidden) {
+        phi = 0;
+        theta = 0;
+        driftDir = 1;
+        lastDrift = performance.now();
+        projection = makeProjection();
+        pathGen = window.d3.geoPath(projection);
+        renderCountries();
+      }
     });
     // Only drift if the user prefers motion.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
