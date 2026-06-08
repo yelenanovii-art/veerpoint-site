@@ -393,6 +393,23 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .logos-marquee:hover .logos-track { animation-play-state: paused; }
 }
 .logo-item {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  /* Container for the CDN logo image — text fallback shows if the
+     fetch fails (the inline onerror flips .logo-fail on this span). */
+}
+.logo-item .logo-img {
+  height: 100%;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  opacity: 0.72;
+  filter: grayscale(0.18);
+  transition: opacity .25s ease, filter .25s ease;
+}
+.logo-item .logo-name {
+  display: none;
   font-family: var(--vp-font-display);
   font-weight: 600;
   font-size: 26px;
@@ -400,10 +417,16 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   color: var(--vp-ink);
   opacity: 0.62;
   white-space: nowrap;
-  transition: opacity .25s ease;
 }
+.logo-item.logo-fail .logo-img { display: none; }
+.logo-item.logo-fail .logo-name { display: inline; }
 @media (hover: hover) and (pointer: fine) {
-  .logo-item:hover { opacity: 1; }
+  .logo-item:hover .logo-img { opacity: 1; filter: none; }
+  .logo-item:hover .logo-name { opacity: 1; }
+}
+@media (max-width: 760px) {
+  .logo-item { height: 32px; }
+  .logo-item .logo-name { font-size: 20px; }
 }
 @keyframes vp-marquee {
   from { transform: translate3d(0, 0, 0); }
@@ -2541,20 +2564,20 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     <p class="logos-eyebrow"><span class="dot"></span>Products our team has sold</p>
     <div class="logos-marquee" aria-label="Companies our team has sold for">
       <div class="logos-track">
-        <span class="logo-item">Revolut</span>
-        <span class="logo-item">Google Cloud</span>
-        <span class="logo-item">Stripe</span>
-        <span class="logo-item">Corgi Group</span>
-        <span class="logo-item">Guava</span>
-        <span class="logo-item">IBM</span>
-        <span class="logo-item">Exact Software</span>
-        <span class="logo-item" aria-hidden="true">Revolut</span>
-        <span class="logo-item" aria-hidden="true">Google Cloud</span>
-        <span class="logo-item" aria-hidden="true">Stripe</span>
-        <span class="logo-item" aria-hidden="true">Corgi Group</span>
-        <span class="logo-item" aria-hidden="true">Guava</span>
-        <span class="logo-item" aria-hidden="true">IBM</span>
-        <span class="logo-item" aria-hidden="true">Exact Software</span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/revolut.com" alt="Revolut" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Revolut</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/google.com" alt="Google Cloud" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Google Cloud</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/stripe.com" alt="Stripe" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Stripe</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/corgi.co.uk" alt="Corgi Group" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Corgi Group</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/guava.io" alt="Guava" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Guava</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/ibm.com" alt="IBM" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">IBM</span></span>
+        <span class="logo-item"><img class="logo-img" src="https://logo.clearbit.com/exact.com" alt="Exact Software" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Exact Software</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/revolut.com" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Revolut</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/google.com" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Google Cloud</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/stripe.com" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Stripe</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/corgi.co.uk" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Corgi Group</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/guava.io" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Guava</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/ibm.com" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">IBM</span></span>
+        <span class="logo-item" aria-hidden="true"><img class="logo-img" src="https://logo.clearbit.com/exact.com" alt="" loading="lazy" onerror="this.parentElement.classList.add('logo-fail')"><span class="logo-name">Exact Software</span></span>
       </div>
     </div>
   </div>
