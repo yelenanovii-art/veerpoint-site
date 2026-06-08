@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026060803">
+<link rel="stylesheet" href="style.css?v=2026060804">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -392,17 +392,24 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 @media (hover: hover) and (pointer: fine) {
   .logos-marquee:hover .logos-track { animation-play-state: paused; }
 }
+/* Fixed-footprint logo box · width and height are pinned BEFORE the
+   Clearbit images arrive so the .logos-track has a stable max-content
+   from first paint. Without the fixed width the track was collapsing
+   to ~0 while images loaded, leaving the marquee with nothing to
+   translate and the band visually frozen. */
 .logo-item {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 150px;
   height: 44px;
-  /* Container for the CDN logo image — text fallback shows if the
-     fetch fails (the inline onerror flips .logo-fail on this span). */
+  flex: 0 0 auto;
 }
 .logo-item .logo-img {
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
-  max-width: 180px;
+  height: auto;
   object-fit: contain;
   opacity: 0.72;
   filter: grayscale(0.18);
@@ -412,7 +419,7 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   display: none;
   font-family: var(--vp-font-display);
   font-weight: 600;
-  font-size: 26px;
+  font-size: 22px;
   letter-spacing: -0.015em;
   color: var(--vp-ink);
   opacity: 0.62;
@@ -425,8 +432,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   .logo-item:hover .logo-name { opacity: 1; }
 }
 @media (max-width: 760px) {
-  .logo-item { height: 32px; }
-  .logo-item .logo-name { font-size: 20px; }
+  .logo-item { width: 110px; height: 32px; }
+  .logo-item .logo-name { font-size: 17px; }
 }
 @keyframes vp-marquee {
   from { transform: translate3d(0, 0, 0); }
