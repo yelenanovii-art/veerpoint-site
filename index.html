@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2026060802">
+<link rel="stylesheet" href="style.css?v=2026060803">
 
 <!-- ─────────── ANALYTICS / TRACKING PIXELS ───────────
      Drop real measurement IDs into VP_TRACKING below and the snippets
@@ -1202,6 +1202,39 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   box-shadow: 0 32px 80px rgba(28, 28, 30, 0.32);
 }
 .modal.open .modal-card { transform: translateY(0) scale(1); }
+
+/* Wider modal variant that hosts the sales calculator inside an
+   iframe. Card owns the layout; iframe fills the remaining vertical
+   space so internal scroll stays inside the diagnostic instead of
+   reaching the outer page. */
+.modal-card.modal-card-iframe {
+  max-width: 920px;
+  padding: 0;
+  overflow: hidden;
+  height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--vp-warm-white);
+}
+.modal-card.modal-card-iframe iframe {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+  background: var(--vp-warm-white);
+  display: block;
+}
+.modal-card.modal-card-iframe .modal-close {
+  background: var(--vp-warm-white);
+  box-shadow: 0 1px 3px rgba(28,28,30,0.18);
+  z-index: 2;
+}
+@media (max-width: 760px) {
+  .modal-card.modal-card-iframe {
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
 
 /* Mobile: present the quiz as a bottom sheet instead of a centered card.
    Anchors to the bottom edge, slides up, rounded only on the top corners,
@@ -2731,7 +2764,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
       You save <b>€26,000</b> · <span class="m">3.2× more capital-efficient</span>
     </div>
     <div class="showdown-cta">
-      <a class="btn btn-accent showdown-btn" href="calculator.html">Run your own numbers <span class="arrow">→</span></a>
+      <button class="btn btn-accent showdown-btn" type="button" onclick="vpCalcOpen()">Run your own numbers <span class="arrow">→</span></button>
     </div>
   </div>
 </section>
@@ -2975,6 +3008,46 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
     </div>
   </div>
 </div>
+
+<!-- SALES CALCULATOR MODAL · loads calculator.html in embed mode
+     inside an iframe so the diagnostic stays one source of truth. -->
+<div class="modal" id="vpCalc" role="dialog" aria-modal="true" aria-label="Sales diagnostic" tabindex="-1">
+  <div class="modal-card modal-card-iframe">
+    <button class="modal-close" onclick="vpCalcClose()" aria-label="Close">✕</button>
+    <iframe id="vpCalcFrame" title="Sales diagnostic" src="about:blank" loading="lazy"></iframe>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Calc modal · src is wired in on open so the iframe doesn't fetch
+  // calculator.html until the user actually triggers it. Cleared on
+  // close to release memory and so a re-open starts fresh at Q1.
+  const modal = document.getElementById('vpCalc');
+  const frame = document.getElementById('vpCalcFrame');
+  if (!modal || !frame) return;
+  window.vpCalcOpen = function () {
+    frame.src = 'calculator.html?embed=1';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => modal.focus(), 50);
+  };
+  window.vpCalcClose = function () {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // Defer src clear until after the fade-out so the iframe doesn't
+    // flash white during the transition.
+    setTimeout(() => { frame.src = 'about:blank'; }, 280);
+  };
+  // Backdrop click + Escape both close the modal.
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) window.vpCalcClose();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) window.vpCalcClose();
+  });
+})();
+</script>
 
 <script>
 (function() {
@@ -3568,7 +3641,7 @@ footer .wrap { display: flex; justify-content: space-between; align-items: cente
      back to the hand-traced SVG path if either CDN is unreachable. -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" defer></script>
-<script src="app.js?v=2026060802" defer></script>
+<script src="app.js?v=2026060803" defer></script>
 
 </body>
 </html>
